@@ -1,0 +1,51 @@
+// Una foto nueva se agrega como objeto en esta lista; file nombra el archivo en src/assets/images/gallery.
+export const galleryFrames = [
+  {
+    id: 'llegada-kinal',
+    file: 'llegada-kinal.webp',
+    alt: 'Llegada a Fundación Kinal',
+    caption: 'Llegada a Kinal · 2024',
+    title: 'Llegada a Kinal',
+    description: 'Primer año en Kinal. La promo con la que entré y el famoso “trabajo bien hecho” empezando a dejar de ser solo frase del colegio.',
+  },
+  {
+    id: 'primer-setup',
+    file: 'primer-setup.webp',
+    alt: 'Mi primer setup',
+    caption: 'Mi primer setup · 2024',
+    title: 'Mi primer setup',
+    description: 'Desde los 15 trabajé para poder comprarme equipo. Empecé con un monitor casi tirado. Después de unos meses de vacacionista pude completar pantallas y el rincón donde codeo.',
+  },
+  {
+    id: 'primer-hackaton',
+    file: 'primer-hackaton.webp',
+    alt: 'Primer hackathon',
+    caption: 'Primer hackathon · UVG 2026',
+    title: 'Primer hackathon',
+    description: 'The502Project en UVG. No pasamos a finales, y aun así armamos algo en menos de seis horas. Bienvenida a la presión.',
+  },
+  {
+    id: 'hack-sv',
+    file: 'hack-sv.webp',
+    alt: 'Hackathon SV',
+    caption: 'Hackathon · UFG El Salvador 2026',
+    title: 'Hackathon en El Salvador',
+    description: 'Primera vez fuera del país, y no fue a pasear. Más de 24 horas despiertos, pelea contra el sueño y aprender a puro golpe.',
+  },
+  {
+    id: 'expokinal-2025',
+    file: 'expokinal-2025.webp',
+    alt: 'Expokinal 2025',
+    caption: 'Expokinal 2025 · primer gran proyecto',
+    title: 'Expokinal 2025',
+    description: 'El proyecto que me sacudió: mostrar lo que hago frente a gente de verdad, no solo frente al profe. Ahí se abrieron puertas que el aula sola no abre.',
+  },
+  {
+    id: 'comienzo-eventos',
+    file: 'comienzo-eventos.webp',
+    alt: 'AI Dev',
+    caption: 'Del colegio al mundo · 2026',
+    title: 'AI Dev',
+    description: 'Dejé de quedarme solo con lo del colegio y empecé a ir a charlas y eventos. El mundo tech no espera a que termines el semestre.',
+  },
+]

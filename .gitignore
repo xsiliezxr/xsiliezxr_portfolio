@@ -1,2 +1,14 @@
 .env
 node_modules
+dist
+.DS_Store
+*.log
+.vite
+.netlify
+old-porfolio
+old-portfolio-v2
+old-portfolio/
+.impeccable/
+DESIGN.md
+PRODUCT.md
+.cursor
