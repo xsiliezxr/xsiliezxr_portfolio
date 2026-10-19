@@ -22,6 +22,7 @@ const PAGES = {
   '/certifications': CertificationsPage,
   '/certificaciones': CertificationsPage,
   '/certificados': CertificationsPage,
+  '/reconocimientos': CertificationsPage,
   '/about': HistoryPage,
   '/skills': SkillsPage,
   '/contact': ContactPage,
@@ -40,9 +41,10 @@ export function App() {
     const onClick = (event) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
       const link = event.target.closest('a[href]')
-      if (!link) return
+      if (!link || link.hasAttribute('download')) return
       const href = link.getAttribute('href')
       if (!href || !href.startsWith('/') || href.startsWith('//') || link.target) return
+      if (/\.[a-z0-9]{2,8}($|\?)/i.test(href)) return
       event.preventDefault()
       const next = new URL(href, window.location.origin)
       if (next.pathname === window.location.pathname && next.search === window.location.search) return

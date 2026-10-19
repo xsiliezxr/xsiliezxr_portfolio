@@ -19,22 +19,22 @@ function FeaturedVisual({ project, index }) {
   const num = String(index + 1).padStart(2, '0')
 
   return (
-    <div className="relative overflow-hidden rounded-[12px] border border-ink-700 bg-ink-900 shadow-[0_24px_60px_rgba(0,0,0,0.55)]">
-      <div className="flex items-center justify-between border-b border-ink-700 bg-ink-950 px-4 py-2.5 font-mono text-[11px] text-fog-dim">
+    <div className="relative min-h-0 overflow-hidden border border-ink-700 bg-ink-950">
+      <div className="flex items-center justify-between border-b border-ink-700 bg-ink-900 px-4 py-2.5 font-mono text-[11px] text-fog-dim">
         <span className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-ember-500" aria-hidden="true" />
+          <span className="h-2 w-2 bg-ember-500" aria-hidden="true" />
           <span className="text-ember-300">SISTEMA {num}</span>
         </span>
         <span className="truncate">{project.status}{project.role ? ` · ${project.role}` : ''}</span>
       </div>
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink-950">
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink-950 lg:aspect-auto lg:h-full lg:min-h-[18rem]">
         <img
           src={project.src}
           alt={project.title}
           className="h-full w-full object-cover object-top"
           loading={index === 0 ? 'eager' : 'lazy'}
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/65 via-transparent to-transparent" aria-hidden="true" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-transparent" aria-hidden="true" />
       </div>
     </div>
   )
@@ -52,7 +52,7 @@ function FeaturedEvidenceCard({ project, index, total }) {
           {num}
         </span>
         <span className="font-mono text-xs text-fog-dim">/ {totalLabel}</span>
-        <span className="rounded-[12px] border border-ink-700 bg-ink-900 px-2.5 py-1 font-mono text-[11px] text-ember-300">
+        <span className="font-mono text-[11px] text-amber">
           {project.status}{project.role ? ` · ${project.role}` : ''}
         </span>
       </div>
@@ -74,10 +74,7 @@ function FeaturedEvidenceCard({ project, index, total }) {
       {project.tags?.length ? (
         <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0" aria-label="Stack técnico">
           {project.tags.map((tag) => (
-            <li
-              key={tag}
-              className="rounded-[12px] border border-ink-700 bg-ink-950 px-2.5 py-1 font-mono text-[11px] text-amber"
-            >
+            <li key={tag} className="font-mono text-[11px] text-amber">
               {tag}
             </li>
           ))}
@@ -94,7 +91,7 @@ function FeaturedEvidenceCard({ project, index, total }) {
               <li key={repo.href} className="max-w-full">
                 <ExternalLink
                   href={repo.href}
-                  className="inline-flex max-w-full items-center gap-1.5 rounded-[12px] border border-ink-700 bg-ink-900 px-2.5 py-1 font-mono text-[11px] text-fog transition-colors hover:border-ember-500 hover:text-ember-300"
+                  className="inline-flex max-w-full items-center gap-1.5 font-mono text-[11px] text-fog-dim underline decoration-ember-500/50 underline-offset-3 transition-colors hover:text-ember-300"
                 >
                   <span className="truncate">{repo.name}</span>
                   {repo.lang ? <span className="text-fog-dim">· {repo.lang}</span> : null}
@@ -109,7 +106,7 @@ function FeaturedEvidenceCard({ project, index, total }) {
         {project.demo ? (
           <ExternalLink
             href={project.demo}
-            className="inline-flex items-center gap-2 rounded-[12px] bg-ember-500 px-4 py-2.5 font-mono text-xs font-bold text-ink-950 transition-colors hover:bg-ember-300"
+            className="inline-flex items-center gap-2 bg-ember-500 px-4 py-2.5 font-mono text-xs font-bold text-ink-950 transition-colors hover:bg-ember-300"
           >
             Demo
             <span aria-hidden="true">↗</span>
@@ -118,11 +115,7 @@ function FeaturedEvidenceCard({ project, index, total }) {
         {project.repo ? (
           <ExternalLink
             href={project.repo}
-            className={`inline-flex items-center gap-2 rounded-[12px] px-4 py-2.5 font-mono text-xs font-bold transition-colors ${
-              project.demo
-                ? 'border border-ink-700 bg-ink-900 text-fog hover:border-ember-500 hover:text-ember-300'
-                : 'bg-ember-500 text-ink-950 hover:bg-ember-300'
-            }`}
+            className="inline-flex items-center gap-2 font-mono text-xs font-bold text-ember-300 underline decoration-ember-500/50 underline-offset-3 transition-colors hover:text-fog"
           >
             {repoLabel}
             <span aria-hidden="true">→</span>
@@ -132,7 +125,7 @@ function FeaturedEvidenceCard({ project, index, total }) {
           <ExternalLink
             key={`${link.label}-${link.href}`}
             href={link.href}
-            className="inline-flex items-center gap-1.5 rounded-[12px] border border-ink-700 bg-ink-950 px-3 py-2 font-mono text-xs text-fog-dim transition-colors hover:border-ember-500 hover:text-fog"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-fog-dim underline decoration-ember-500/40 underline-offset-3 transition-colors hover:text-fog"
           >
             {link.label}
             <span aria-hidden="true">↗</span>
@@ -143,17 +136,24 @@ function FeaturedEvidenceCard({ project, index, total }) {
   )
 }
 
+function FeaturedCardFace({ project, index, total }) {
+  return (
+    <div
+      className={`grid h-full min-h-0 w-full gap-6 overflow-hidden border border-ink-700 bg-ink-900 p-5 shadow-[0_28px_70px_rgba(0,0,0,0.55)] md:p-7 lg:gap-8 ${project.src ? 'lg:grid-cols-[1.05fr_0.95fr]' : ''}`}
+    >
+      <FeaturedEvidenceCard project={project} index={index} total={total} />
+      <FeaturedVisual project={project} index={index} />
+    </div>
+  )
+}
+
 function FeaturedStack({ projects }) {
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-6 md:px-8" aria-label="Proyectos destacados">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-10">
         {projects.map((project, index) => (
-          <article
-            key={project.id}
-            className="grid min-w-0 items-center gap-8 rounded-[12px] border border-ink-700 bg-ink-900/70 p-5 sm:p-8 lg:grid-cols-[1.05fr_0.95fr]"
-          >
-            <FeaturedEvidenceCard project={project} index={index} total={projects.length} />
-            <FeaturedVisual project={project} index={index} />
+          <article key={project.id} className="min-w-0">
+            <FeaturedCardFace project={project} index={index} total={projects.length} />
           </article>
         ))}
       </div>
@@ -161,48 +161,37 @@ function FeaturedStack({ projects }) {
   )
 }
 
+const STACK_PEEK = 22
+
 function FeaturedScrub({ projects }) {
   const rootRef = useRef(null)
-  const viewportRef = useRef(null)
-  const trackRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const count = projects.length
+  const stackPad = Math.max(count - 1, 0) * STACK_PEEK
 
   useGSAP(() => {
     const root = rootRef.current
-    const viewport = viewportRef.current
-    const track = trackRef.current
     const scroller = document.getElementById('page-scroll')
-    if (!root || !viewport || !track || !scroller) return
-    const panels = gsap.utils.toArray('[data-featured-panel]', track)
-    const marks = gsap.utils.toArray('[data-featured-mark]', root)
-    const paint = (index) => {
-      setActiveIndex(index)
-      marks.forEach((mark, markIndex) => {
-        mark.style.background = markIndex === index ? '#ff5b14' : '#2a2826'
-      })
-    }
-    paint(0)
+    if (!root || !scroller) return undefined
+    const cards = gsap.utils.toArray('[data-featured-card]', root)
+    if (!cards.length) return undefined
 
-    if (panels.length < 2) {
-      gsap.fromTo(panels[0], { opacity: 0, y: 28 }, {
-        opacity: 1,
+    if (cards.length < 2) {
+      gsap.set(cards, { yPercent: 0, y: 0, scale: 1, filter: 'none' })
+      return undefined
+    }
+
+    cards.forEach((card, index) => {
+      gsap.set(card, {
+        zIndex: index + 1,
+        yPercent: index === 0 ? 0 : 108,
         y: 0,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root,
-          scroller,
-          start: 'top 78%',
-          end: 'top 42%',
-          scrub: true,
-        },
+        scale: 1,
+        filter: 'brightness(1)',
+        transformOrigin: '50% 0%',
       })
-      return
-    }
+    })
 
-    gsap.set(panels, { opacity: 0.35 })
-    gsap.set(panels[0], { opacity: 1 })
-    const fade = 1 / panels.length
     const timeline = gsap.timeline({
       defaults: { ease: 'none' },
       scrollTrigger: {
@@ -210,76 +199,77 @@ function FeaturedScrub({ projects }) {
         scroller,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: true,
+        scrub: 0.55,
         invalidateOnRefresh: true,
-        onUpdate: (self) => paint(Math.round(self.progress * (panels.length - 1))),
+        onUpdate: (self) => {
+          const index = Math.min(
+            cards.length - 1,
+            Math.max(0, Math.floor(self.progress * cards.length - 0.001)),
+          )
+          setActiveIndex(index)
+        },
       },
     })
-    timeline.to(track, {
-      x: () => Math.min(0, viewport.offsetWidth - track.offsetWidth),
-      duration: 1,
-    }, 0)
-    panels.forEach((panel, index) => {
-      if (index === 0) return
-      const slot = index / (panels.length - 1)
-      const at = Math.min(Math.max(0, slot - fade * 0.4), 1 - fade)
-      timeline.to(panel, { opacity: 1, duration: fade }, at)
-    })
+
+    for (let index = 1; index < cards.length; index += 1) {
+      const at = index - 1
+      for (let depth = 0; depth < index; depth += 1) {
+        const layersUnder = index - depth
+        timeline.to(cards[depth], {
+          y: -(layersUnder * STACK_PEEK),
+          scale: 1 - layersUnder * 0.035,
+          filter: `brightness(${Math.max(0.42, 1 - layersUnder * 0.22)})`,
+          duration: 1,
+        }, at)
+      }
+      timeline.fromTo(
+        cards[index],
+        { yPercent: 108, y: 0 },
+        { yPercent: 0, y: 0, duration: 1 },
+        at,
+      )
+    }
+
+    return undefined
   }, { scope: rootRef, dependencies: [count], revertOnUpdate: true })
 
   return (
     <section
       ref={rootRef}
-      className="relative overflow-hidden border-b border-ink-700"
+      className="relative"
       style={count > 1 ? { height: `${count * 100}dvh` } : undefined}
       aria-label="Proyectos destacados"
     >
-      <div
-        ref={viewportRef}
-        className="sticky top-[calc(var(--masthead)+0.5rem)] flex h-[calc(100dvh-var(--masthead)-0.5rem)] w-full min-w-0 flex-col justify-between overflow-hidden"
-      >
-        <div ref={trackRef} className="flex min-h-0 flex-1 items-center" style={{ width: `${count * 100}%` }}>
-          {projects.map((project, index) => (
-            <article
-              key={project.id}
-              data-featured-panel
-              className="flex h-full min-w-0 shrink-0 items-center overflow-hidden px-4 py-4 md:px-8"
-              style={{ width: `${100 / count}%` }}
-            >
-              <div className={`mx-auto grid w-full max-w-7xl min-w-0 items-center gap-6 lg:gap-12 ${project.src ? 'lg:grid-cols-[1.05fr_0.95fr]' : ''}`}>
-                <FeaturedEvidenceCard project={project} index={index} total={count} />
-                <FeaturedVisual project={project} index={index} />
-              </div>
-            </article>
-          ))}
-        </div>
-
-        {count > 1 ? (
-          <div className="mx-auto w-full max-w-7xl shrink-0 px-4 pb-5 md:px-8">
-            <div className="rounded-[12px] border border-ink-700 bg-ink-900/90 px-4 py-3">
-              <div className="mb-2 flex items-center justify-between font-mono text-[11px] text-fog-dim">
-                <span>Desplaza para recorrer los sistemas destacados</span>
-                <span className="text-ember-300">
-                  {String(activeIndex + 1).padStart(2, '0')} / {String(count).padStart(2, '0')} · {projects[activeIndex]?.title}
-                </span>
-              </div>
-              <div className="flex gap-2" aria-hidden="true">
-                {projects.map((project) => (
-                  <span key={project.id} data-featured-mark className="h-1.5 min-w-0 flex-1 rounded-full bg-ink-700 transition-colors" />
-                ))}
-              </div>
-            </div>
+      <div className="sticky top-[var(--masthead)] flex h-[calc(100dvh-var(--masthead))] w-full min-w-0 flex-col overflow-hidden px-4 md:px-8">
+        <div className="relative mx-auto flex h-full w-full max-w-7xl flex-col py-4 md:py-6">
+          <div className="featured-stack relative min-h-0 flex-1">
+            {projects.map((project, index) => (
+              <article
+                key={project.id}
+                data-featured-card
+                aria-hidden={activeIndex !== index}
+                className={`featured-stack-card absolute right-0 bottom-0 left-0 ${activeIndex === index ? '' : 'pointer-events-none'}`}
+                style={{ top: stackPad, zIndex: index + 1 }}
+              >
+                <FeaturedCardFace project={project} index={index} total={count} />
+              </article>
+            ))}
           </div>
-        ) : null}
+          {count > 1 ? (
+            <p className="shrink-0 pt-4 pb-1 font-mono text-xs text-amber">
+              {String(activeIndex + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
+              <span className="ml-3 text-fog">{projects[activeIndex]?.title}</span>
+            </p>
+          ) : null}
+        </div>
       </div>
     </section>
   )
 }
 
-export function FeaturedProjects({ projects, lead }) {
+export function FeaturedProjects({ projects }) {
   const reduced = useReducedMotion()
   if (!projects?.length) return null
-  if (reduced) return <FeaturedStack projects={projects} lead={lead} />
-  return <FeaturedScrub projects={projects} lead={lead} />
+  if (reduced) return <FeaturedStack projects={projects} />
+  return <FeaturedScrub projects={projects} />
 }
-

@@ -1,9 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
+import learn from '../../../assets/images/hobbies/learn.webp'
 import { FrameDialog } from '../../../shared/components/FrameDialog.jsx'
+import { HobbyMark } from '../../../shared/hobbies/HobbyMark.jsx'
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.js'
-import { galleryFrames } from '../gallery.content.js'
+import { galleryFrames as frameRecords } from '../gallery.data.js'
 
 const CANVAS = { width: 2820, height: 2350, refWidth: 1440, refHeight: 900 }
+
+const LAYOUT = [
+  { tx: -445, ty: -285, w: 460, h: 190, aspect: 'landscapeWide' },
+  { tx: 460, ty: 270, w: 380, h: 240, aspect: 'landscape' },
+  { tx: -455, ty: 255, w: 420, h: 270, aspect: 'landscape' },
+  { tx: 0, ty: -330, w: 210, h: 210, aspect: 'medium' },
+  { tx: 480, ty: -215, w: 220, h: 330, aspect: 'portrait' },
+  { tx: 0, ty: 280, w: 220, h: 300, aspect: 'portrait' },
+]
+
+const FALLBACK_LAYOUT = { tx: 0, ty: 120, w: 280, h: 200, aspect: 'landscape' }
+
+const galleryFrames = frameRecords.map((frame, index) => ({
+  ...frame,
+  ...(LAYOUT[index] ?? FALLBACK_LAYOUT),
+}))
 
 function StoryFrame({ frame, onEnter, onLeave, onOpen }) {
   const origin = useRef(null)
@@ -154,12 +172,12 @@ export function SpatialGallery() {
 
   return (
     <section ref={stageRef} className="relative h-[calc(100dvh-var(--masthead))] w-full touch-none overflow-hidden" aria-label="Galería">
-      <header className="pointer-events-none absolute top-4 left-4 z-[3] w-[min(86vw,22rem)] rounded-[12px] border border-ink-700 bg-ink-900/90 p-4 backdrop-blur-sm sm:top-6 sm:left-8 sm:p-5">
-        <div className="flex items-center justify-between gap-3">
+      <header className="pointer-events-none absolute top-4 left-4 z-[3] w-[min(86vw,22rem)] sm:top-6 sm:left-8">
+        <div className="flex items-end justify-between gap-3">
           <h1 className="m-0 font-display text-[clamp(1.5rem,3.8vw,2.25rem)] font-black uppercase leading-[0.92] tracking-[-0.04em] text-fog">
             Cosas que me pasaron
           </h1>
-          <span className="shrink-0 rounded-[12px] border border-ink-700 bg-ink-950 px-2.5 py-1 font-mono text-[11px] text-amber">
+          <span className="shrink-0 font-mono text-[11px] text-amber">
             {String(galleryFrames.length).padStart(2, '0')} fotos
           </span>
         </div>
@@ -167,7 +185,7 @@ export function SpatialGallery() {
           Mueve el cursor o arrastra · Clic para abrir
         </p>
         {caption && !selected ? (
-          <p className="m-0 mt-2.5 truncate border-t border-ink-700 pt-2 font-mono text-xs text-fog">
+          <p className="m-0 mt-2.5 truncate font-mono text-xs text-amber">
             {caption}
           </p>
         ) : null}
@@ -183,6 +201,11 @@ export function SpatialGallery() {
             transformOrigin: 'center center',
           }}
         >
+          <HobbyMark
+            id="cleancode"
+            image={learn}
+            className="hobby-mark-gallery"
+          />
           {galleryFrames.map((frame) => (
             <StoryFrame
               key={frame.id}
@@ -206,7 +229,7 @@ export function SpatialGallery() {
                 <h2 id={titleId} className="m-0 mt-2 font-display text-2xl font-black uppercase leading-tight text-fog sm:text-3xl">
                   {selected?.title}
                 </h2>
-                <p className="m-0 mt-4 rounded-[12px] border border-ink-700 bg-ink-950 p-4 font-sans text-sm leading-relaxed text-fog">
+                <p className="m-0 mt-4 font-sans text-sm leading-relaxed text-fog">
                   {selected?.description}
                 </p>
               </div>

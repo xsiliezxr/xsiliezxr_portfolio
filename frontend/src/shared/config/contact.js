@@ -14,16 +14,26 @@ export const contact = {
 export function whatsappHref() {
   const digits = contact.whatsapp.replace(/[^\d]/g, '')
   if (!digits) return ''
-  const text = encodeURIComponent('Hola Angel, vi tu portafolio y llegué a la sala secreta.')
+  const text = encodeURIComponent('Hola Angel, vi tu portafolio y quiero hablar de un proyecto.')
   return `https://wa.me/${digits}?text=${text}`
 }
 
-export function contactLinks() {
+export function contactLinks({ includeWhatsapp = false } = {}) {
   return [
-    contact.email ? { id: 'email', label: 'Email', href: `mailto:${contact.email}` } : null,
-    contact.linkedin ? { id: 'linkedin', label: 'LinkedIn', href: contact.linkedin } : null,
-    contact.github ? { id: 'github', label: 'GitHub personal', href: contact.github } : null,
-    contact.githubKinal ? { id: 'github-kinal', label: 'GitHub Kinal', href: contact.githubKinal } : null,
-    whatsappHref() ? { id: 'whatsapp', label: 'WhatsApp', href: whatsappHref() } : null,
+    contact.email
+      ? { id: 'email', label: 'Email', href: `mailto:${contact.email}`, hint: contact.email }
+      : null,
+    contact.linkedin
+      ? { id: 'linkedin', label: 'LinkedIn', href: contact.linkedin, hint: 'Perfil profesional' }
+      : null,
+    contact.github
+      ? { id: 'github', label: 'GitHub', href: contact.github, hint: 'xsiliezxr' }
+      : null,
+    contact.githubKinal
+      ? { id: 'github-kinal', label: 'GitHub Kinal', href: contact.githubKinal, hint: 'asiliezar-2024342' }
+      : null,
+    includeWhatsapp && whatsappHref()
+      ? { id: 'whatsapp', label: 'WhatsApp', href: whatsappHref(), hint: 'Mensaje directo' }
+      : null,
   ].filter(Boolean)
 }

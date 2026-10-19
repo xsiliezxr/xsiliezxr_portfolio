@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.js'
 import { SkillMark } from './SkillMark.jsx'
-import { skillConstellations } from '../skills.content.js'
+import { skillConstellations } from '../skills.data.js'
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
@@ -208,12 +208,12 @@ export function SkillConstellation() {
         </div>
 
         <aside
-          className="flex flex-col justify-between rounded-[12px] border border-ink-700 bg-ink-900 p-5 sm:p-6"
+          className="flex flex-col justify-between"
           aria-live="polite"
         >
           {focused ? (
             <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between gap-3 border-b border-ink-700 pb-4">
+              <div className="flex items-center justify-between gap-3">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-paper outline outline-1 outline-ink-700">
                   <SkillMark icon={focused.icon} />
                 </span>
@@ -225,7 +225,7 @@ export function SkillConstellation() {
                     {focused.label}
                   </h2>
                 </div>
-                <span className="rounded-[12px] border border-ink-700 bg-ink-950 px-2.5 py-1 font-mono text-[11px] text-amber">
+                <span className="font-mono text-[11px] text-amber">
                   {focused.levelLabel}
                 </span>
               </div>

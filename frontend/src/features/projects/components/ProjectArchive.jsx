@@ -75,9 +75,9 @@ export function ProjectArchive({ projects }) {
 
           return (
             <li key={project.id} className="min-w-0">
-              <article className="flex h-full min-w-0 flex-col justify-between rounded-[12px] border border-ink-700 bg-ink-900/90 p-5 transition-colors hover:border-ember-500/70 sm:p-6">
+              <article className="flex h-full min-w-0 flex-col justify-between">
                 <div className="flex min-w-0 flex-col gap-3">
-                  <div className="flex items-center justify-between gap-2 border-b border-ink-700 pb-3 font-mono text-[11px]">
+                  <div className="flex items-center justify-between gap-2 font-mono text-[11px]">
                     <span className="text-ember-300">
                       #{itemNum} · {project.status}
                     </span>
@@ -107,7 +107,7 @@ export function ProjectArchive({ projects }) {
                       {project.tags.map((tag) => (
                         <li
                           key={tag}
-                          className="rounded-[12px] border border-ink-700 bg-ink-950 px-2.5 py-0.5 font-mono text-[10px] text-amber"
+                          className="font-mono text-[10px] text-amber"
                         >
                           {tag}
                         </li>

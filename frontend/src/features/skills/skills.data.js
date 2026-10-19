@@ -4,7 +4,7 @@ const LEVEL = {
   exploring: 'Explorando',
 }
 
-// Una habilidad nueva es un nodo con icon (archivo en icons/, sin .svg), posición y links.
+// Una habilidad nueva es un nodo en su categoría (label del grupo): label es el nombre, más icon, level, x, y y links.
 const RAW = [
   {
     id: 'frontend',

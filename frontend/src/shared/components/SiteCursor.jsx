@@ -43,6 +43,9 @@ export function SiteCursor() {
       xTo(event.clientX)
       yTo(event.clientY)
       node.dataset.on = '1'
+      const clickable = event.target instanceof Element
+        && event.target.closest('a, button, [data-ui], [role="button"]')
+      node.dataset.pointer = clickable ? '1' : '0'
       // El cursor del sistema se oculta solo cuando este ya sigue al puntero.
       root.classList.add('has-site-cursor')
     }

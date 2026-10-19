@@ -2,8 +2,10 @@ import { useEffect, useRef } from 'react'
 import { HobbyCounter } from '../../features/home/components/ui/HobbyCounter.jsx'
 import { SiliPreview } from '../../features/home/components/ui/SiliPreview.jsx'
 import { useJourneyStore } from '../../features/home/store/journey.store.js'
+import { usePageMeta } from '../hooks/usePageMeta.js'
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
 import { canonicalPath } from '../siteNav.js'
+import { JourneyFooter } from '../../features/home/components/ui/JourneyFooter.jsx'
 import { Masthead } from './Masthead.jsx'
 
 const ATMOSPHERE = {
@@ -51,13 +53,14 @@ export function PageShell({ path, children, bleed = false }) {
   const mainRef = useRef(null)
   const routeKey = canonicalPath(path)
   const atmos = ATMOSPHERE[routeKey] || DEFAULT_ATMOSPHERE
+  usePageMeta(routeKey)
 
   useEffect(() => {
     const state = useJourneyStore.getState()
-    if (!state.chrome.counter || state.floorId === 'studies' || state.floorId === 'closing') {
-      state.setFloor('welcome')
-      state.setChrome({ nav: true, rail: true, side: true, counter: true })
-    }
+    state.setFloor('welcome')
+    state.setChapter('hero')
+    state.setCornerOpen(null)
+    state.setChrome({ nav: true, rail: true, side: true, counter: true })
   }, [routeKey])
 
   useEffect(() => {
@@ -74,6 +77,9 @@ export function PageShell({ path, children, bleed = false }) {
 
   return (
     <div id="page-scroll" className="relative h-full overflow-x-hidden overflow-y-auto bg-ink-950 text-fog">
+      <a href="#contenido" className="absolute -left-[999px] top-3 z-50 bg-ember-500 px-3 py-2 text-sm text-ink-950 focus:left-3">
+        Saltar al contenido
+      </a>
       <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
         <div className="absolute inset-0" style={{ background: atmos.gradient }} />
         <div
@@ -102,11 +108,14 @@ export function PageShell({ path, children, bleed = false }) {
         <Masthead path={path} />
       </header>
       <main
+        id="contenido"
         ref={mainRef}
+        tabIndex={-1}
         className={`relative z-10 ${reduced ? '' : 'editorial-reveal'} ${bleed ? '' : 'px-4 pb-28 md:px-8'}`}
       >
         {children}
       </main>
+      <JourneyFooter variant="page" />
       <div className="journey-corner" style={{ right: '0.75rem' }}>
         <SiliPreview />
         <HobbyCounter />

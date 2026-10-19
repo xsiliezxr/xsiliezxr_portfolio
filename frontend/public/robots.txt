@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /history
+Allow: /experiencia
+Allow: /projects
+Allow: /skills
+Allow: /gallery
+Allow: /certificaciones
+Allow: /contact
+Disallow: /api/
+Disallow: /__forms.html
+
+Sitemap: /sitemap.xml
