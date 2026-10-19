@@ -17,13 +17,13 @@ export class ChatUnavailableError extends Error {
   }
 }
 
-export async function replyToChat({ summary, recent }) {
+export async function replyToChat({ summary, recent, query }) {
   const recentChars = recent.reduce((sum, turn) => sum + turn.content.length, 0)
   console.info(`chat context summaryChars=${summary.length} recentTurns=${recent.length} recentChars=${recentChars}`)
 
   if (!apiKey) throw new ChatUnavailableError()
 
-  const { instructions, data } = buildChatInput(summary)
+  const { instructions, data } = buildChatInput(summary, query ?? '')
   const conversation = conversationForModel(data, recent)
 
   try {

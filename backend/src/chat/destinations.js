@@ -13,7 +13,7 @@ const DESTINATIONS = {
   experiencia: { id: 'experiencia', label: 'Experiencia', path: '/experiencia' },
   proyectos: { id: 'proyectos', label: 'Proyectos', floorId: 'experience' },
   habilidades: { id: 'habilidades', label: 'Habilidades', path: '/skills' },
-  certificados: { id: 'certificados', label: 'Certificados', path: '/certificaciones' },
+  certificados: { id: 'certificados', label: 'Reconocimientos', path: '/certificaciones' },
   galeria: { id: 'galeria', label: 'Galería', path: '/gallery' },
   contacto: { id: 'contacto', label: 'Contacto', floorId: 'closing' },
   secret: { id: 'secret', label: 'Sala secreta', floorId: 'secret' },

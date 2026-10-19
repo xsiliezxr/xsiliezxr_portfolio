@@ -2,6 +2,10 @@ import jwt from 'jsonwebtoken'
 import { env } from '../configs/env.js'
 
 export function requireAuth(req, res, next) {
+  if (!env.JWT_SECRET) {
+    return res.status(503).json({ error: 'Auth is not configured' })
+  }
+
   const header = req.get('authorization')
 
   if (!header?.startsWith('Bearer ')) {

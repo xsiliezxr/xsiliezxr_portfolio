@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai'
 import { env, requireLlmCredentials } from './env.js'
 
 const DEFAULT_MODELS = {
-  gemini: 'gemini-2.5-flash',
+  gemini: 'gemma-4-31b-it',
   groq: 'llama-3.3-70b-versatile',
 }
 

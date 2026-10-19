@@ -1,8 +1,22 @@
 import { INJECTION_REPLY, isDestination, navigationReply } from './destinations.js'
 import { detectIntent, MESSAGE_MAX, sanitizeMessage } from './intent.js'
+import { selectKnowledgeChunks } from './prompt.js'
+import { foldAccents } from './retrieve.js'
 import { foldTranscript } from './summary.js'
 
 const SUMMARY_INPUT_MAX = 1200
+
+const MISSING_REPLY = [
+  'no lo tengo',
+  'no tengo esa',
+  'no tengo ese',
+  'no tengo el dato',
+  'no tengo ese dato',
+  'no tengo esa informacion',
+  'no esta en el conocimiento',
+  'no figura en',
+  'no cuento con',
+]
 
 export class ChatInputError extends Error {
   constructor() {
@@ -40,7 +54,19 @@ export function prepareChat(body) {
     return result('navigation', navigationReply(decision.destination), decision.destination, windowed)
   }
 
-  return result('question', null, null, windowed)
+  const retrieval = selectKnowledgeChunks(last.content)
+  return {
+    ...result('question', null, null, windowed),
+    query: last.content,
+    matched: retrieval.matched.map((chunk) => chunk.id),
+    retrievalScore: retrieval.score,
+    needsGap: retrieval.lowScore,
+  }
+}
+
+export function replySaysMissing(reply) {
+  const folded = foldAccents(reply)
+  return MISSING_REPLY.some((marker) => folded.includes(foldAccents(marker)))
 }
 
 function result(intent, reply, destination, windowed) {
@@ -51,6 +77,10 @@ function result(intent, reply, destination, windowed) {
     summary: windowed.summary,
     covered: windowed.covered,
     recent: windowed.recent,
+    query: null,
+    matched: [],
+    retrievalScore: 0,
+    needsGap: false,
   }
 }
 

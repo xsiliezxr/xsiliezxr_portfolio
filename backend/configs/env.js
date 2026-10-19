@@ -19,7 +19,8 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
   CORS_ORIGIN: z.string().min(1),
-  JWT_SECRET: z.string().min(32),
+  // Opcional: solo si se usa requireAuth. El chat público no lo necesita.
+  JWT_SECRET: z.preprocess(blankToUndefined, z.string().min(32).optional()),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
   LLM_PROVIDER: z.preprocess(blankToUndefined, z.enum(['gemini', 'groq']).default('gemini')),

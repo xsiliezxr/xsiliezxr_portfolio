@@ -1,4 +1,4 @@
-import { ChatInputError, prepareChat } from './chat.boundary.js'
+import { ChatInputError, prepareChat, replySaysMissing } from './chat.boundary.js'
 import { ChatUnavailableError, CHAT_UNAVAILABLE_REPLY, replyToChat } from './chat.service.js'
 
 export async function postChat(req, res, next) {
@@ -9,7 +9,17 @@ export async function postChat(req, res, next) {
       res.status(200).json(toBody(prepared.reply, prepared))
       return
     }
+
+    // Gaps ya no se exponen ni se persisten en prod serverless; el chat sigue igual.
+    if (prepared.needsGap) {
+      console.info('chat gap', { query: prepared.query?.slice(0, 120), matched: prepared.matched })
+    }
+
     const reply = await replyToChat(prepared)
+    if (replySaysMissing(reply)) {
+      console.info('chat missing', { query: prepared.query?.slice(0, 120) })
+    }
+
     res.status(200).json(toBody(reply, prepared))
   } catch (error) {
     if (error instanceof ChatInputError) {
