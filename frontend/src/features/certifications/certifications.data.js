@@ -1,10 +1,20 @@
-// Un certificado nuevo se agrega como objeto en esta lista; file nombra el archivo en src/assets/images/certifications.
+// Un reconocimiento nuevo se agrega aquí; file apunta a src/assets/images/awards.
+// kind: diploma | certificado | badge
+// verifyUrl (opcional): enlace público de verificación Credly/Acclaim/Cisco, sobre todo en badges.
+export const AWARD_FILTERS = [
+  { id: 'all', label: 'Todos' },
+  { id: 'diploma', label: 'Diplomas' },
+  { id: 'certificado', label: 'Certificados' },
+  { id: 'badge', label: 'Badges' },
+]
+
 export const certificates = [
   {
     id: 'bi-2026',
     title: 'Reconocimiento Fundación BI',
     institution: 'Fundación Kinal · Fundación BI',
     year: '2026',
+    kind: 'diploma',
     category: 'Reconocimiento',
     description: 'Reconocimiento académico y de beca en el marco de Fundación BI. Incluye la credencial impresa y el momento de entrega.',
     file: 'BI-2026.webp',
@@ -16,6 +26,7 @@ export const certificates = [
     title: 'Reconocimiento Fundación BI',
     institution: 'Fundación Kinal · Fundación BI',
     year: '2025',
+    kind: 'diploma',
     category: 'Reconocimiento',
     description: 'Entrega del reconocimiento Fundación BI junto a familia. Un hito de constancia académica dentro de Kinal.',
     file: 'BI-2025.webp',
@@ -28,7 +39,8 @@ export const certificates = [
     title: 'Cisco CCNA',
     institution: 'Cisco Networking Academy · Fundación Kinal',
     year: '2025',
-    category: 'Curso',
+    kind: 'certificado',
+    category: 'Certificado',
     description: 'Certificación de redes Cisco CCNA. Incluye carta de mérito asociada al mismo logro.',
     file: 'CCNA.webp',
     alt: 'Diploma Cisco CCNA de Angel David Siliezar López',
@@ -46,7 +58,8 @@ export const certificates = [
     title: 'Introduction to Networks',
     institution: 'Cisco Networking Academy · Fundación Kinal',
     year: '2025',
-    category: 'Curso',
+    kind: 'certificado',
+    category: 'Certificado',
     description: 'Curso Introduction to Networks de Cisco. Base de routing, switching y fundamentos de red. Incluye carta de mérito.',
     file: 'ITN.webp',
     alt: 'Diploma Introduction to Networks de Angel David Siliezar López',
@@ -64,7 +77,8 @@ export const certificates = [
     title: 'STEM Thinking Programme',
     institution: 'Universidad del Istmo · Fundación Kinal',
     year: '2025',
-    category: 'Curso',
+    kind: 'diploma',
+    category: 'Diploma',
     description: 'Diploma por participación en el STEM Thinking Programme de la Facultad de Ingeniería de UNIS, de agosto a octubre de 2025.',
     file: 'STEAM.webp',
     alt: 'Diploma STEM Thinking Programme de la Universidad del Istmo',
@@ -75,7 +89,8 @@ export const certificates = [
     title: 'AI Dev · Innovation Lab',
     institution: 'Universidad Galileo · Innovation Lab',
     year: '2025',
-    category: 'Participación',
+    kind: 'diploma',
+    category: 'Diploma',
     description: 'Participación en el evento AI Dev de Innovation Lab, Universidad Galileo, enfocado en desarrollo con inteligencia artificial.',
     file: 'diploma-participacion-aidev.webp',
     alt: 'Diploma de participación AI Dev Innovation Lab',
@@ -87,7 +102,8 @@ export const certificates = [
     title: 'Masterclass de Python',
     institution: 'Formación técnica',
     year: '2025',
-    category: 'Curso',
+    kind: 'diploma',
+    category: 'Diploma',
     description: 'Masterclass de Python aplicada a lógica, automatización y bases para construir productos full stack.',
     file: 'masterclass-python.webp',
     alt: 'Diploma de masterclass de Python',
@@ -99,7 +115,8 @@ export const certificates = [
     title: 'Tech Day',
     institution: 'Evento tecnológico',
     year: '2025',
-    category: 'Participación',
+    kind: 'diploma',
+    category: 'Diploma',
     description: 'Diploma de participación en Tech Day: comunidad, demos y conversaciones alrededor de tecnología aplicada.',
     file: 'techday-diploma-participacion.webp',
     alt: 'Diploma de participación Tech Day',
@@ -107,3 +124,8 @@ export const certificates = [
     turn: false,
   },
 ]
+
+export function listAwards(filter = 'all') {
+  if (filter === 'all') return certificates
+  return certificates.filter((item) => item.kind === filter)
+}
