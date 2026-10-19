@@ -1,10 +1,21 @@
 [build]
-  base = "frontend"
-  command = "pnpm build"
-  publish = "dist"
+  command = "pnpm --dir backend install --frozen-lockfile && pnpm --dir frontend install --frozen-lockfile && pnpm --dir frontend build"
+  publish = "frontend/dist"
+  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "22"
+  PNPM_VERSION = "10.28.1"
+  SECRETS_SCAN_ENABLED = "true"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = [
+    "backend/src/**",
+    "frontend/src/features/**/*.js",
+    "frontend/src/shared/**/*.js",
+    "frontend/src/features/home/lib/**/*.js"
+  ]
 
 [[headers]]
   for = "/*"
@@ -13,6 +24,9 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Cross-Origin-Opener-Policy = "same-origin"
+    X-DNS-Prefetch-Control = "off"
 
 [[headers]]
   for = "/assets/*"
@@ -23,6 +37,12 @@
   for = "/draco/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
+    X-Content-Type-Options = "nosniff"
 
 [[redirects]]
   from = "/*"

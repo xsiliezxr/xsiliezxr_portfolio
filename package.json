@@ -1,0 +1,10 @@
+{
+  "name": "xsiliezxr-portfolio",
+  "private": true,
+  "packageManager": "pnpm@10.28.1",
+  "scripts": {
+    "dev:frontend": "pnpm --dir frontend dev",
+    "dev:backend": "pnpm --dir backend dev",
+    "build": "pnpm --dir frontend build"
+  }
+}

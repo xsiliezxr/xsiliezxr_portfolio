@@ -1,6 +1,10 @@
 .env
+.env.*
+!.env.example
 node_modules
 dist
+frontend/dist
+backend/dist
 .DS_Store
 *.log
 .vite
@@ -12,3 +16,9 @@ old-portfolio/
 DESIGN.md
 PRODUCT.md
 .cursor
+backend/data/*.jsonl
+!.gitkeep
+*.pem
+*.key
+credentials.json
+service-account*.json
