@@ -1,9 +1,9 @@
 import { forwardRef, useState } from 'react'
+import control from '../../../../assets/images/hobbies/control.webp'
 import photo from '../../../../assets/images/siliezar-photo.webp'
 import hiddenPhoto from '../../../../assets/images/siliezar-photo2.webp'
-import control from '../../../../assets/images/hobbies/control.webp'
 import { Button } from '../../../../shared/components/ui/Button.jsx'
-import { useHobbiesStore } from '../../../../shared/hobbies/hobbies.store.js'
+import { HobbyMark } from '../../../../shared/hobbies/HobbyMark.jsx'
 import { about, hero, indicator } from '../../content/journey.content.js'
 import { scrollToProgress } from '../../lib/journeyRig.js'
 import { useJourneyStore } from '../../store/journey.store.js'
@@ -11,20 +11,20 @@ import { CorridorLayout, FloorCard } from './FloorCard.jsx'
 
 export function WelcomeFloor() {
   const left = (
-    <FloorCard slot="nw" band="top">
+    <FloorCard slot="nw" band="top" tone="ink">
       <p className="journey-card-meta">PISO 05 · ESCRITORIO 3D</p>
       <h2 className="journey-card-title mt-1 text-base md:text-lg">Punto de partida</h2>
       <p className="mt-2 text-xs leading-relaxed text-fog md:text-sm">
         Todo empezó desarmando una PC a los 12 años. Baja con el scroll para recorrer cada piso junto al elevador.
       </p>
-      <p className="mt-2 border-t border-ink-700 pt-2 font-mono text-[11px] text-amber" data-hint="model">
+      <p className="mt-2 font-mono text-[11px] text-amber" data-hint="model">
         Interactivo: haz clic en la torre o el teclado del setup para cambiar las luces.
       </p>
     </FloorCard>
   )
 
   const right = (
-    <FloorCard slot="se" band="bottom">
+    <FloorCard slot="se" band="bottom" tone="ink">
       <p className="journey-card-meta">MAPA DEL DESCENSO</p>
       <h2 className="journey-card-title mt-1 text-base md:text-lg">{about.indexTitle}</h2>
       <div className="mt-2.5 grid grid-cols-2 gap-1.5">
@@ -52,9 +52,6 @@ export function WelcomeFloor() {
 }
 
 export const HeroScreen = forwardRef(function HeroScreen({ placement = 'fixed' }, ref) {
-  const collect = useHobbiesStore((state) => state.collect)
-  const found = useHobbiesStore((state) => state.found.includes('control'))
-  const [live, setLive] = useState('')
   const [narrow] = useState(() => window.matchMedia('(max-width: 767px)').matches)
   const [hole, setHole] = useState(null)
   const replayIntro = useJourneyStore((state) => state.replayIntro)
@@ -66,12 +63,6 @@ export const HeroScreen = forwardRef(function HeroScreen({ placement = 'fixed' }
     const x = ((event.clientX - rect.left) / rect.width) * 100
     const y = ((event.clientY - rect.top) / rect.height) * 100
     setHole({ x, y })
-  }
-
-  const reveal = () => {
-    if (found) return
-    collect('control')
-    setLive('Hábito encontrado: jugar videojuegos. 1 de 5.')
   }
 
   const plate = placement === 'fixed'
@@ -95,7 +86,9 @@ export const HeroScreen = forwardRef(function HeroScreen({ placement = 'fixed' }
             {hero.first}
             <span>{hero.last}</span>
           </h1>
-          <p className="copy-bubble copy-bubble-ink">{hero.lead}</p>
+          <p className="journey-hero-role">{hero.role}</p>
+          <p className="journey-hero-stack">{hero.stack}</p>
+          <p className="journey-hero-purpose">{hero.purpose}</p>
           <div className="journey-hero-actions">
             <Button onClick={() => scrollToProgress(experienceAt)}>{hero.primary}</Button>
             <Button tone="ghost" onClick={() => scrollToProgress(contactAt)}>
@@ -106,16 +99,15 @@ export const HeroScreen = forwardRef(function HeroScreen({ placement = 'fixed' }
             </button>
           </div>
         </div>
-        <button
-          type="button"
-          data-ui
+        <div
+          tabIndex={0}
           onPointerMove={peel}
-          onPointerDown={(event) => {
-            peel(event)
-            reveal()
-          }}
           onPointerLeave={() => setHole(null)}
-          aria-pressed={found}
+          onFocus={() => setHole((current) => current ?? { x: 50, y: 58 })}
+          onBlur={(event) => {
+            if (event.currentTarget.contains(event.relatedTarget)) return
+            setHole(null)
+          }}
           className="journey-hero-photo"
         >
           <img src={hiddenPhoto} alt="" className="h-full w-full object-cover" />
@@ -125,14 +117,16 @@ export const HeroScreen = forwardRef(function HeroScreen({ placement = 'fixed' }
             className="absolute inset-0 h-full w-full object-cover grayscale contrast-125"
             style={hole ? { WebkitMaskImage: `radial-gradient(circle at ${hole.x}% ${hole.y}%, transparent 16%, #000 46%)`, maskImage: `radial-gradient(circle at ${hole.x}% ${hole.y}%, transparent 16%, #000 46%)` } : undefined}
           />
-          {found ? (
-            <img src={control} alt="" className="absolute right-2 bottom-2 h-10 w-10 bg-ink-950 object-contain p-1.5" />
+          {hole ? (
+            <span
+              className="absolute z-[2]"
+              style={{ left: `${hole.x}%`, top: `${hole.y}%`, transform: 'translate(-50%, -50%)' }}
+            >
+              <HobbyMark id="control" image={control} />
+            </span>
           ) : null}
-        </button>
+        </div>
       </div>
-      <p className="sr-only" aria-live="polite">
-        {live}
-      </p>
     </div>
   )
 })

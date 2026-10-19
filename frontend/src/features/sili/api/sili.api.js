@@ -67,6 +67,7 @@ export async function postChat({ messages, summary }) {
     destination: typeof data.destination === 'string' ? data.destination : null,
     summary: typeof data.summary === 'string' ? data.summary : '',
     covered: coveredOf(data.covered),
+    gapsHint: typeof data.gapsHint === 'string' && data.gapsHint.trim() ? data.gapsHint.trim().slice(0, 180) : null,
   }
 }
 

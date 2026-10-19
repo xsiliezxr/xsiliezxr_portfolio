@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { FLOOR_Y } from '../../lib/journeyRig.js'
 import { AvatarModel } from './AvatarModel.jsx'
 
 function Thruster() {
@@ -39,14 +40,22 @@ export function ElevatorPlatform({ rig }) {
   const leftDoor = useRef(null)
   const rightDoor = useRef(null)
   const rider = useRef(null)
+  const jet = useRef(null)
 
   useFrame(() => {
     if (!group.current) return
     group.current.position.set(rig.platform.x, rig.platform.y, rig.platform.z)
     const hatch = Math.min(Math.max(rig.tube, 0), 1)
-    if (leftDoor.current) leftDoor.current.position.x = -0.24 - hatch * 0.34
-    if (rightDoor.current) rightDoor.current.position.x = 0.24 + hatch * 0.34
-    if (rider.current) rider.current.position.y = -hatch * 0.28
+    if (leftDoor.current) leftDoor.current.position.x = -0.24 - hatch * 0.42
+    if (rightDoor.current) rightDoor.current.position.x = 0.24 + hatch * 0.42
+    if (rider.current) rider.current.position.y = -hatch * 0.35
+    if (jet.current) {
+      const y = rig.platform.y
+      const falling = hatch > 0.05 && y > FLOOR_Y.secret + 1.8
+      const leavingDesk = y > -0.8 && y < FLOOR_Y.about + 0.4
+      jet.current.visible = leavingDesk || falling
+      jet.current.scale.setScalar(falling ? 0.72 : 1)
+    }
   })
 
   return (
@@ -75,7 +84,9 @@ export function ElevatorPlatform({ rig }) {
         <boxGeometry args={[0.46, 0.035, 0.52]} />
         <meshStandardMaterial color="#2a241f" emissive="#ffb000" emissiveIntensity={0.15} />
       </mesh>
-      <Thruster />
+      <group ref={jet}>
+        <Thruster />
+      </group>
       <group ref={rider}>
         <AvatarModel rig={rig} />
       </group>

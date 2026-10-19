@@ -19,8 +19,9 @@ export function ClosingWash() {
         viewBox="0 0 1440 900"
         preserveAspectRatio="xMidYMid slice"
       >
-        <circle cx="720" cy="540" r="220" fill="none" stroke="#0A0A0A" strokeWidth="2" strokeDasharray="10 8" />
-        <circle cx="720" cy="540" r="310" fill="none" stroke="#0A0A0A" strokeWidth="1.5" />
+        <circle cx="720" cy="540" r="220" fill="none" stroke="#FFB000" strokeWidth="1.2" strokeDasharray="6 10" />
+        <path d="M160 220 H520 M920 680 H1280" fill="none" stroke="#FF5B14" strokeWidth="1.4" strokeOpacity="0.7" />
+        <path d="M240 160 V420 M1180 480 V760" fill="none" stroke="#2A2826" strokeWidth="1.2" />
       </svg>
     </div>
   )
@@ -29,11 +30,11 @@ export function ClosingWash() {
 function ClosingLeft() {
   return (
     <FloorCard slot="nw" band="top" tone="ember">
-      <h2 className="journey-card-title text-base md:text-xl text-ember-500">
+      <h2 className="journey-card-title text-base md:text-xl">
         {closing.line1}
-        <span className="mt-1 block normal-case text-fog">{closing.line2}</span>
+        <span className="mt-1 block normal-case">{closing.line2}</span>
       </h2>
-      <p className="mt-2 text-xs leading-relaxed text-fog md:text-sm">{closing.status}</p>
+      <p className="mt-2 text-xs leading-relaxed md:text-sm">{closing.status}</p>
       <p className="journey-card-meta">{closing.place}</p>
     </FloorCard>
   )
@@ -42,10 +43,10 @@ function ClosingLeft() {
 function ClosingRight({ unlocked }) {
   return (
     <FloorCard slot="se" band="bottom" tone="ember">
-      <p className="text-xs leading-relaxed text-fog md:text-sm">
+      <p className="text-xs leading-relaxed md:text-sm">
         {unlocked ? closing.unlocked : `${closing.locked} ${closing.hobbies}`}
       </p>
-      <p className="mt-2 hidden text-xs text-fog-dim md:block">{closing.thanks}</p>
+      <p className="mt-2 hidden text-xs md:block">{closing.thanks}</p>
       <div className="mt-2.5 flex flex-wrap items-center gap-3">
         <a href="/contact" data-ui className="journey-card-link">
           Contacto

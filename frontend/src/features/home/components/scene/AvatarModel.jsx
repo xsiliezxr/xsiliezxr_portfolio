@@ -72,8 +72,9 @@ export function AvatarModel({ rig }) {
   const floorId = useJourneyStore((state) => state.floorId)
   const maps = useTexture(MAPS)
   const clip = useRef('')
-  const previousY = useRef(0)
+  const previousProgress = useRef(0)
   const stillFor = useRef(0)
+  const reduced = useRef(false)
   const box = useMemo(() => new Box3(), [])
   const head = useMemo(() => findHead(scene), [scene])
   const look = useRef({ yaw: 0, pitch: 0, allow: false })
@@ -111,6 +112,7 @@ export function AvatarModel({ rig }) {
       pointer.current.y = Math.min(1, Math.max(-1, ny))
     }
     const sync = () => {
+      reduced.current = reduce.matches
       const allow = fine.matches && !reduce.matches
       look.current.allow = allow
       if (allow && !bound) {
@@ -138,52 +140,80 @@ export function AvatarModel({ rig }) {
   useLayoutEffect(() => {
     const idle = actions[IDLE]
     if (!idle) return undefined
-    idle.reset().setLoop(LoopRepeat, Infinity).fadeIn(0.2).play()
+    const quiet = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    reduced.current = quiet
+    idle.reset().setLoop(LoopRepeat, Infinity)
+    if (quiet) {
+      idle.play()
+      idle.paused = true
+    } else {
+      idle.fadeIn(0.2).play()
+    }
     clip.current = IDLE
     mixer.update(0.05)
-    if (!group.current) return undefined
-    box.setFromObject(group.current)
-    const parentY = group.current.parent?.position.y ?? 0
-    group.current.position.y -= box.min.y - parentY
-    return undefined
+    useJourneyStore.getState().setAvatarReady(true)
+    if (group.current) {
+      box.setFromObject(group.current)
+      const parentY = group.current.parent?.position.y ?? 0
+      group.current.position.y -= box.min.y - parentY
+    }
+    return () => {
+      mixer.stopAllAction()
+      useJourneyStore.getState().setAvatarReady(false)
+    }
   }, [actions, box, mixer])
 
   useFrame((_, delta) => {
-    const parent = group.current?.parent
-    if (!parent) return
-    const velocity = (parent.position.y - previousY.current) / Math.max(delta, 0.016)
-    previousY.current = parent.position.y
+    const progress = rig?.progress ?? 0
+    const deltaP = progress - previousProgress.current
+    previousProgress.current = progress
+    if (reduced.current) {
+      if (clip.current !== IDLE && actions[IDLE]) {
+        actions[IDLE].reset().setLoop(LoopRepeat, Infinity).play()
+        actions[IDLE].paused = true
+        if (clip.current) actions[clip.current]?.stop()
+        clip.current = IDLE
+      }
+      return
+    }
+    const atDesk = progress >= 0.13 && progress <= 0.27
+    const leavingMonitor = progress < 0.125
     let next = IDLE
-    if (velocity < -0.35) {
+    if (atDesk || leavingMonitor) {
+      next = IDLE
+      stillFor.current = 0
+    } else if (deltaP > 0.00008) {
       next = DOWN
       stillFor.current = 0
-    } else if (velocity > 0.35) {
+    } else if (deltaP < -0.00008) {
       next = UP
       stillFor.current = 0
     } else {
       stillFor.current += delta
-      if (stillFor.current < 0.28) next = clip.current || IDLE
+      if (stillFor.current < 0.35) next = clip.current || IDLE
     }
     if (!actions[next] || next === clip.current) return
-    actions[next].reset().setLoop(LoopRepeat, Infinity).fadeIn(0.25).play()
-    actions[clip.current]?.fadeOut(0.25)
+    // Bajar (progreso +) usa flotar, subir usa nervioso; en el setup manda mirar.
+    actions[next].reset().setLoop(LoopRepeat, Infinity).fadeIn(0.22).play()
+    actions[clip.current]?.fadeOut(0.22)
     clip.current = next
   })
 
   useFrame((_, delta) => {
     if (!head) return
-    const weight = look.current.allow ? deskLook(rig?.progress ?? 0) : 0
+    const progress = rig?.progress ?? 0
+    const atDesk = progress >= 0.13 && progress <= 0.27
+    const weight = look.current.allow && atDesk ? deskLook(progress) : 0
+    if (weight < 0.001) {
+      look.current.yaw = 0
+      look.current.pitch = 0
+      return
+    }
     const targetYaw = -pointer.current.x * LOOK_YAW * weight
     const targetPitch = pointer.current.y * LOOK_PITCH * weight
     const blend = 1 - Math.exp(-delta * 7)
     look.current.yaw += (targetYaw - look.current.yaw) * blend
     look.current.pitch += (targetPitch - look.current.pitch) * blend
-    if (Math.abs(look.current.yaw) < 0.0004 && Math.abs(look.current.pitch) < 0.0004) {
-      look.current.yaw = 0
-      look.current.pitch = 0
-      return
-    }
-    // El clip escribe la cabeza cada frame; el giro se suma después y se apaga fuera del escritorio.
     euler.set(look.current.pitch, look.current.yaw, 0)
     offset.setFromEuler(euler)
     head.quaternion.multiply(offset)

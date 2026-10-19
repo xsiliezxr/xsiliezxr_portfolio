@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ErrorBoundary } from '../../../shared/components/ErrorBoundary.jsx'
+import { usePageMeta } from '../../../shared/hooks/usePageMeta.js'
 import { Navbar } from '../components/ui/Navbar.jsx'
 import { SideRail } from '../components/ui/SideRail.jsx'
 import { HobbyCounter } from '../components/ui/HobbyCounter.jsx'
@@ -16,8 +17,11 @@ import { passages } from '../content/journey.content.js'
 import { FloorIndicator } from '../components/ui/FloorIndicator.jsx'
 import { JourneyFooter } from '../components/ui/JourneyFooter.jsx'
 import { SiliPreview } from '../components/ui/SiliPreview.jsx'
+import { SiliFace } from '../components/ui/SiliFace.jsx'
+import { JourneyBoot } from '../components/ui/JourneyBoot.jsx'
 import { bindJourneyScroll, createRig, LOCKED_PROGRESS, scrollToProgress, trackDvh } from '../lib/journeyRig.js'
 import { useJourneyTimeline } from '../hooks/useJourneyTimeline.js'
+import { useJourneyStore } from '../store/journey.store.js'
 import { HeroIntro } from '../components/floors/HeroIntro.jsx'
 
 function supportsWebGL() {
@@ -58,17 +62,12 @@ function Sheet({ children }) {
 }
 
 function PassageStop({ stop }) {
-  const { variant = 'console', lines = [], code, meta, stamp } = stop
+  const { variant = 'console', lines = [] } = stop
 
   if (variant === 'editorial') {
     return (
-      <div className="w-full max-w-4xl border-l-2 border-ember-500 pl-4 md:pl-8" aria-label={lines.join(' ')}>
-        <div className="mb-3 flex flex-wrap items-center gap-3 font-mono text-xs text-ember-500">
-          <span>{code}</span>
-          {meta ? <span className="text-fog-dim">{meta}</span> : null}
-        </div>
-        <div className="h-[2px] w-full origin-left bg-ember-500" data-pass-sweep />
-        <div className="mt-4 flex flex-col gap-2.5" aria-hidden="true">
+      <div className="w-full max-w-4xl" aria-label={lines.join(' ')}>
+        <div className="flex flex-col gap-2.5" aria-hidden="true">
           {lines.map((line, index) => (
             <div key={line} className="overflow-hidden py-1">
               <p
@@ -88,21 +87,7 @@ function PassageStop({ stop }) {
 
   if (variant === 'led') {
     return (
-      <div
-        className="w-full max-w-4xl border border-ink-700 bg-ink-900 p-4 md:p-7"
-        style={{
-          backgroundImage: 'radial-gradient(rgba(255, 176, 0, 0.16) 1px, transparent 1.2px)',
-          backgroundSize: '8px 8px',
-        }}
-        aria-label={lines.join(' ')}
-      >
-        <div className="mb-4 flex items-center justify-between border-b border-ink-700 pb-2.5 font-mono text-xs text-amber">
-          <span>{code}</span>
-          <span className="inline-flex items-center gap-2">
-            <span className="h-2 w-2 bg-ember-500" />
-            MATRIZ ACTIVA
-          </span>
-        </div>
+      <div className="w-full max-w-4xl" aria-label={lines.join(' ')}>
         <div className="flex flex-col gap-3" aria-hidden="true">
           {lines.map((line, lineIndex) => (
             <p key={line} className="m-0 flex flex-wrap gap-2 font-mono text-[clamp(1.05rem,2.3vw,1.7rem)] font-bold uppercase">
@@ -110,11 +95,7 @@ function PassageStop({ stop }) {
                 <span
                   key={`${lineIndex}-${wordIndex}`}
                   data-pass-led
-                  className={`inline-block border px-2 py-0.5 ${
-                    lineIndex === 0
-                      ? 'border-amber/50 bg-ink-950 text-amber'
-                      : 'border-ember-500/60 bg-ink-950 text-ember-500'
-                  }`}
+                  className={`inline-block ${lineIndex === 0 ? 'text-amber' : 'text-ember-500'}`}
                 >
                   {word}
                 </span>
@@ -128,23 +109,14 @@ function PassageStop({ stop }) {
 
   if (variant === 'comic') {
     return (
-      <div
-        data-pass-comic
-        className="comic-panel halftone w-full max-w-3xl bg-paper p-5 text-paper-ink md:p-8"
-        style={{ transform: 'rotate(-1.2deg)' }}
-        aria-label={lines.join(' ')}
-      >
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b-2 border-ink-950 pb-2 font-mono text-xs font-bold text-ink-950">
-          <span>{code}</span>
-          {stamp ? <span className="bg-ember-500 px-2 py-0.5 text-ink-950">{stamp}</span> : null}
-        </div>
+      <div data-pass-comic className="w-full max-w-3xl" aria-label={lines.join(' ')}>
         <div className="flex flex-col gap-2" aria-hidden="true">
           {lines.map((line, index) => (
             <p
               key={line}
               data-pass-hit
               className={`m-0 font-display text-[clamp(1.35rem,3.2vw,2.5rem)] font-black uppercase leading-[1.05] tracking-tight ${
-                index === 0 ? 'text-ink-950' : 'text-ember-600'
+                index === 0 ? 'text-fog' : 'text-ember-500'
               }`}
             >
               {line}
@@ -156,8 +128,7 @@ function PassageStop({ stop }) {
   }
 
   return (
-    <div className="journey-pass-copy border border-ink-700 bg-ink-900/95 p-4 md:p-6" aria-label={lines.join(' ')}>
-      {code ? <p className="mb-2 font-mono text-xs text-ember-500">{code}</p> : null}
+    <div className="journey-pass-copy" aria-label={lines.join(' ')}>
       <p className="journey-pass-prompt" aria-hidden="true">&gt;</p>
       <p className="journey-pass-lines" aria-hidden="true">
         {lines.map((line) => (
@@ -171,6 +142,16 @@ function PassageStop({ stop }) {
         ))}
         <span className="journey-caret" aria-hidden="true" />
       </p>
+    </div>
+  )
+}
+
+function SiliPoster() {
+  const ready = useJourneyStore((state) => state.avatarReady)
+  if (ready) return null
+  return (
+    <div className="sili-poster" aria-hidden="true">
+      <SiliFace />
     </div>
   )
 }
@@ -217,6 +198,7 @@ function Journey() {
   const sceneRef = useRef(null)
   const [metrics, setMetrics] = useState(null)
   const unlocked = useUnlocked()
+  const ready = useJourneyStore((state) => state.ready)
 
   useJourneyTimeline({
     trackRef,
@@ -230,25 +212,46 @@ function Journey() {
   })
 
   useEffect(() => {
+    const store = useJourneyStore.getState()
+    store.setFloor('welcome')
+    store.setChapter('hero')
+    store.setCornerOpen(null)
+    store.setAvatarReady(false)
+    store.setReady(false)
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+    const node = scrollerRef.current
+    if (node) node.scrollTop = 0
+    return () => {
+      store.setReady(false)
+      store.setAvatarReady(false)
+      store.setCornerOpen(null)
+    }
+  }, [])
+
+  useEffect(() => {
     const node = scrollerRef.current
     if (!node) return undefined
     return bindJourneyScroll(node)
   }, [])
 
   useEffect(() => {
-    if (!metrics) return undefined
+    if (!metrics || !ready) return undefined
     const at = Number(new URLSearchParams(window.location.search).get('at'))
     if (!Number.isFinite(at) || at <= 0 || at > 1) return undefined
     const timer = window.setTimeout(() => scrollToProgress(at, 'auto'), 60)
     return () => window.clearTimeout(timer)
-  }, [metrics])
+  }, [metrics, ready])
 
   return (
     <div id="journey-scroll" ref={scrollerRef} data-journey-cap={unlocked ? '1' : String(LOCKED_PROGRESS)}>
+      <JourneyBoot />
       <div ref={trackRef} className="relative" style={{ height: `${trackDvh(unlocked)}dvh` }}>
         <a href="#contenido" className="absolute -left-[999px] top-4 z-50 bg-ember-500 px-3 py-2 text-sm text-ink-950 focus:left-4">
           Saltar al contenido
         </a>
+        <div className="journey-stage">
         <Layer id="about" layer="atmo" panels={panels} className="journey-atmo journey-atmo-about">
           <AboutWash />
         </Layer>
@@ -274,9 +277,10 @@ function Journey() {
             plateRef={heroRef}
           />
         </div>
+        <SiliPoster />
         <HeroScreen ref={heroRef} />
         <HeroIntro />
-        {passages.map((stop) => (
+        {passages.filter((stop) => stop.id !== 'secret').map((stop) => (
           <Layer
             key={stop.id}
             id={stop.id}
@@ -309,6 +313,7 @@ function Journey() {
         <Layer id="secret" layer="panel" panels={panels} className="journey-floor journey-secret">
           <SecretRoom />
         </Layer>
+        </div>
       </div>
       <JourneyFooter />
       <Chrome />
@@ -317,6 +322,7 @@ function Journey() {
 }
 
 export function HomePage() {
+  usePageMeta('/')
   const [webgl] = useState(supportsWebGL)
   if (!webgl) return <StaticHome />
   return (

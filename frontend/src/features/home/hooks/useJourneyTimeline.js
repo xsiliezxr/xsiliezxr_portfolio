@@ -28,8 +28,8 @@ const BEATS = {
   welcome: {
     pass: null,
     passOut: null,
-    room: 5.2,
-    roomOut: 12.1,
+    room: 8.4,
+    roomOut: 11.6,
     atmo: null,
     atmoOut: null,
   },
@@ -39,7 +39,7 @@ const BEATS = {
   experience: roomBeat(3, { phrase: true }),
   tools: roomBeat(4),
   closing: roomBeat(5, { phrase: true }),
-  secret: roomBeat(6, { phrase: true, last: true, lead: 0.04, type: 0.26 }),
+  secret: roomBeat(6, { last: true }),
 }
 
 function layerOf(panels, layer, id) {
@@ -118,6 +118,7 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
       applyPose(rig, frame.shot)
       rig.platform.y = frame.platformY
       rig.setupVisible = frame.setupVisible
+      rig.zoomOut = frame.zoomOut
       rig.tube = frame.tube
 
       const raw = floorFromProgress(journey)
@@ -130,9 +131,15 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
       }
 
       Object.values(panels.current).forEach((el) => {
-        if (!el || el.dataset.layer !== 'panel') return
+        if (!el) return
         const id = el.dataset.floor
         const beat = BEATS[id]
+        if (el.dataset.layer === 'atmo') {
+          const open = beat ? hit(journey, beat.atmo ?? beat.room, beat.atmoOut ?? beat.roomOut) : false
+          el.dataset.live = open ? '1' : '0'
+          return
+        }
+        if (el.dataset.layer !== 'panel') return
         const open = beat ? hit(journey, beat.room, beat.roomOut) : false
         el.dataset.live = open ? '1' : '0'
         el.inert = !open
@@ -212,11 +219,11 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
       }, leave)
     }
 
-    const wash = (el, enter, leave) => {
+    const wash = (el, enter, leave, drift = true) => {
       if (!el) return
       gsap.set(el, { opacity: 0 })
       timeline.to(el, { opacity: 1, duration: span, ease: 'none', immediateRender: false }, enter)
-      if (!reduce) {
+      if (!reduce && drift) {
         const back = el.querySelector('[data-depth="back"]')
         const mid = el.querySelector('[data-depth="mid"]')
         const duration = Math.max((leave ?? 100) - enter, 2)
@@ -362,12 +369,55 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
       else if (pass) gsap.set(pass, { opacity: 0, y: 0 })
       rideCards(room, beat.room, beat.roomOut)
       if (beat.atmo != null) {
-        if (id === 'secret') wash(court, beat.atmo, beat.atmoOut)
+        if (id === 'secret') wash(court, beat.atmo, beat.atmoOut, false)
         else wash(layerOf(panels, 'atmo', id), beat.atmo, beat.atmoOut)
       }
     })
 
     if (!unlocked && court) gsap.set(court, { opacity: 0 })
+
+    const strips = [...(root?.querySelectorAll('[data-film-strip]') ?? [])]
+    if (strips.length) {
+      const beat = BEATS.about
+      const filmEnd = beat.atmoOut ?? beat.roomOut
+      const span = Math.max(0.35, filmEnd - beat.atmo)
+      strips.forEach((strip, index) => {
+        const shift = Number(strip.dataset.shift) || (index % 2 === 0 ? 1 : -1)
+        const rotate = Number(strip.dataset.rotate) || 0
+        const origin = strip.dataset.origin || (shift > 0 ? 'left center' : 'right center')
+        const unroll = Math.min(0.42, span * 0.38)
+        const slide = Math.max(span - unroll * 0.35, 0.45)
+        const travel = () => {
+          const run = Math.max(strip.scrollWidth - window.innerWidth * 0.55, window.innerWidth * 0.8)
+          return shift > 0 ? -run : run * 0.35
+        }
+        if (reduce) {
+          gsap.set(strip, { x: 0, scaleX: 1, opacity: 1, rotation, transformOrigin: origin })
+          return
+        }
+        gsap.set(strip, {
+          x: shift > 0 ? window.innerWidth * 0.12 : -window.innerWidth * 0.08,
+          scaleX: 0.22,
+          opacity: 0.55,
+          rotation: rotate,
+          transformOrigin: origin,
+        })
+        const start = beat.atmo + index * (span * 0.08)
+        timeline.to(strip, {
+          scaleX: 1,
+          opacity: 1,
+          duration: unroll,
+          ease: 'none',
+          immediateRender: false,
+        }, start)
+        timeline.to(strip, {
+          x: travel,
+          duration: slide,
+          ease: 'none',
+          immediateRender: false,
+        }, start + unroll * 0.25)
+      })
+    }
 
     const studyStart = BEATS.studies.atmo + 0.4
     const drawStroke = (selector, at, dur, fallbackLen = 520) => {
@@ -445,7 +495,167 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
 
     typeChars('dev', BEATS.experience.room + 0.15, 0.08)
 
-    apply(timeline.progress() || 0)
+    const streamLines = (selector, enter, step) => {
+      const lines = [...(root?.querySelectorAll(selector) ?? [])]
+      lines.forEach((el, index) => {
+        gsap.set(el, { opacity: reduce ? 1 : 0, y: reduce ? 0 : 8 })
+        if (reduce) return
+        timeline.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: 0.28,
+          ease: 'none',
+          immediateRender: false,
+        }, enter + index * step)
+      })
+    }
+
+    streamLines('[data-floor="experience"] [data-log]', BEATS.experience.room + 1.25, 0.32)
+
+    const ide = root?.querySelector('.vscode-mini')
+    const ideChars = [...(ide?.querySelectorAll('[data-ide-char]') ?? [])]
+    const idePanes = [...(ide?.querySelectorAll('[data-ide-pane]') ?? [])]
+    const ideTabs = [...(ide?.querySelectorAll('[data-ide-tab]') ?? [])]
+    const ideFiles = [...(ide?.querySelectorAll('[data-ide-file]') ?? [])]
+    const ideChat = ide?.querySelector('[data-copilot="chat"]')
+    const ideHint = ide?.querySelector('[data-ide-hint]')
+    const ideLang = ide?.querySelector('[data-ide-lang]')
+    const ideStatus = ide?.querySelector('[data-ide-status]')
+    const ideCursor = ide?.querySelector('[data-ide-cursor]')
+    const codeStart = BEATS.tools.room + 0.2
+    const codeEnd = (BEATS.tools.roomOut ?? BEATS.tools.room + 10) - 0.8
+    const codeSpan = Math.max(codeEnd - codeStart, 6)
+    const paneIds = idePanes.map((pane) => pane.dataset.idePane)
+    const hints = {
+      'vision.py': 'OpenCV, YOLO y Python leen el frame en tiempo real.',
+      'graphics.js': 'Three.js arma el rig de cámara del recorrido.',
+      'server.js': 'Express escucha el puerto y sirve la API.',
+    }
+    const langs = {
+      'vision.py': 'Python',
+      'graphics.js': 'JavaScript',
+      'server.js': 'JavaScript',
+    }
+
+    const showPane = (id) => {
+      idePanes.forEach((pane) => {
+        const on = pane.dataset.idePane === id
+        pane.dataset.active = on ? '1' : '0'
+        pane.hidden = !on
+      })
+      ideTabs.forEach((tab) => {
+        tab.dataset.active = tab.dataset.ideTab === id ? '1' : '0'
+      })
+      ideFiles.forEach((file) => {
+        file.dataset.active = file.dataset.ideFile === id ? '1' : '0'
+      })
+      if (ideHint && hints[id]) ideHint.textContent = hints[id]
+      if (ideLang && langs[id]) ideLang.textContent = langs[id]
+      if (ideStatus) ideStatus.textContent = `${id} · typing`
+    }
+
+    const parkCaret = (pane, lineNode, col) => {
+      const caret = pane?.querySelector('[data-ide-caret]')
+      if (!caret || !lineNode) return
+      lineNode.appendChild(caret)
+      if (ideCursor) {
+        ideCursor.textContent = `Ln ${lineNode.dataset.ideLine || 1}, Col ${col}`
+      }
+    }
+
+    if (ide) {
+      if (reduce) {
+        gsap.set(ideChars, { opacity: 1 })
+        if (ideChat) gsap.set(ideChat, { opacity: 1, y: 0 })
+        showPane(paneIds[paneIds.length - 1] || paneIds[0])
+        if (ideStatus) ideStatus.textContent = `${paneIds.at(-1) || paneIds[0]} · ready`
+      } else {
+        gsap.set(ideChars, { opacity: 0 })
+        if (ideChat) gsap.set(ideChat, { opacity: 0, y: 12 })
+        showPane(paneIds[0])
+
+        const sequence = []
+        paneIds.forEach((id) => {
+          const pane = ide.querySelector(`[data-ide-pane="${id}"]`)
+          const lines = [...(pane?.querySelectorAll('[data-ide-line]') ?? [])]
+          lines.forEach((lineNode) => {
+            const chars = [...lineNode.querySelectorAll('[data-ide-char]')]
+            chars.forEach((node, colIndex) => {
+              sequence.push({ id, pane, lineNode, node, col: colIndex + 1 })
+            })
+          })
+        })
+
+        const total = sequence.length || 1
+        const step = codeSpan / total
+        let activeId = paneIds[0]
+
+        sequence.forEach((item, index) => {
+          const at = codeStart + index * step
+          if (item.id !== activeId) {
+            const prevId = activeId
+            activeId = item.id
+            timeline.to({}, {
+              duration: 0.001,
+              ease: 'none',
+              immediateRender: false,
+              onStart: () => showPane(item.id),
+              onReverseComplete: () => showPane(prevId),
+            }, at)
+          }
+          timeline.to(item.node, {
+            opacity: 1,
+            duration: Math.max(step * 0.9, 0.04),
+            ease: 'none',
+            immediateRender: false,
+            onStart: () => parkCaret(item.pane, item.lineNode, item.col),
+            onReverseComplete: () => {
+              const prev = sequence[index - 1]
+              if (prev) parkCaret(prev.pane, prev.lineNode, prev.col)
+            },
+          }, at)
+        })
+
+        if (ideChat) {
+          timeline.to(ideChat, {
+            opacity: 1,
+            y: 0,
+            duration: Math.min(step * 8, 0.7),
+            ease: 'none',
+            immediateRender: false,
+          }, codeStart + codeSpan * 0.55)
+        }
+
+        timeline.to({}, {
+          duration: 0.001,
+          ease: 'none',
+          immediateRender: false,
+          onStart: () => {
+            if (ideStatus) ideStatus.textContent = `${paneIds.at(-1) || paneIds[0]} · ready`
+          },
+          onReverseComplete: () => {
+            if (ideStatus) ideStatus.textContent = `${paneIds.at(-1) || paneIds[0]} · typing`
+          },
+        }, codeEnd)
+      }
+    }
+
+    const scroller = scrollerRef.current
+    const linked = Number(new URLSearchParams(window.location.search).get('at'))
+    const startAt = Number.isFinite(linked) && linked > 0 && linked <= 1 ? linked : 0
+    if (scroller && startAt <= 0) scroller.scrollTop = 0
     ScrollTrigger.refresh()
+    const bootProgress = startAt > 0 ? startAt : 0
+    apply(bootProgress)
+    let bootFloor = floorFromProgress(bootProgress)
+    if (bootFloor === 'secret' && !unlocked) bootFloor = 'closing'
+    const store = useJourneyStore.getState()
+    store.setFloor(bootFloor)
+    store.setChapter(chapterFromProgress(bootProgress, unlocked))
+    store.setReady(true)
+
+    return () => {
+      useJourneyStore.getState().setReady(false)
+    }
   }, { dependencies: [metrics, unlocked], scope: trackRef, revertOnUpdate: true })
 }

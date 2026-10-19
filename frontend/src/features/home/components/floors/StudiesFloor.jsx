@@ -1,3 +1,5 @@
+import learn from '../../../../assets/images/hobbies/learn.webp'
+import { HobbyMark } from '../../../../shared/hobbies/HobbyMark.jsx'
 import { studies } from '../../content/journey.content.js'
 import { CorridorLayout, FloorCard } from './FloorCard.jsx'
 
@@ -198,7 +200,7 @@ function StudiesLeft() {
       <p className="mt-2 text-xs leading-relaxed md:text-sm">{studies.leftBody}</p>
       <p className="mt-2 hidden font-mono text-[11px] text-ember-800 md:block">{studies.leftNote}</p>
       <a href="/certificaciones" data-ui className="journey-card-link">
-        Ver los diplomas
+        Ver reconocimientos
       </a>
     </FloorCard>
   )
@@ -218,10 +220,13 @@ function StudiesRight() {
 }
 
 export function StudiesFloor({ layout = 'panel' }) {
+  const mark = <HobbyMark id="cleancode" image={learn} className="hobby-mark-high" />
+
   if (layout === 'static') {
     return (
       <div className="journey-sheet journey-sheet-studies relative text-paper-ink">
         <StudiesField />
+        {mark}
         <CorridorLayout layout="static" left={<StudiesLeft />} right={<StudiesRight />} />
       </div>
     )
@@ -229,6 +234,7 @@ export function StudiesFloor({ layout = 'panel' }) {
 
   return (
     <div className="journey-panel">
+      {mark}
       <CorridorLayout left={<StudiesLeft />} right={<StudiesRight />} />
     </div>
   )

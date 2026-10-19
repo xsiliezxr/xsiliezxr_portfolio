@@ -1,33 +1,93 @@
+import { useState } from 'react'
 import consoleShot from '../../../../assets/images/console.png'
+import basket from '../../../../assets/images/hobbies/basket.webp'
+import { HobbyMark } from '../../../../shared/hobbies/HobbyMark.jsx'
 import { experience } from '../../content/journey.content.js'
 import { CorridorLayout, FloorCard } from './FloorCard.jsx'
 
-function Typed({ text, token }) {
-  return Array.from(text).map((char, index) => (
-    <span key={`${token}-${index}`} data-type={token}>
-      {char === ' ' ? '\u00a0' : char}
-    </span>
-  ))
+const BOOT_LINES = [
+  { kind: 'status', text: 'compiled' },
+  { kind: 'status', text: 'ready' },
+  { kind: 'status', text: 'listening' },
+  { kind: 'plain', text: 'trayectoria' },
+  { kind: 'plain', text: 'hackathones' },
+  { kind: 'plain', text: 'combex' },
+]
+
+function replyFor(raw) {
+  const cmd = raw.trim().toLowerCase()
+  if (!cmd) return null
+  if (cmd === 'help') return experience.help
+  if (cmd === 'clear') return '__clear__'
+  return experience.replies[cmd] || experience.unknown
 }
 
 export function ExperienceWash() {
+  const [input, setInput] = useState('')
+  const [lines, setLines] = useState(BOOT_LINES)
+
+  const run = (event) => {
+    event.preventDefault()
+    const value = input.trim()
+    if (!value) return
+    const answer = replyFor(value)
+    setInput('')
+    if (answer === '__clear__') {
+      setLines([])
+      return
+    }
+    setLines((current) => [
+      ...current,
+      { kind: 'cmd', text: value },
+      { kind: 'out', text: answer },
+    ])
+  }
+
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-ink-950" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-ink-950">
       <div
         data-depth="back"
-        className="journey-atmo-photo opacity-45"
+        className="journey-atmo-photo journey-atmo-photo-dim"
         style={{ '--sheet-image': `url("${consoleShot}")` }}
+        aria-hidden="true"
       />
-      <div
-        data-depth="mid"
-        className="terminal-field absolute inset-x-[6%] top-[14%] bottom-[16%] hidden border border-ink-700/80 bg-ink-950/65 shadow-[0_24px_70px_rgba(0,0,0,0.75)] md:block"
-        style={{
-          transform: 'perspective(1100px) rotateX(6deg) rotateY(-4deg)',
-        }}
-      >
-        <div className="flex items-center justify-between border-b border-ink-700 bg-ink-900/90 px-4 py-2 font-mono text-[11px] text-fog-dim">
-          <span>angel@kinal:~/trayectoria</span>
-          <span className="text-amber">bash · 80×24</span>
+      <div className="journey-boot" data-depth="mid" data-ui aria-label="Terminal interactiva">
+        <header className="journey-boot-bar">
+          <span>angel@kinal:~</span>
+          <span>bash · interactivo</span>
+        </header>
+        <div className="journey-boot-body">
+          <p className="journey-log">
+            <span className="journey-term-prompt">{experience.prompt} </span>
+            <span>{experience.command}</span>
+            <span className="journey-caret" aria-hidden="true" />
+          </p>
+          {lines.map((line, index) => (
+            <p key={`${line.kind}-${index}-${line.text.slice(0, 12)}`} data-log className="journey-stream journey-log">
+              {line.kind === 'status' ? <span className="journey-log-status">{`> ${line.text}`}</span> : null}
+              {line.kind === 'cmd' ? (
+                <>
+                  <span className="journey-term-prompt">{experience.prompt} </span>
+                  {line.text}
+                </>
+              ) : null}
+              {line.kind === 'plain' || line.kind === 'out' ? line.text : null}
+            </p>
+          ))}
+          <form className="journey-term-form" onSubmit={run} onPointerDown={(event) => event.stopPropagation()}>
+            <label className="journey-term-prompt" htmlFor="journey-term-input">
+              {experience.prompt}
+            </label>
+            <input
+              id="journey-term-input"
+              data-ui
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              placeholder="help"
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </form>
         </div>
       </div>
     </div>
@@ -35,57 +95,55 @@ export function ExperienceWash() {
 }
 
 function ExperienceLeft() {
+  const sales = experience.timeline[0]
+  const hack = experience.timeline[1]
+
   return (
-    <FloorCard slot="nw" band="top">
-      <p className="journey-card-meta">{experience.prompt}</p>
-      <p className="journey-card-command mt-1">
-        <span className="text-amber">$ </span>
-        <Typed text={experience.command} token="dev" />
-        <span className="journey-caret" aria-hidden="true" />
-      </p>
-      <h2 className="journey-card-title mt-2 text-base md:text-lg">{experience.title}</h2>
-      <p className="mt-2 text-xs leading-relaxed text-fog md:text-sm">{experience.body}</p>
-      <p className="mt-2 hidden text-xs leading-relaxed text-fog-dim md:block">
-        Desde los 15 trabajé como asesor de ventas para armar mi setup. Hackathones en UVG, UFG, Cursor Buildathon en El Salvador y Hack@Latam.
-      </p>
+    <FloorCard slot="nw" band="top" tone="term">
+      <h2 className="journey-card-title">{experience.title}</h2>
+      <p>{experience.body}</p>
+      <p>{sales.title}, {sales.date}. {sales.detail}</p>
+      <p>{hack.title}. {hack.detail} Cursor Buildathon en El Salvador y Hack@Latam.</p>
     </FloorCard>
   )
 }
 
 function ExperienceRight() {
+  const combex = experience.timeline[4]
+  const community = experience.timeline[6]
+
   return (
-    <FloorCard slot="se" band="bottom">
-      <p className="text-xs leading-relaxed text-fog md:text-sm">
-        400 horas de prácticas en Combex aplicando software a logística aérea. En The502Project, la Cursor Hackathon reunió a 140 personas.
-      </p>
-      <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-        <a href="/projects" data-ui className="journey-card-link">
-          Ver proyectos
-        </a>
-        <a href="/experience" data-ui className="journey-card-link-quiet">
-          Ver trayectoria
-        </a>
-        <a href="/gallery?frame=3" data-ui className="journey-card-link-quiet hidden md:inline-block">
-          Hackathon UVG
-        </a>
-      </div>
+    <FloorCard slot="se" band="bottom" tone="term">
+      <h2 className="journey-card-title">{combex.title}</h2>
+      <p>{combex.date}. {combex.detail}</p>
+      <p>{community.title}. {community.detail}</p>
+      <a href="/history#about-path" data-ui className="journey-card-link">
+        Arco en Historia
+      </a>
+      <a href="/experiencia" data-ui className="journey-card-link-quiet">
+        Registro completo
+      </a>
     </FloorCard>
   )
 }
 
 export function ExperienceTerminal({ layout = 'panel' }) {
+  const mark = <HobbyMark id="basketball" image={basket} className="hobby-mark-low" />
+
   if (layout === 'static') {
     return (
       <div className="journey-sheet journey-sheet-experience relative text-fog" style={{ '--sheet-image': `url("${consoleShot}")` }}>
         <ExperienceWash />
-        <CorridorLayout layout="static" left={<ExperienceLeft />} right={<ExperienceRight />} />
+        {mark}
+        <CorridorLayout layout="static" className="journey-side-fit" left={<ExperienceLeft />} right={<ExperienceRight />} />
       </div>
     )
   }
 
   return (
     <div className="journey-panel">
-      <CorridorLayout left={<ExperienceLeft />} right={<ExperienceRight />} />
+      {mark}
+      <CorridorLayout className="journey-side-fit" left={<ExperienceLeft />} right={<ExperienceRight />} />
     </div>
   )
 }

@@ -3,7 +3,9 @@ import { floorAnchor } from '../lib/journeyRig.js'
 export const hero = {
   first: 'Angel',
   last: 'Siliezar',
-  lead: 'Desarrollador Full Stack enfocado en arquitectura web, sistemas escalables e interacciones 3D.',
+  role: 'Desarrollador Full Stack',
+  stack: 'Armo aplicaciones web y microservicios de punta a punta.',
+  purpose: 'Me engancha pasar de un problema real a software limpio, claro y que aguante.',
   primary: 'Ver experiencia',
   secondary: 'Contacto',
   photoAlt: 'Angel Siliezar',
@@ -51,7 +53,7 @@ export const about = {
 export const studies = {
   leftTitle: 'Bases y disciplina',
   leftBody: 'Mi formación comenzó en Fe y Alegría: esfuerzo, resiliencia y compañerismo. Ahí nació la curiosidad por abrir máquinas.',
-  leftNote: 'Los diplomas completos están en certificados. Las fotos de esa etapa, en la galería.',
+  leftNote: 'Los diplomas completos viven en reconocimientos. Las fotos de esa etapa, en la galería.',
   rightTitle: 'Especialización y futuro',
   rightBody: 'Hoy soy técnico en Kinal, perfil Full Stack: React, Node.js y bases de datos relacionales y no relacionales.',
   rightNote: 'A futuro: Ingeniería en Sistemas o Ciencias de la Computación, y más certificaciones de industria.',
@@ -59,7 +61,7 @@ export const studies = {
 
 export const experience = {
   title: 'Trayectoria',
-  body: 'Hechos públicos: trabajo, hackathones y los sistemas que armé en equipo.',
+  body: 'Del aula al entregable: hackathones, prácticas y sistemas en equipo. El arco está en Historia; el detalle, en Experiencia.',
   command: 'pnpm run dev',
   timeline: [
     {
@@ -106,7 +108,7 @@ export const experience = {
   unknown: 'Ese comando no existe. Escribe help.',
   help: 'Comandos: trayectoria, proyectos, hackathones, contacto, clear.',
   replies: {
-    trayectoria: 'Ventas desde los 15, hackathones en UVG y UFG, Buildathon en El Salvador, Hack@Latam, comunidad The502Project y 400 horas de prácticas en Combex. El relato completo está en Historia.',
+    trayectoria: 'De Kinal al entregable: UVG, Expokinal, Buildathon, Combex y Hack@Latam. El arco está en Historia; el detalle filtrable, en Experiencia.',
     proyectos: 'AI Sentinel, Gestión Restaurantes y Sistema Bancario son los tres sistemas de equipo. El archivo completo está en Proyectos.',
     hackathones: 'UVG, UFG, Cursor Buildathon en El Salvador y Hack@Latam. Prototipado rápido y trabajo en equipo con poco tiempo.',
     contacto: 'Último año en Kinal, Perito en Desarrollo de Software. Busco el primer rol formal. Baja al piso de contacto.',
@@ -123,10 +125,14 @@ export const tools = {
       level: 'En proyectos',
       summary: 'OpenCV, YOLO y Python para leer el mundo físico en tiempo real.',
       code: [
+        'from sentinel.vision import YoloService',
+        '',
         'detector = YoloService(weights="sentinel.pt")',
         'frame = camera.read()',
         'boxes = detector.find(frame)',
-        'ar.draw(boxes)',
+        'for box in boxes:',
+        '    ar.draw(box)',
+        '    track.push(box.center)',
       ],
     },
     {
@@ -135,9 +141,13 @@ export const tools = {
       level: 'En proyectos',
       summary: 'Three.js en este portafolio y JMonkeyEngine en el render de AR Java.',
       code: [
+        'import { createJourneyRig } from "./rig"',
+        '',
         'const rig = createJourneyRig()',
-        'camera.position.set(rig.pos.x, rig.pos.y, rig.pos.z)',
-        'camera.lookAt(rig.target.x, rig.target.y, rig.target.z)',
+        'camera.position.copy(rig.pos)',
+        'camera.lookAt(rig.target)',
+        'platform.position.y = rig.lift',
+        'controls.update(delta)',
       ],
     },
     {
@@ -146,9 +156,15 @@ export const tools = {
       level: 'Uso diario',
       summary: 'React, Node, Express y bases relacionales y no relacionales. Incluye un SaaS de restaurantes.',
       code: [
+        'import express from "express"',
+        'import { ordersRouter } from "./orders"',
+        '',
         'const app = express()',
+        'app.use(express.json())',
         'app.use("/api/orders", ordersRouter)',
-        'app.listen(port)',
+        'app.listen(port, () => {',
+        '  console.log(`ready :${port}`)',
+        '})',
       ],
     },
     {
@@ -174,7 +190,7 @@ export const closing = {
   line2: 'lo puedes programar',
   thanks: 'Gracias por el tiempo de bajar hasta aquí.',
   status: 'Último año en Kinal, Perito en Desarrollo de Software. Busco mi primer rol formal, Full Stack.',
-  place: 'Ciudad de Guatemala, UTC-6',
+  place: 'Ciudad de Guatemala',
   hobbies: 'Si encuentras los 5 hobbies, se abre una sección secreta.',
   locked: 'La compuerta del suelo sigue cerrada. El piso -1 está bloqueado.',
   unlocked: 'La base se abre. El avatar entra por el tubo, como si el suelo fuera un conducto.',
@@ -184,22 +200,20 @@ export const closing = {
 }
 
 export const secret = {
-  title: 'Premios',
+  title: 'Recompensas',
   kicker: 'Sala secreta',
   message: 'Si llegaste hasta aquí, o te aburriste mucho, o nos vamos a llevar bien. Esto no va en el CV.',
   playlist: 'Loops para codear, beats de cancha y soundtrack de bosses. Prioridades.',
   setup: 'Empezó desarmando una PC a los 12. Hoy tiene pantallas de verdad y la misma manía de abrir las cosas para ver qué hay adentro.',
   fact: 'Cumplo años el mismo día que Kobe Bryant. Su mentalidad me pegó duro, en la cancha y en el código. Quería representar a Guatemala. La beca en Leones se cortó por temas personales, pero la cancha de colonia sigue. Años después apareció un tema con los riñones: hay que cuidar el ritmo.',
   closing: 'Si leíste hasta acá: curiosidad y disciplina. O aburrimiento. Prefiero pensar que lo primero.',
-  reward: 'Si todavía no hay recompensa publicada, escríbeme directo y la coordinamos.',
+  reward: 'Recompensas próximamente. Por ahora, escríbeme por WhatsApp si quieres coordinar algo.',
 }
 
 export const passages = [
   {
     id: 'experience',
     variant: 'editorial',
-    code: 'TELEMETRÍA // PISO 02 · TRAYECTORIA',
-    meta: '14.6349° N · 90.5069° W · GT / SV',
     lines: [
       'Hechos públicos: trabajo y hackathones.',
       'Los sistemas los armé en equipo.',
@@ -208,7 +222,6 @@ export const passages = [
   {
     id: 'closing',
     variant: 'led',
-    code: 'PANEL MATRICIAL // PISO 00 · CIERRE',
     lines: [
       'Si lo puedes imaginar, lo puedes programar.',
       'Último año en Kinal. Busco el primer rol.',
@@ -217,8 +230,6 @@ export const passages = [
   {
     id: 'secret',
     variant: 'comic',
-    code: 'COMPUERTA ABIERTA // NIVEL -1 · CANCHA',
-    stamp: '5 / 5 HOBBIES',
     lines: [
       'La compuerta cede bajo la plataforma.',
       'Bajas directo a la cancha secreta.',

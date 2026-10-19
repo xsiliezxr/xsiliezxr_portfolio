@@ -44,6 +44,9 @@ export function SetupModel({ rig }) {
   )
 
   useFrame((state) => {
+    const plate = Math.min(Math.max(rig?.setupVisible ?? 0, 0), 1)
+    screenMat.color.setScalar(1 - plate)
+    screenMat.emissiveIntensity = 0.42 * (1 - plate)
     if (spectrum) color.setHSL((state.clock.elapsedTime * 0.07) % 1, 0.9, 0.55)
     else color.set(rgbColor)
     const power = lightsOn ? 1 : 0

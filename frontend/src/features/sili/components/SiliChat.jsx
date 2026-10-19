@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import cap from '../../../assets/images/hobbies/cap.webp'
+import { HobbyMark } from '../../../shared/hobbies/HobbyMark.jsx'
 import { SILI_MAX_CHARS } from '../api/sili.api.js'
 import { useSiliStore } from '../store/sili.store.js'
 
@@ -40,20 +42,23 @@ export function SiliChat() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex shrink-0 items-center justify-between gap-3 border-b-2 border-ember-500 pb-2">
-        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-fog-dim">
-          <span className="halftone mr-2 inline-block h-2 w-6 align-middle" aria-hidden="true" />
-          Sil
-        </p>
-        <button
-          type="button"
-          data-ui
-          disabled={!canClear || busy}
-          onClick={clear}
-          className="shrink-0 border border-ink-700 px-2 py-1 font-mono text-[11px] text-fog-dim disabled:opacity-40"
-        >
-          Vaciar conversación
-        </button>
+      <div className="sili-preview mb-3">
+        <p className="sili-preview-name">Sil</p>
+        <p className="sili-preview-line">Pregúntame por el portafolio.</p>
+      </div>
+      <div className="flex shrink-0 items-center justify-end gap-2 border-b border-ink-700 pb-2">
+        <div className="flex items-center gap-2">
+          <HobbyMark id="cap" image={cap} />
+          <button
+            type="button"
+            data-ui
+            disabled={!canClear || busy}
+            onClick={clear}
+            className="shrink-0 rounded-[12px] border border-ink-700 px-2 py-1 font-mono text-[11px] text-fog-dim disabled:opacity-40"
+          >
+            Vaciar conversación
+          </button>
+        </div>
       </div>
       <div
         ref={logRef}
@@ -61,7 +66,7 @@ export function SiliChat() {
         aria-live="polite"
         aria-relevant="additions"
         aria-busy={busy}
-        className="mt-3 min-h-0 flex-1 overflow-y-auto bg-ink-900 p-3 font-mono text-[13px] leading-relaxed"
+        className="mt-3 min-h-0 flex-1 overflow-y-auto rounded-[12px] bg-ink-900 p-3 font-sans text-[13px] leading-relaxed text-fog"
       >
         {messages.length === 0 && status === 'idle' ? (
           <p className="text-fog-dim">Pregúntame por el portafolio.</p>
@@ -89,13 +94,13 @@ export function SiliChat() {
           autoComplete="off"
           placeholder="Pregúntame"
           onChange={(event) => setDraft(event.target.value.slice(0, SILI_MAX_CHARS))}
-          className="min-w-0 flex-1 border border-ink-700 bg-ink-950 px-2 py-2 font-mono text-[13px] text-fog placeholder:text-fog-dim"
+          className="min-w-0 flex-1 rounded-[12px] border border-ink-700 bg-ink-950 px-2 py-2 font-sans text-[13px] text-fog placeholder:text-fog-dim"
         />
         <button
           type="submit"
           data-ui
           disabled={busy || draft.trim().length === 0}
-          className="bg-ember-500 px-3 py-2 text-sm font-bold text-ink-950 disabled:opacity-40"
+          className="rounded-[12px] bg-ember-500 px-3 py-2 text-sm font-bold text-ink-950 disabled:opacity-40"
         >
           Enviar
         </button>

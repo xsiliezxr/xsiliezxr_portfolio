@@ -1,8 +1,8 @@
-import { Suspense, useLayoutEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Environment, Lightformer, PerformanceMonitor } from '@react-three/drei'
 import { Color, Fog } from 'three'
-import { FOV, projectFace, readSceneMetrics } from '../../lib/journeyRig.js'
+import { FALLBACK_METRICS, FOV, projectFace, readSceneMetrics } from '../../lib/journeyRig.js'
 import { CameraRig } from './CameraRig.jsx'
 import { ElevatorPlatform } from './ElevatorPlatform.jsx'
 import { RoomShell, ShaftDecks } from './RoomShell.jsx'
@@ -34,13 +34,34 @@ function lerpChannel(from, to, u) {
 
 function Measure({ groupRef, onReady }) {
   const done = useRef(false)
-  useLayoutEffect(() => {
-    if (done.current || !groupRef.current) return
-    const metrics = readSceneMetrics(groupRef.current)
-    if (!metrics) return
+
+  const fire = (metrics) => {
+    if (done.current) return
     done.current = true
     onReady(metrics)
+  }
+
+  useLayoutEffect(() => {
+    if (!groupRef.current) return
+    const metrics = readSceneMetrics(groupRef.current)
+    if (metrics) fire(metrics)
   }, [groupRef, onReady])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (done.current) return
+      const live = groupRef.current ? readSceneMetrics(groupRef.current) : null
+      fire(live || FALLBACK_METRICS)
+    }, 6500)
+    return () => window.clearTimeout(timer)
+  }, [groupRef, onReady])
+
+  useFrame(() => {
+    if (done.current || !groupRef.current) return
+    const metrics = readSceneMetrics(groupRef.current)
+    if (metrics) fire(metrics)
+  })
+
   return null
 }
 
@@ -105,17 +126,26 @@ function ScreenPlate({ rig, metrics, plateRef, groupRef }) {
       groupRef.current.visible = shown > 0.02
     }
     const plate = plateRef.current
-    if (!plate || !metrics) return
-    const portrait = size.width / Math.max(size.height, 1) < 0.92
-    const face = portrait ? metrics.screens.tall : metrics.screens.wide
+    if (!plate) return
     const width = Math.max(size.width, 1)
     const height = Math.max(size.height, 1)
+    const portrait = width / height < 0.92
     plate.dataset.orient = portrait ? 'tall' : 'wide'
     plate.style.width = `${width}px`
     plate.style.height = `${height}px`
-    const matrix = projectFace(face, camera, width, height)
-    // Sin homografía el escritorio no puede volver a ser una lámina a pantalla completa.
-    if (!matrix || shown < 0.03) {
+    const leaving = Math.min(Math.max(rig.zoomOut ?? 0, 0), 1)
+    if (shown < 0.03) {
+      plate.style.opacity = '0'
+      return
+    }
+    if (!metrics || leaving < 0.04) {
+      plate.style.opacity = String(shown)
+      plate.style.transform = 'none'
+      return
+    }
+    const face = portrait ? metrics.screens.tall : metrics.screens.wide
+    const matrix = projectFace(face, camera, width, height, 1)
+    if (!matrix) {
       plate.style.opacity = '0'
       return
     }
@@ -160,12 +190,13 @@ export function JourneyCanvas({ rig, eventSource, onReady, unlocked, plateRef })
         <Lightformer form="rect" intensity={0.8} color="#2a0e03" position={[3, 1, 4]} scale={[6, 2, 1]} />
       </Environment>
       <Suspense fallback={null}>
-        <group ref={groupRef} rotation={[0, -Math.PI / 2, 0]}>
+        {/* El escritorio se queda en y=0; solo la plataforma baja por el hueco. */}
+        <group ref={groupRef} position={[0, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
           <SetupModel rig={rig} />
         </group>
         <Measure groupRef={groupRef} onReady={handleReady} />
       </Suspense>
-      <RoomShell metrics={metrics} />
+      <RoomShell metrics={metrics} rig={rig} />
       <ShaftDecks metrics={metrics} rig={rig} unlocked={unlocked} />
       <Suspense fallback={null}>
         <ElevatorPlatform rig={rig} />

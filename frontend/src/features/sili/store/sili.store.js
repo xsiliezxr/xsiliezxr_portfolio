@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { scrollToProgress } from '../../home/lib/journeyRig.js'
 import { HOBBY_TOTAL } from '../../../shared/hobbies/hobbies.constants.js'
-import { useHobbiesStore } from '../../../shared/hobbies/hobbies.store.js'
+import { knownFound, useHobbiesStore } from '../../../shared/hobbies/hobbies.store.js'
 import { postChat, sanitizeChatText, SILI_MAX_CHARS, SILI_MAX_MESSAGES, SILI_SUMMARY_MAX } from '../api/sili.api.js'
 import { destinationById, floorProgress } from '../destinations.js'
 
@@ -88,7 +88,7 @@ function onHome() {
 }
 
 function secretOpen() {
-  return useHobbiesStore.getState().found.length >= HOBBY_TOTAL
+  return knownFound(useHobbiesStore.getState().found).length >= HOBBY_TOTAL
 }
 
 function goTo(destination) {
@@ -205,7 +205,7 @@ export const useSiliStore = create((set, get) => ({
         messages: stored.messages,
         summary: sanitizeChatText(result.summary, SILI_SUMMARY_MAX),
         summarizedCount: stored.summarizedCount,
-        placeNote: applied.placeNote,
+        placeNote: applied.placeNote || result.gapsHint || null,
       }
       set({
         status: 'idle',

@@ -29,7 +29,7 @@ export const DESTINATIONS = Object.fromEntries(
     route('experiencia', 'Experiencia', 'Experiencia. Trabajo, hackatones y eventos.', '/experiencia'),
     floor('proyectos', 'Proyectos', 'Proyectos. Trabajo, hackathones y los sistemas que armó.', 'experience'),
     route('habilidades', 'Habilidades', 'Habilidades. Con qué arma las interfaces y el servidor.', '/skills'),
-    route('certificados', 'Certificados', 'Certificados. Diplomas y cursos publicados.', '/certificaciones'),
+    route('certificados', 'Reconocimientos', 'Reconocimientos. Diplomas, certificados y badges publicados.', '/certificaciones'),
     route('galeria', 'Galería', 'Galería. Fotos de la trayectoria.', '/gallery'),
     floor('contacto', 'Contacto', 'Contacto. El cierre del recorrido y cómo escribirle.', 'closing'),
     floor('secret', 'Sala secreta', 'Sala secreta. Lo que no va en el CV.', 'secret'),

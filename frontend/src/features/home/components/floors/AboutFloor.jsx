@@ -1,69 +1,83 @@
+import { galleryFrames } from '../../../gallery/gallery.data.js'
 import { about } from '../../content/journey.content.js'
 import { CorridorLayout, FloorCard } from './FloorCard.jsx'
+
+const FILM_ROWS = [
+  { id: 'a', rotate: -7.5, top: '4%', origin: 'left center', shift: 1 },
+  { id: 'b', rotate: 5.5, top: '22%', origin: 'right center', shift: -1 },
+  { id: 'c', rotate: -3.5, top: '40%', origin: 'left center', shift: 1 },
+  { id: 'd', rotate: 8, top: '58%', origin: 'right center', shift: -1 },
+  { id: 'e', rotate: -6, top: '76%', origin: 'left center', shift: 1 },
+  { id: 'f', rotate: 4, top: '92%', origin: 'right center', shift: -1 },
+]
+
+function filmFrames(offset) {
+  const list = [...galleryFrames, ...galleryFrames]
+  const cut = offset % galleryFrames.length
+  return [...list.slice(cut), ...list.slice(0, cut)]
+}
 
 export function AboutWash() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden bg-ink-950" aria-hidden="true">
-      <div
-        data-depth="back"
-        className="absolute inset-0 opacity-65"
-        style={{
-          backgroundImage:
-            'linear-gradient(to right, rgba(255, 91, 20, 0.09) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 91, 20, 0.09) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-          transform: 'perspective(900px) rotateX(28deg) scale(1.18)',
-          transformOrigin: '50% 80%',
-        }}
-      />
-      <svg
-        data-depth="mid"
-        className="absolute inset-0 h-full w-full opacity-55"
-        viewBox="0 0 1440 900"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <circle cx="720" cy="450" r="240" fill="none" stroke="#2A2826" strokeWidth="1.5" strokeDasharray="8 8" />
-        <circle cx="720" cy="450" r="340" fill="none" stroke="#6B2508" strokeWidth="1.2" />
-        <line x1="120" y1="180" x2="520" y2="180" stroke="#FF5B14" strokeWidth="1.5" strokeOpacity="0.45" />
-        <line x1="920" y1="720" x2="1320" y2="720" stroke="#FF5B14" strokeWidth="1.5" strokeOpacity="0.45" />
-        <path d="M 160 660 L 240 580 L 420 580" fill="none" stroke="#FFB000" strokeWidth="1.4" strokeOpacity="0.4" />
-        <path d="M 1280 240 L 1200 320 L 1020 320" fill="none" stroke="#FFB000" strokeWidth="1.4" strokeOpacity="0.4" />
-      </svg>
+      <div className="film-unroll">
+        {FILM_ROWS.map((row, index) => (
+          <div
+            key={row.id}
+            className="film-strip"
+            data-film-strip
+            data-layer={index}
+            data-rotate={row.rotate}
+            data-shift={row.shift}
+            data-origin={row.origin}
+            style={{ top: row.top, transformOrigin: row.origin }}
+          >
+            <div className="film-holes" />
+            <div className="film-cells">
+              {filmFrames(index * 2).map((frame, cell) => (
+                <figure key={`${row.id}-${frame.id}-${cell}`} className="film-cell">
+                  <img src={frame.src} alt="" />
+                  <figcaption>{frame.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+            <div className="film-holes" />
+          </div>
+        ))}
+      </div>
+      <div className="film-veil" />
     </div>
   )
 }
 
 function AboutLeft() {
   return (
-    <>
-      <FloorCard slot="nw" band="top">
-        <h2 className="journey-card-title text-base md:text-lg">{about.title}</h2>
-        <p className="mt-2 text-xs leading-relaxed text-fog md:text-sm">
-          Soy Angel David Siliezar López, estudiante Full Stack en Fundación Kinal. Nací el 23 de agosto de 2007 en Ciudad de Guatemala.
-        </p>
-        <p className="mt-2 hidden text-xs leading-relaxed text-fog-dim md:block">
-          A los 12 desarmé una PC vieja solo por curiosidad, limpié cada pieza y la dejé funcionando.
-        </p>
-        <p className="journey-card-meta">{about.meta}</p>
-      </FloorCard>
-    </>
+    <FloorCard slot="nw" band="top" tone="film">
+      <h2 className="journey-card-title text-base md:text-lg">{about.title}</h2>
+      <p className="mt-2 text-xs leading-relaxed text-fog md:text-sm">
+        Soy Angel David Siliezar López, estudiante Full Stack en Fundación Kinal. Nací el 23 de agosto de 2007 en Ciudad de Guatemala.
+      </p>
+      <p className="mt-2 hidden text-xs leading-relaxed text-fog-dim md:block">
+        A los 12 desarmé una PC vieja solo por curiosidad, limpié cada pieza y la dejé funcionando.
+      </p>
+      <p className="journey-card-meta">{about.meta}</p>
+    </FloorCard>
   )
 }
 
 function AboutRight() {
   return (
-    <>
-      <FloorCard slot="se" band="bottom">
-        <p className="text-xs leading-relaxed text-fog md:text-sm">
-          El basket llegó en un 21 en el parque. En Kinal encontré programar: React, Node, bases de datos y la regla del trabajo bien hecho.
-        </p>
-        <div className="mt-2.5 hidden border-t border-ink-700 pt-2.5 md:block">
-          <p className="font-mono text-[11px] text-amber">Excelencia académica · Abanderado hasta 2024</p>
-        </div>
-        <a href="/history" data-ui className="journey-card-link">
-          Leer la historia
-        </a>
-      </FloorCard>
-    </>
+    <FloorCard slot="se" band="bottom" tone="film">
+      <p className="text-xs leading-relaxed text-fog md:text-sm">
+        El basket llegó en un 21 en el parque. En Kinal encontré programar: React, Node, bases de datos y la regla del trabajo bien hecho.
+      </p>
+      <div className="mt-2.5 hidden md:block">
+        <p className="font-mono text-[11px] text-amber">Excelencia académica · Abanderado hasta 2024</p>
+      </div>
+      <a href="/history" data-ui className="journey-card-link">
+        Leer la historia
+      </a>
+    </FloorCard>
   )
 }
 

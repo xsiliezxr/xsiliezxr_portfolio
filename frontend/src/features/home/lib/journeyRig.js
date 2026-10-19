@@ -33,11 +33,32 @@ const _world = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]
 const _corner = new THREE.Vector3()
 const _projected = new THREE.Vector3()
 
+function faceStub(center, width, height) {
+  return {
+    center,
+    right: { x: 1, y: 0, z: 0 },
+    up: { x: 0, y: 1, z: 0 },
+    normal: { x: 0, y: 0, z: 1 },
+    width,
+    height,
+  }
+}
+
+export const FALLBACK_METRICS = {
+  screens: {
+    wide: faceStub({ x: 0, y: 1.2, z: 0 }, 1.6, 0.9),
+    tall: faceStub({ x: 0.85, y: 1.1, z: 0 }, 0.7, 1.25),
+  },
+  platform: { x: 2.4, y: 0, z: 1.2 },
+  deskCenter: { x: 0, y: 0.4, z: 0 },
+}
+
 export function createRig() {
   return {
     progress: 0,
     tube: 0,
     setupVisible: 1,
+    zoomOut: 0,
     pos: { x: 0, y: 4, z: 8 },
     target: { x: 0, y: 4, z: 0 },
     platform: { x: 2.4, y: 0, z: 1.2 },
@@ -109,23 +130,24 @@ function add(point, vector, scale) {
   }
 }
 
-function coverDistance(face, aspect) {
+function screenDistance(face, aspect, contain) {
   const vfov = (FOV * Math.PI) / 180
   const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect)
   const byHeight = face.height / 2 / Math.tan(vfov / 2)
   const byWidth = face.width / 2 / Math.tan(hfov / 2)
-  return Math.min(byHeight, byWidth) * 0.96
+  return contain ? Math.max(byHeight, byWidth) : Math.min(byHeight, byWidth)
 }
 
 export function computePose(metrics, aspect = 1.6) {
   const portrait = aspect < 0.92
   const face = portrait ? metrics.screens.tall : metrics.screens.wide
-  const distance = coverDistance(face, Math.max(aspect, 0.4))
+  const safeAspect = Math.max(aspect, 0.4)
+  const inside = screenDistance(face, safeAspect, false)
   const hero = {
-    pos: add(face.center, face.normal, distance * 0.92),
+    pos: add(face.center, face.normal, inside),
     target: { ...face.center },
   }
-  const deskReach = distance * 6.4
+  const deskReach = inside * 6.4
   const desk = {
     pos: {
       x: face.center.x + face.normal.x * deskReach,
@@ -140,10 +162,11 @@ export function computePose(metrics, aspect = 1.6) {
   }
   const lane = (floorY, side = 1) => {
     const vfov = (FOV * Math.PI) / 180
-    const span = AVATAR_HEIGHT / (portrait ? 0.46 : 0.4)
+    // En portrait se desplaza el look para que el avatar no tape el copy.
+    const span = AVATAR_HEIGHT / 0.4
     const reach = (span / 2) / Math.tan(vfov / 2)
     const lookY = floorY + AVATAR_HEIGHT * 0.46
-    const shift = portrait ? 0.35 : 1.15
+    const shift = portrait ? 0.55 : 1.15
     return {
       pos: {
         x: metrics.platform.x + face.normal.x * reach,
@@ -159,10 +182,10 @@ export function computePose(metrics, aspect = 1.6) {
   }
   const wide = (floorY) => {
     const vfov = (FOV * Math.PI) / 180
-    const span = AVATAR_HEIGHT / (portrait ? 0.34 : 0.24)
+    const span = AVATAR_HEIGHT / (portrait ? 0.3 : 0.24)
     const reach = (span / 2) / Math.tan(vfov / 2)
     const lookY = floorY + AVATAR_HEIGHT * 0.5
-    const shift = portrait ? 0.2 : 1.7
+    const shift = portrait ? 0.35 : 1.7
     return {
       pos: {
         x: metrics.platform.x + face.normal.x * reach,
@@ -252,7 +275,15 @@ function platformKeys(unlocked) {
     [LOCKED_PROGRESS, FLOOR_Y.closing],
   ]
   if (unlocked) {
-    keys.push([LOCKED_PROGRESS + 0.04, FLOOR_Y.secret], [1, FLOOR_Y.secret])
+    keys.push(
+      [LOCKED_PROGRESS + 0.008, FLOOR_Y.closing],
+      [LOCKED_PROGRESS + 0.028, FLOOR_Y.closing - 1.4],
+      [LOCKED_PROGRESS + 0.048, FLOOR_Y.closing - 4.2],
+      [LOCKED_PROGRESS + 0.072, (FLOOR_Y.closing + FLOOR_Y.secret) * 0.5],
+      [LOCKED_PROGRESS + 0.1, FLOOR_Y.secret + 1.6],
+      [LOCKED_PROGRESS + 0.135, FLOOR_Y.secret],
+      [1, FLOOR_Y.secret],
+    )
   } else {
     keys.push([1, FLOOR_Y.closing])
   }
@@ -271,15 +302,37 @@ export function poseAt(progress, metrics, aspect, unlocked = false) {
   const side = keyed(SIDE_KEYS, p) * (pose.portrait ? 0.25 : 1)
   const ride = pose.follow(platformY, side)
   // Del monitor (hero) hace zoom out al setup (desk) y luego desciende con la plataforma.
-  const zoomOut = smooth(unit((p - 0.012) / 0.055))
+  const zoomOut = smooth(unit((p - 0.006) / 0.1))
   const introShot = lerpShot(pose.hero, pose.desk, zoomOut)
   const descend = smooth(unit((p - 0.125) / 0.045))
   const shot = lerpShot(introShot, ride, descend)
+  const tube = unlocked ? smooth(unit((p - (LOCKED_PROGRESS - 0.025)) / 0.07)) : 0
+  const intoSecret = unlocked ? smooth(unit((p - LOCKED_PROGRESS) / Math.max(1 - LOCKED_PROGRESS, 0.001))) : 0
+  // Baja por el hueco mirando el suelo; al aterrizar enmarca al avatar completo.
+  if (tube > 0.001) {
+    const hatch = tube * (1 - intoSecret * 0.85)
+    const land = smooth(intoSecret)
+    if (hatch > 0.01) {
+      shot.target.y = mix(shot.target.y, platformY - 0.55, hatch)
+      shot.pos.y = mix(shot.pos.y, platformY + AVATAR_HEIGHT * 0.7, hatch * 0.65)
+      shot.pos.z = mix(shot.pos.z, shot.pos.z + hatch * 0.55, hatch * 0.4)
+    }
+    if (land > 0.01) {
+      const landShot = pose.follow(platformY, side * 0.35)
+      landShot.pos.y = platformY + AVATAR_HEIGHT * 0.42
+      landShot.target.y = platformY + AVATAR_HEIGHT * 0.38
+      landShot.pos.x = mix(landShot.pos.x, landShot.pos.x * 0.92, 0.35)
+      const framed = lerpShot(shot, landShot, land)
+      shot.pos = framed.pos
+      shot.target = framed.target
+    }
+  }
   return {
     shot,
     platformY,
     setupVisible: 1 - smooth(unit((p - 0.13) / 0.045)),
-    tube: unlocked ? smooth(unit((p - 0.9) / 0.08)) : 0,
+    zoomOut,
+    tube,
   }
 }
 
@@ -292,13 +345,13 @@ export function applyPose(rig, shot) {
   rig.target.z = shot.target.z
 }
 
-export function projectFace(face, camera, width, height) {
+export function projectFace(face, camera, width, height, pinAmount = 1) {
   const center = _corner
   const right = _world[0].set(face.right.x, face.right.y, face.right.z)
   const up = _world[1].set(face.up.x, face.up.y, face.up.z)
   center.set(face.center.x, face.center.y, face.center.z)
-  const hw = (face.width / 2) * 1.04
-  const hh = (face.height / 2) * 1.04
+  const hw = face.width / 2
+  const hh = face.height / 2
   const signs = [
     [-1, 1],
     [1, 1],
@@ -316,10 +369,25 @@ export function projectFace(face, camera, width, height) {
     })
   }
   if (corners[1].x < corners[0].x) {
-    const ordered = [corners[1], corners[0], corners[3], corners[2]]
-    return matrixFromQuad(width, height, ordered)
+    const swap = corners[0]
+    corners[0] = corners[1]
+    corners[1] = swap
+    const lower = corners[3]
+    corners[3] = corners[2]
+    corners[2] = lower
   }
-  return matrixFromQuad(width, height, corners)
+  const pin = Math.min(Math.max(pinAmount, 0), 1)
+  const viewport = [
+    { x: 0, y: 0 },
+    { x: width, y: 0 },
+    { x: width, y: height },
+    { x: 0, y: height },
+  ]
+  const quad = viewport.map((point, index) => ({
+    x: point.x + (corners[index].x - point.x) * pin,
+    y: point.y + (corners[index].y - point.y) * pin,
+  }))
+  return matrixFromQuad(width, height, quad)
 }
 
 export function trackDvh(unlocked) {
