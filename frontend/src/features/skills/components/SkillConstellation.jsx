@@ -1,7 +1,21 @@
 import { useMemo, useRef, useState } from 'react'
+import { useLang, useLocalized } from '../../../shared/i18n/useLocalized.js'
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.js'
 import { SkillMark } from './SkillMark.jsx'
 import { skillConstellations } from '../skills.data.js'
+
+const UI = {
+  maps: { es: 'Mapas de habilidades', en: 'Skill maps' },
+  drag: { es: 'Arrastra un nodo para tensar la red', en: 'Drag a node to tension the net' },
+  mark: { es: 'CONSTELACIÓN', en: 'CONSTELLATION' },
+  connected: { es: 'Nodos conectados', en: 'Connected nodes' },
+  alone: { es: 'Nodo autónomo dentro de', en: 'Standalone node inside' },
+  group: { es: 'Grupo activo:', en: 'Active group:' },
+  tech: { es: 'tecnologías', en: 'technologies' },
+  index: { es: 'Índice de', en: 'Index of' },
+  az: { es: '(A–Z)', en: '(A–Z)' },
+  nodes: { es: 'nodos', en: 'nodes' },
+}
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
@@ -18,8 +32,11 @@ function neighborsOf(edges, id) {
 
 export function SkillConstellation() {
   const reduced = useReducedMotion()
-  const [tab, setTab] = useState(skillConstellations[0].id)
-  const constellation = skillConstellations.find((item) => item.id === tab) ?? skillConstellations[0]
+  const lang = useLang()
+  const groups = useLocalized(skillConstellations)
+  const ui = useLocalized(UI)
+  const [tab, setTab] = useState(groups[0].id)
+  const constellation = groups.find((item) => item.id === tab) ?? groups[0]
   const anchors = useMemo(() => Object.fromEntries(constellation.nodes.map((node) => [node.id, { x: node.x, y: node.y }])), [constellation])
   const [positions, setPositions] = useState(anchors)
   const [focusId, setFocusId] = useState(constellation.nodes[0]?.id ?? null)
@@ -50,12 +67,12 @@ export function SkillConstellation() {
   }, [constellation.edges, constellation.nodes, focused])
 
   const roster = useMemo(
-    () => [...constellation.nodes].sort((a, b) => a.label.localeCompare(b.label, 'es')),
-    [constellation.nodes],
+    () => [...constellation.nodes].sort((a, b) => String(a.label).localeCompare(String(b.label), lang === 'en' ? 'en' : 'es')),
+    [constellation.nodes, lang],
   )
 
   const changeTab = (id) => {
-    const next = skillConstellations.find((item) => item.id === id)
+    const next = groups.find((item) => item.id === id)
     setTab(id)
     setFocusId(next?.nodes[0]?.id ?? null)
     setPositions(Object.fromEntries((next?.nodes ?? []).map((node) => [node.id, { x: node.x, y: node.y }])))
@@ -102,8 +119,8 @@ export function SkillConstellation() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Mapas de habilidades">
-          {skillConstellations.map((item) => {
+        <div className="flex flex-wrap gap-2" role="tablist" aria-label={ui.maps}>
+          {groups.map((item) => {
             const active = item.id === tab
             return (
               <button
@@ -127,7 +144,7 @@ export function SkillConstellation() {
           })}
         </div>
         <p className="m-0 font-mono text-xs text-fog-dim">
-          Arrastra un nodo para tensar la red
+          {ui.drag}
         </p>
       </div>
 
@@ -143,7 +160,7 @@ export function SkillConstellation() {
         >
           <div className="pointer-events-none absolute top-3 left-4 z-10 flex items-center gap-2 font-mono text-[11px] text-fog-dim">
             <span className="h-2 w-2 rounded-full bg-ember-500" aria-hidden="true" />
-            <span>CONSTELACIÓN · {constellation.label.toUpperCase()}</span>
+            <span>{ui.mark} · {constellation.label.toUpperCase()}</span>
           </div>
 
           <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
@@ -236,7 +253,7 @@ export function SkillConstellation() {
 
               <div className="border-t border-ink-700 pt-4">
                 <p className="m-0 font-mono text-[10px] uppercase tracking-[0.14em] text-fog-dim">
-                  Nodos conectados ({connectedNodes.length})
+                  {ui.connected} ({connectedNodes.length})
                 </p>
                 {connectedNodes.length > 0 ? (
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
@@ -253,7 +270,7 @@ export function SkillConstellation() {
                   </div>
                 ) : (
                   <p className="m-0 mt-2 font-mono text-xs text-fog-dim">
-                    Nodo autónomo dentro de {constellation.label.toLowerCase()}.
+                    {ui.alone} {constellation.label.toLowerCase()}.
                   </p>
                 )}
               </div>
@@ -261,18 +278,18 @@ export function SkillConstellation() {
           ) : null}
 
           <div className="mt-6 border-t border-ink-700 pt-4 font-mono text-[11px] text-fog-dim">
-            <span>Grupo activo: </span>
-            <span className="text-fog">{constellation.nodes.length} tecnologías</span>
+            <span>{ui.group} </span>
+            <span className="text-fog">{constellation.nodes.length} {ui.tech}</span>
           </div>
         </aside>
       </div>
 
-      <section aria-label={`Índice de ${constellation.label}`}>
+      <section aria-label={`${ui.index} ${constellation.label}`}>
         <div className="mb-3 flex items-center justify-between">
           <h3 className="m-0 font-mono text-xs uppercase tracking-[0.14em] text-fog-dim">
-            Índice de {constellation.label} (A–Z)
+            {ui.index} {constellation.label} {ui.az}
           </h3>
-          <span className="font-mono text-xs text-ember-300">{roster.length} nodos</span>
+          <span className="font-mono text-xs text-ember-300">{roster.length} {ui.nodes}</span>
         </div>
         <ul className="m-0 grid list-none gap-2.5 p-0 sm:grid-cols-2 lg:grid-cols-3">
           {roster.map((node) => {

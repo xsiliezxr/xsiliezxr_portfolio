@@ -252,9 +252,11 @@ function keyed(keys, progress) {
 
 export function floorAnchor(id) {
   const index = FLOOR_IDS.indexOf(id)
-  if (index <= 0) return 0
+  if (index < 0) return 0
+  if (id === 'welcome') return 0.09
   if (id === 'secret') return LOCKED_PROGRESS + 0.05
-  return index / FLOOR_COUNT + 0.034
+  const slice = 1 / FLOOR_COUNT
+  return index * slice + slice * 0.42
 }
 
 function platformKeys(unlocked) {
@@ -407,15 +409,20 @@ export function scrollToProgress(progress, behavior = 'smooth') {
   const range = track
     ? Math.max(track.offsetHeight - scroller.clientHeight, 0)
     : Math.max(document.documentElement.scrollHeight - window.innerHeight, 0)
+  if (range <= 0) return
   const limit = scroller ? journeyLimit(scroller) : 1
-  const top = (range / limit) * Math.min(Math.max(progress, 0), limit)
+  const target = Math.min(Math.max(Number(progress) || 0, 0), limit)
+  const top = (range / limit) * target
   if (behavior === 'auto') {
     if (scroller) scroller.scrollTop = top
     else window.scrollTo(0, top)
     return
   }
-  if (scroller) scroller.scrollTo({ top, behavior })
-  else window.scrollTo({ top, behavior })
+  if (scroller) {
+    scroller.scrollTo({ top, behavior: 'smooth' })
+    return
+  }
+  window.scrollTo({ top, behavior: 'smooth' })
 }
 
 // El piso cambia al entrar la parada, para que el indicador coincida con esa lámina.

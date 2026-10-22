@@ -14,15 +14,39 @@ function linkedFloor() {
   }
 }
 
+function readIntroSeen() {
+  try {
+    if (window.localStorage.getItem(INTRO_SEEN) === '1') return true
+    if (window.sessionStorage.getItem(INTRO_SEEN) === '1') {
+      window.localStorage.setItem(INTRO_SEEN, '1')
+      window.sessionStorage.removeItem(INTRO_SEEN)
+      return true
+    }
+  } catch {
+    return true
+  }
+  return false
+}
+
 function introSettled() {
   if (typeof window === 'undefined') return true
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true
   if (linkedFloor()) return true
+  return readIntroSeen()
+}
+
+export function markIntroSeen() {
   try {
-    return window.sessionStorage.getItem(INTRO_SEEN) === '1'
+    window.localStorage.setItem(INTRO_SEEN, '1')
+    window.sessionStorage.removeItem(INTRO_SEEN)
   } catch {
-    return true
+    /* la intro sigue aunque el almacenamiento falle */
   }
+}
+
+export function hasSeenIntro() {
+  if (typeof window === 'undefined') return true
+  return readIntroSeen()
 }
 
 export function floorReadsLight(floorId) {
@@ -53,7 +77,6 @@ export const useJourneyStore = create((set) => ({
   replayIntro: () => set((state) => ({
     introToken: state.introToken + 1,
     chapter: 'hero',
-    chrome: chromeOff,
     cornerOpen: null,
   })),
 }))

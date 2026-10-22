@@ -1,34 +1,140 @@
-export const HISTORY_BANNER_PHRASES = [
-  'FULL STACK',
-  'KINAL',
-  'CANCHA',
-  'CÓDIGO',
-  'TRABAJO BIEN HECHO',
-]
+export const HISTORY_BANNER_PHRASES = {
+  es: ['FULL STACK', 'KINAL', 'CANCHA', 'CÓDIGO', 'TRABAJO BIEN HECHO'],
+  en: ['FULL STACK', 'KINAL', 'THE COURT', 'CODE', 'WORK DONE RIGHT'],
+}
 
 export const HISTORY_SCROLL_PHRASES = [
   {
     id: 'history-study',
     variant: 'editorial',
-    top: 'NO TENÍA EL MAPA',
-    bottom: 'IGUAL EMPECÉ A CONSTRUIR',
+    top: { es: 'NO TENÍA EL MAPA', en: "I DIDN'T HAVE THE MAP" },
+    bottom: { es: 'IGUAL EMPECÉ A CONSTRUIR', en: 'I STARTED BUILDING ANYWAY' },
   },
   {
     id: 'study-path',
     variant: 'comic',
-    top: 'APRENDER HACIENDO',
-    bottom: 'ROMPER · ENTENDER · VOLVER A INTENTAR',
+    top: { es: 'APRENDER HACIENDO', en: 'LEARN BY DOING' },
+    bottom: {
+      es: 'ROMPER · ENTENDER · VOLVER A INTENTAR',
+      en: 'BREAK · UNDERSTAND · TRY AGAIN',
+    },
   },
 ]
 
 export const historyPath = {
-  title: 'De estudiante a desarrollador',
-  body: 'Desde Kinal hasta sistemas reales. Toca una etapa. El detalle completo está en Experiencia.',
-  cta: 'Ver registro completo',
+  title: { es: 'De estudiante a desarrollador', en: 'From student to developer' },
+  body: {
+    es: 'De Fe y Alegría No. 9-40, donde me formé como persona, a Fundación Kinal, donde el código se volvió oficio. De los hackathones de 2026 (UVG, UFG, la Buildathon, EcoBuild y Hack@Latam) a las prácticas en Combex, con software de operación real. De la comunidad 502, que me sacó del aula, hacia Ingeniería en Sistemas en la UMG en 2027. Toca una etapa. El detalle de cada entregable está en Experiencia.',
+    en: 'From Fe y Alegría No. 9-40, where I was formed as a person, to Fundación Kinal, where code became a craft. From the 2026 hackathons (UVG, UFG, the Buildathon, EcoBuild, and Hack@Latam) to the Combex internship, with software on a live operation. From the 502 community, which pulled me out of the classroom, toward Systems Engineering at UMG in 2027. Tap a stage. The detail of each delivery is in Experience.',
+  },
+  cta: { es: 'Ver registro completo', en: 'See the full record' },
   ctaHref: '/experiencia',
 }
 
-export const HISTORY_CORE_PHRASE = 'El trabajo bien hecho'
+export const historyChrome = {
+  title: { es: 'Historia de Angel Siliezar', en: "Angel Siliezar's story" },
+  downloadCv: { es: 'Descargar CV', en: 'Download CV' },
+  exploreGallery: { es: 'Explorar galería', en: 'Explore gallery' },
+  city: { es: 'Ciudad de Guatemala', en: 'Guatemala City' },
+  present: { es: '2007 · Presente', en: '2007 · Present' },
+  arrivalAlt: { es: 'Llegada a Fundación Kinal', en: 'Arrival at Fundación Kinal' },
+  kinal: { es: 'Fundación Kinal', en: 'Fundación Kinal' },
+  software: { es: 'Desarrollo de Software', en: 'Software Development' },
+  photos: { es: 'Fotos de esa etapa →', en: 'Photos from that stage →' },
+  awardsLink: { es: 'Ver reconocimientos →', en: 'See awards →' },
+  awardsTitle: { es: 'Reconocimientos', en: 'Awards' },
+  projects: { es: 'Ver proyectos', en: 'See projects' },
+}
+
+export const historyStages = [
+  {
+    id: 'fe-y-alegria',
+    rol: { es: 'Fe y Alegría', en: 'Fe y Alegría' },
+    short: { es: 'Fe y Alegría', en: 'Fe y Alegría' },
+    fecha: { es: 'Antes de Kinal', en: 'Before Kinal' },
+    lugar: { es: 'No. 9-40', en: 'No. 9-40' },
+    arco: {
+      es: 'Ahí me formé como persona, antes de tomar el código en serio. Estudié en el No. 9-40, entre programas, actividades y eventos. Las habilidades blandas salieron de esa escuela, no de un taller. Cuando después tuve que hablar frente a un jurado, esa base ya estaba.',
+      en: 'That is where I became a person, before I took code seriously. I studied at No. 9-40, among programs, activities, and events. The soft skills came from that school, not from a workshop. When I later had to speak in front of a jury, that base was already there.',
+    },
+  },
+  {
+    id: 'kinal',
+    rol: { es: 'Fundación Kinal', en: 'Fundación Kinal' },
+    short: { es: 'Kinal', en: 'Kinal' },
+    fecha: { es: 'Desde 2024', en: 'Since 2024' },
+    lugar: { es: 'Desarrollo de Software', en: 'Software Development' },
+    arco: {
+      es: 'No sabía qué estudiar. En Fundación Kinal, desde 2024, encontré programación: React, Node, bases de datos y Git con gente de verdad. Si algo se rompe, es mi problema hasta que lo arreglo. Ahí también salieron los mejores promedios de la promoción y la idea del trabajo bien hecho.',
+      en: "I didn't know what to study. At Fundación Kinal, since 2024, I found programming: React, Node, databases, and Git with real people. If something breaks, it is my problem until I fix it. That is also where the best averages in the class came from, and the idea of work done right.",
+    },
+  },
+  {
+    id: 'hackathones-2026',
+    rol: { es: 'Hackathones 2026', en: 'Hackathons 2026' },
+    short: { es: 'Hackathones', en: 'Hackathons' },
+    fecha: { es: 'UVG · UFG · pitches', en: 'UVG · UFG · pitches' },
+    lugar: { es: '2026', en: '2026' },
+    arco: {
+      es: 'El aula se quedó corta. El primer golpe fue la UVG con The502Project: un producto en menos de seis horas, sin pasar a finales. Después vinieron El Salvador (UFG y la Cursor Buildathon de Ai Labs), el primer pitch en el Hackathon TEC y EcoBuild en tercer lugar, con 2000 USD de semilla. Aprender contra reloj, con poco sueño, y aun así entregar.',
+      en: 'The classroom ran out of room. The first hit was UVG with The502Project: a product in under six hours, without reaching the finals. Then came El Salvador (UFG and Ai Labs’ Cursor Buildathon), the first pitch at Hackathon TEC, and EcoBuild in third place, with USD 2,000 in seed funding. Learning against the clock, on little sleep, and still delivering.',
+    },
+    image: 'primer-hackaton',
+  },
+  {
+    id: 'combex',
+    rol: { es: 'Prácticas en Combex', en: 'Internship at Combex' },
+    short: { es: 'Combex', en: 'Combex' },
+    fecha: { es: '+400 horas · IT', en: '+400 hours · IT' },
+    lugar: { es: 'Combex', en: 'Combex' },
+    arco: {
+      es: 'Primera vez con software que mueve operación real: logística de carga aérea en CombexIM. Cerré más de 400 horas en IT y quedé entre los seis mejores practicantes. El desayuno con el Director Ejecutivo cerró la etapa con consejos, no con un diploma vacío. Ahí dejó de ser tarea de clase.',
+      en: 'First time with software that moves a real operation: air-cargo logistics at CombexIM. I closed more than 400 hours in IT and landed among the top six interns. Breakfast with the Executive Director closed the stage with advice, not an empty diploma. That is where it stopped being a class assignment.',
+    },
+  },
+  {
+    id: 'comunidad-502',
+    rol: { es: 'Comunidad 502', en: '502 community' },
+    short: { es: 'Comunidad 502', en: '502 community' },
+    fecha: { es: 'The502Project', en: 'The502Project' },
+    lugar: { es: 'Guatemala', en: 'Guatemala' },
+    arco: {
+      es: 'La comunidad tech de Guatemala, con The502Project. Hackathones, demo days y gente que construye de verdad. En la Cursor Hackathon de Ciudad de Guatemala se juntaron 140 personas y el 60% vivía su primera. También estuve de oyente en el Startup World Cup y el 502 Demo Day: un pitch se sostiene si el valor se entiende.',
+      en: 'Guatemala’s tech community, with The502Project. Hackathons, demo days, and people who actually build. At the Cursor Hackathon in Guatemala City, 140 people showed up and 60% were at their first one. I also attended the Startup World Cup and the 502 Demo Day as a listener: a pitch holds when the value is understood.',
+    },
+  },
+  {
+    id: 'umg-2027',
+    rol: { es: 'Hacia la UMG', en: 'Toward UMG' },
+    short: { es: 'UMG 2027', en: 'UMG 2027' },
+    fecha: { es: '2027', en: '2027' },
+    lugar: { es: 'Ingeniería en Sistemas', en: 'Systems Engineering' },
+    arco: {
+      es: 'En 2027 entro a Ingeniería en Sistemas en la UMG, para seguir estudiando y trabajando de lo que me gusta. Kinal me dio el oficio; la universidad es el siguiente tramo, no un reinicio. En el camino van más certificaciones. La meta sigue siendo software que sirva, no solo que se vea en un perfil.',
+      en: 'In 2027 I start Systems Engineering at UMG, so I can keep studying and working on what I like. Kinal gave me the craft; university is the next stretch, not a restart. More certifications come along the way. The aim is still software that is useful, not only software that looks good on a profile.',
+    },
+  },
+]
+
+export const historyNarrative = [
+  {
+    es: 'No tuve un mapa. En Fe y Alegría aprendí a estar con gente; en Kinal aprendí a construir. El resto lo fui armando en hackathones, en Combex y en la comunidad, con el reloj encima y sin esperar a que alguien me dijera que ya estaba listo.',
+    en: 'I did not have a map. At Fe y Alegría I learned how to be with people; at Kinal I learned how to build. The rest came together in hackathons, at Combex, and in the community, on the clock, without waiting for someone to tell me I was ready.',
+  },
+  {
+    es: 'Me gusta el trabajo que se puede mostrar. Un pitch, un sistema que usa alguien, una hora de más cuando el demo todavía no corre. Si se rompe, es mío hasta que queda de pie. Esa es la frase del colegio que se me quedó: el trabajo bien hecho.',
+    en: 'I care about work that can be shown. A pitch, a system someone uses, an extra hour when the demo still does not run. If it breaks, it is mine until it stands. That is the school line that stayed with me: work done right.',
+  },
+  {
+    es: 'Lo que sigue es la UMG y el primer rol formal. No para empezar de cero. Para seguir con lo mismo, con más oficio y con la misma exigencia.',
+    en: 'What comes next is UMG and a first formal role. Not to start from zero. To continue the same work, with more craft and the same standard.',
+  },
+]
+
+export const HISTORY_CORE_PHRASE = {
+  es: 'El trabajo bien hecho',
+  en: 'Work done right',
+}
 
 // Collage denso. seed = aparece al cargar. reject = tachada (eso no va conmigo).
 export const HISTORY_BRAINSTORM = [

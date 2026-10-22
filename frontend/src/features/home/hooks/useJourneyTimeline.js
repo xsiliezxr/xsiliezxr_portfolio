@@ -60,6 +60,7 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
     let heroHidden = false
     const root = trackRef.current
     const court = root?.querySelector('[data-court="secret"]')
+    const hoop = court?.querySelector('[data-shot="hoop"]')
     const ball = root?.querySelector('[data-shot="ball"]')
     const rim = root?.querySelector('[data-shot="rim"]')
     const landing = { x: -240, y: -36, lift: -120 }
@@ -107,6 +108,8 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
       shot.reverse()
     }
 
+    const panelList = () => Object.values(panels.current).filter(Boolean)
+
     const apply = (progress) => {
       const journey = unlocked ? progress : Math.min(progress, LOCKED_PROGRESS)
       rig.progress = journey
@@ -130,34 +133,39 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
         store.setChapter(chapterFromProgress(journey, unlocked))
       }
 
-      Object.values(panels.current).forEach((el) => {
-        if (!el) return
+      const layers = panelList()
+      for (let i = 0; i < layers.length; i += 1) {
+        const el = layers[i]
         const id = el.dataset.floor
         const beat = BEATS[id]
-        if (el.dataset.layer === 'atmo') {
+        const layer = el.dataset.layer
+        if (layer === 'atmo') {
           const open = beat ? hit(journey, beat.atmo ?? beat.room, beat.atmoOut ?? beat.roomOut) : false
-          el.dataset.live = open ? '1' : '0'
-          return
+          const next = open ? '1' : '0'
+          if (el.dataset.live !== next) el.dataset.live = next
+          continue
         }
-        if (el.dataset.layer !== 'panel') return
+        if (layer === 'pass') {
+          const open = beat?.pass != null && hit(journey, beat.pass, beat.passOut)
+          if (open) el.removeAttribute('aria-hidden')
+          else el.setAttribute('aria-hidden', 'true')
+          continue
+        }
+        if (layer !== 'panel') continue
         const open = beat ? hit(journey, beat.room, beat.roomOut) : false
-        el.dataset.live = open ? '1' : '0'
+        const next = open ? '1' : '0'
+        if (el.dataset.live !== next) el.dataset.live = next
         el.inert = !open
         if (open) el.removeAttribute('aria-hidden')
         else el.setAttribute('aria-hidden', 'true')
-        el.querySelectorAll('[data-beat]').forEach((beatEl) => {
+        const beats = el.querySelectorAll('[data-beat]')
+        for (let b = 0; b < beats.length; b += 1) {
+          const beatEl = beats[b]
           const opacity = Number(gsap.getProperty(beatEl, 'opacity')) || 0
-          beatEl.style.pointerEvents = opacity > 0.45 ? 'auto' : 'none'
-        })
-      })
-
-      Object.values(panels.current).forEach((el) => {
-        if (!el || el.dataset.layer !== 'pass') return
-        const beat = BEATS[el.dataset.floor]
-        const open = beat?.pass != null && hit(journey, beat.pass, beat.passOut)
-        if (open) el.removeAttribute('aria-hidden')
-        else el.setAttribute('aria-hidden', 'true')
-      })
+          const events = opacity > 0.45 ? 'auto' : 'none'
+          if (beatEl.style.pointerEvents !== events) beatEl.style.pointerEvents = events
+        }
+      }
 
       const hero = heroRef.current
       const gone = progress > 0.045 || (hero ? Number(gsap.getProperty(hero, 'opacity')) < 0.35 : progress > 0.12)
@@ -261,68 +269,41 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
 
     const playPhrase = (el, beat) => {
       if (!el || beat.pass == null) return
-      const variant = el.dataset.passVariant || 'console'
       const fadeIn = reduce ? 0.01 : 0.45
       const spanTime = Math.max(beat.passOut - (beat.pass + fadeIn), 0.2)
       gsap.set(el, { opacity: 0, y: reduce ? 0 : 20 })
       timeline.to(el, { opacity: 1, y: 0, duration: fadeIn, ease: 'none', immediateRender: false }, beat.pass)
 
-      if (variant === 'editorial') {
-        const slices = [...el.querySelectorAll('[data-pass-slice]')]
-        const sweep = el.querySelector('[data-pass-sweep]')
-        gsap.set(slices, { yPercent: reduce ? 0 : 100, opacity: reduce ? 1 : 0 })
-        if (sweep) gsap.set(sweep, { scaleX: reduce ? 1 : 0 })
-        if (!reduce) {
-          if (sweep) {
-            timeline.to(sweep, { scaleX: 1, duration: spanTime * 0.25, ease: 'none', immediateRender: false }, beat.pass + fadeIn * 0.1)
-          }
-          slices.forEach((node, index) => {
-            timeline.to(node, {
-              yPercent: 0,
-              opacity: 1,
-              duration: spanTime * 0.22,
-              ease: 'none',
-              immediateRender: false,
-            }, beat.pass + fadeIn * 0.2 + index * (spanTime * 0.12))
+      const tokens = [...el.querySelectorAll('[data-pass-token]')]
+      const slots = [
+        { x: -42, y: 28 },
+        { x: 52, y: 12 },
+        { x: -18, y: 36 },
+      ]
+      if (tokens.length) {
+        tokens.forEach((node, index) => {
+          const slot = slots[index % slots.length]
+          const accent = node.dataset.passAccent === '1'
+          const travel = accent ? 1.25 : 1
+          gsap.set(node, {
+            opacity: reduce ? 1 : 0,
+            x: reduce ? 0 : slot.x * travel,
+            y: reduce ? 0 : slot.y * travel,
           })
-        }
-      } else if (variant === 'led') {
-        const leds = [...el.querySelectorAll('[data-pass-led]')]
-        gsap.set(leds, { opacity: reduce ? 1 : 0.14, scale: reduce ? 1 : 0.96 })
-        if (!reduce && leds.length) {
-          leds.forEach((node, index) => {
-            timeline.to(node, {
-              opacity: 1,
-              scale: 1,
-              duration: 0.08,
-              ease: 'none',
-              immediateRender: false,
-            }, beat.pass + fadeIn + ((index + 1) / leds.length) * spanTime)
-          })
-        }
-      } else if (variant === 'comic') {
-        const card = el.querySelector('[data-pass-comic]')
-        const hits = [...el.querySelectorAll('[data-pass-hit]')]
-        if (card) gsap.set(card, { scale: reduce ? 1 : 0.88, rotation: reduce ? 0 : -4 })
-        gsap.set(hits, { opacity: reduce ? 1 : 0, x: reduce ? 0 : -24 })
+        })
         if (!reduce) {
-          if (card) {
-            timeline.to(card, {
-              scale: 1,
-              rotation: -1.2,
-              duration: spanTime * 0.5,
-              ease: 'none',
-              immediateRender: false,
-            }, beat.pass + fadeIn * 0.4)
-          }
-          hits.forEach((node, index) => {
+          const count = tokens.length
+          const step = count <= 1 ? 0 : Math.min(0.22, (spanTime * 0.45) / (count - 1))
+          tokens.forEach((node, index) => {
+            const accent = node.dataset.passAccent === '1'
             timeline.to(node, {
               opacity: 1,
               x: 0,
-              duration: spanTime * 0.42,
-              ease: 'none',
+              y: 0,
+              duration: Math.max(0.24, Math.min(spanTime * (accent ? 0.48 : 0.32), spanTime * 0.7)),
+              ease: 'power2.out',
               immediateRender: false,
-            }, beat.pass + fadeIn + index * (spanTime * 0.38))
+            }, beat.pass + fadeIn * 0.2 + index * step)
           })
         }
       } else {
@@ -373,6 +354,21 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
         else wash(layerOf(panels, 'atmo', id), beat.atmo, beat.atmoOut)
       }
     })
+
+    if (unlocked && court && hoop) {
+      const secretBeat = BEATS.secret
+      const hoopAt = Math.min((secretBeat.room ?? 88) + 2.4, 94)
+      gsap.set(hoop, { opacity: 0, y: -110, transformOrigin: '50% 0%' })
+      timeline.to(hoop, {
+        opacity: 1,
+        y: 0,
+        duration: reduce ? 0.01 : 1.25,
+        ease: 'power3.out',
+        immediateRender: false,
+      }, hoopAt)
+    } else if (hoop) {
+      gsap.set(hoop, { opacity: 0, y: -110 })
+    }
 
     if (!unlocked && court) gsap.set(court, { opacity: 0 })
 

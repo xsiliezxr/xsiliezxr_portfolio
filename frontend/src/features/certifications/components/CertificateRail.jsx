@@ -1,8 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FrameDialog } from '../../../shared/components/FrameDialog.jsx'
+import { useLocalized } from '../../../shared/i18n/useLocalized.js'
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.js'
 import { AWARD_FILTERS, listAwardCards } from '../certifications.content.js'
 import { computeEditorialRailPositions } from '../editorialRailMath.js'
+
+const UI = {
+  aria: { es: 'Reconocimientos', en: 'Awards' },
+  title: { es: 'Reconocimientos', en: 'Awards' },
+  filter: { es: 'Filtrar reconocimientos', en: 'Filter awards' },
+  emptyBadges: {
+    es: 'Aún no hay badges publicados. Cuando lleguen, irán con enlace de verificación.',
+    en: 'No badges published yet. When they arrive, they will include a verification link.',
+  },
+  empty: { es: 'No hay piezas en este filtro.', en: 'Nothing in this filter.' },
+  wheel: { es: 'Rueda para recorrer · Clic para abrir', en: 'Scroll to browse · Click to open' },
+  swipe: { es: 'Desliza a un lado o hacia abajo · Toca para abrir', en: 'Swipe sideways or down · Tap to open' },
+  prev: { es: '← Anterior', en: '← Previous' },
+  next: { es: 'Siguiente →', en: 'Next →' },
+  diploma: { es: 'Diploma', en: 'Diploma' },
+  verify: { es: 'Verificar', en: 'Verify' },
+  close: { es: 'Cerrar', en: 'Close' },
+  fallback: { es: 'Reconocimiento', en: 'Award' },
+  open: { es: 'Abrir', en: 'Open' },
+}
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
@@ -35,14 +56,18 @@ export function CertificateRail() {
   const suppressClick = useRef(false)
   const [filter, setFilter] = useState('all')
   const [offset, setOffset] = useState(0)
-  const [selected, setSelected] = useState(null)
+  const [selectedId, setSelectedId] = useState(null)
   const [sheet, setSheet] = useState('diploma')
+  const ui = useLocalized(UI)
+  const filters = useLocalized(AWARD_FILTERS)
   const [viewport, setViewport] = useState(() => ({
     width: window.innerWidth,
     height: window.innerHeight,
   }))
 
-  const awards = useMemo(() => listAwardCards(filter), [filter])
+  const awardSource = useMemo(() => listAwardCards(filter), [filter])
+  const awards = useLocalized(awardSource)
+  const selected = awards.find((item) => item.id === selectedId) ?? null
 
   useEffect(() => {
     const onResize = () => setViewport({ width: window.innerWidth, height: window.innerHeight })
@@ -56,7 +81,7 @@ export function CertificateRail() {
     targetOffset.current = 0
     currentOffset.current = 0
     setOffset(0)
-    setSelected(null)
+    setSelectedId(null)
   }, [filter])
 
   const isMobile = viewport.width < 640
@@ -122,14 +147,14 @@ export function CertificateRail() {
       return
     }
     setSheet('diploma')
-    setSelected(cert)
+    setSelectedId(cert.id)
   }
 
   return (
     <section
       ref={stageRef}
       className="relative h-[calc(100dvh-var(--masthead))] w-full touch-none overflow-hidden"
-      aria-label="Reconocimientos"
+      aria-label={ui.aria}
       tabIndex={0}
       onPointerDown={(event) => {
         if (event.pointerType === 'mouse' || awards.length === 0) return
@@ -168,11 +193,11 @@ export function CertificateRail() {
     >
       <header className="pointer-events-none absolute top-4 right-4 left-4 z-20 sm:top-6 sm:right-8 sm:left-8">
         <h1 className="m-0 font-display text-2xl font-black uppercase tracking-[-0.04em] text-fog sm:text-3xl">
-          Reconocimientos
+          {ui.title}
         </h1>
         <div className="mt-3 flex flex-wrap items-end justify-between gap-3">
-          <div className="pointer-events-auto flex flex-wrap gap-2" role="group" aria-label="Filtrar reconocimientos">
-            {AWARD_FILTERS.map((option) => {
+          <div className="pointer-events-auto flex flex-wrap gap-2" role="group" aria-label={ui.filter}>
+            {filters.map((option) => {
               const activeFilter = filter === option.id
               return (
                 <button
@@ -200,12 +225,12 @@ export function CertificateRail() {
         <p className="m-0 mt-2 font-mono text-[11px] text-ember-300">
           {awards.length === 0 ? (
             filter === 'badge'
-              ? 'Aún no hay badges publicados. Cuando lleguen, irán con enlace de verificación.'
-              : 'No hay piezas en este filtro.'
+              ? ui.emptyBadges
+              : ui.empty
           ) : (
             <>
-              <span className="hidden md:inline">Rueda para recorrer · Clic para abrir</span>
-              <span className="md:hidden">Desliza a un lado o hacia abajo · Toca para abrir</span>
+              <span className="hidden md:inline">{ui.wheel}</span>
+              <span className="md:hidden">{ui.swipe}</span>
             </>
           )}
         </p>
@@ -229,7 +254,7 @@ export function CertificateRail() {
               >
                 <button
                   type="button"
-                  aria-label={`Abrir ${cert.title}`}
+                  aria-label={`${ui.open} ${cert.title}`}
                   onClick={() => openCertificate(cert)}
                   className={`relative size-full overflow-hidden rounded-[12px] border bg-ink-950 text-left transition-colors ${
                     item.isActive
@@ -256,7 +281,7 @@ export function CertificateRail() {
             className="pointer-events-auto rounded-[12px] border border-ink-700 bg-ink-900/90 px-4 py-2.5 font-mono text-xs text-fog transition-colors hover:border-ember-500 hover:text-ember-300"
             onClick={() => animateTo(targetOffset.current + spacing)}
           >
-            ← Anterior
+            {ui.prev}
           </button>
           <div className="max-w-md text-center">
             <p className="m-0 font-mono text-[11px] text-ember-300">{active?.institution}</p>
@@ -267,12 +292,12 @@ export function CertificateRail() {
             className="pointer-events-auto rounded-[12px] border border-ink-700 bg-ink-900/90 px-4 py-2.5 font-mono text-xs text-fog transition-colors hover:border-ember-500 hover:text-ember-300"
             onClick={() => animateTo(targetOffset.current - spacing)}
           >
-            Siguiente →
+            {ui.next}
           </button>
         </div>
       ) : null}
 
-      <FrameDialog open={Boolean(selected)} title={selected?.title ?? 'Reconocimiento'} onClose={() => setSelected(null)}>
+      <FrameDialog open={Boolean(selected)} title={selected?.title ?? ui.fallback} onClose={() => setSelectedId(null)}>
         {({ titleId, closeRef }) => (
           <>
             <div className="relative min-h-[38vh] bg-paper md:min-h-[28rem]">
@@ -300,7 +325,7 @@ export function CertificateRail() {
                           : 'border-ink-700 bg-ink-950 text-fog hover:border-ember-500/60'
                       }`}
                     >
-                      Diploma
+                      {ui.diploma}
                     </button>
                     {selected.attachments.map((item) => (
                       <button
@@ -328,16 +353,16 @@ export function CertificateRail() {
                     rel="noreferrer noopener"
                     className="rounded-[12px] border border-ember-500 px-4 py-2.5 font-mono text-xs font-bold text-ember-300 transition-colors hover:bg-ember-500 hover:text-ink-950"
                   >
-                    Verificar
+                    {ui.verify}
                   </a>
                 ) : null}
                 <button
                   ref={closeRef}
                   type="button"
-                  onClick={() => setSelected(null)}
+                  onClick={() => setSelectedId(null)}
                   className="self-start rounded-[12px] bg-ember-500 px-4 py-2.5 font-mono text-xs font-bold text-ink-950 transition-colors hover:bg-ember-300"
                 >
-                  Cerrar
+                  {ui.close}
                 </button>
               </div>
             </div>

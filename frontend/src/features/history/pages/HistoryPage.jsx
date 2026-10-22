@@ -4,25 +4,55 @@ import portrait from '../../../assets/images/siliezar-photo2.webp'
 import { EditorialBanner } from '../../../shared/components/EditorialBanner.jsx'
 import { PageShell } from '../../../shared/components/PageShell.jsx'
 import { ScrollPhrase } from '../../../shared/components/ScrollPhrase.jsx'
-import { listMilestones } from '../../experience/experience.data.js'
-import { about, studies } from '../../home/content/journey.content.js'
+import { useLocalized } from '../../../shared/i18n/useLocalized.js'
+import { about as aboutSource, studies as studiesSource } from '../../home/content/journey.content.js'
 import { HistoryBrainstorm } from '../components/HistoryBrainstorm.jsx'
 import { PathGraph } from '../components/PathGraph.jsx'
 import {
   HISTORY_BANNER_PHRASES,
   HISTORY_SCROLL_PHRASES,
+  historyChrome,
+  historyNarrative,
   historyPath,
+  historyStages,
 } from '../history.data.js'
 
-function shortLabel(rol) {
-  const head = String(rol).split('·')[0].trim()
-  return head.length > 22 ? `${head.slice(0, 20)}…` : head
+function QuoteLine({ quote, mark }) {
+  const open = '«'
+  const close = '»'
+  if (!quote) return null
+  const at = mark ? quote.toLowerCase().indexOf(mark.toLowerCase()) : -1
+  if (at < 0) {
+    return (
+      <>
+        {open}
+        {quote}
+        {close}
+      </>
+    )
+  }
+  return (
+    <>
+      {open}
+      {quote.slice(0, at)}
+      <span className="text-ember-500">{quote.slice(at, at + mark.length)}</span>
+      {quote.slice(at + mark.length)}
+      {close}
+    </>
+  )
 }
 
 export function HistoryPage() {
-  const milestones = listMilestones().map((item) => ({ ...item, short: shortLabel(item.rol) }))
-  const phraseA = HISTORY_SCROLL_PHRASES[0]
-  const phraseB = HISTORY_SCROLL_PHRASES[1]
+  const about = useLocalized(aboutSource)
+  const studies = useLocalized(studiesSource)
+  const path = useLocalized(historyPath)
+  const chrome = useLocalized(historyChrome)
+  const banner = useLocalized(HISTORY_BANNER_PHRASES)
+  const phrases = useLocalized(HISTORY_SCROLL_PHRASES)
+  const stages = useLocalized(historyStages)
+  const narrative = useLocalized(historyNarrative)
+  const phraseA = phrases[0]
+  const phraseB = phrases[1]
 
   return (
     <PageShell path="/history">
@@ -35,28 +65,33 @@ export function HistoryPage() {
           className="relative grid scroll-mt-28 items-start gap-12 py-16 md:py-24 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16"
         >
           <div className="relative z-10">
-            <h1 className="sr-only">Historia de Angel Siliezar</h1>
+            <h1 className="sr-only">{chrome.title}</h1>
             <blockquote className="m-0 max-w-2xl border-l-2 border-ember-500 pl-4">
               <p
                 className="m-0 font-display font-black uppercase tracking-[-0.04em] text-fog"
-                style={{ fontSize: 'clamp(1.55rem, 4.2vw, 2.85rem)', lineHeight: 0.95 }}
+                style={{ fontSize: 'clamp(1.55rem, 4.2vw, 2.85rem)', lineHeight: 1.12 }}
               >
-                «{about.quote}»
+                <QuoteLine quote={about.quote} mark={about.quoteMark} />
               </p>
               <footer className="mt-3 font-mono text-xs text-amber">{about.author}</footer>
             </blockquote>
             <p className="mt-6 font-mono text-xs text-ember-300">{about.meta}</p>
 
-            <div className="mt-8 space-y-5">
-              {about.paragraphs.map((paragraph, index) => (
+            <div className="mt-8 space-y-7">
+              {about.paragraphs.filter(Boolean).map((paragraph, index) => (
                 <p
-                  key={paragraph.slice(0, 28)}
+                  key={`${index}-${paragraph.slice(0, 24)}`}
                   className={
                     index === 0
                       ? 'max-w-2xl text-base font-medium leading-relaxed text-fog sm:text-lg'
                       : 'max-w-2xl text-base leading-relaxed text-fog-dim'
                   }
                 >
+                  {paragraph}
+                </p>
+              ))}
+              {narrative.map((paragraph) => (
+                <p key={paragraph.slice(0, 24)} className="max-w-2xl text-base leading-relaxed text-fog-dim">
                   {paragraph}
                 </p>
               ))}
@@ -68,13 +103,13 @@ export function HistoryPage() {
                 download="Angel-Siliezar-CV.pdf"
                 className="bg-ember-500 px-5 py-3 text-sm font-bold text-ink-950"
               >
-                Descargar CV
+                {chrome.downloadCv}
               </a>
               <a
                 href="/gallery"
                 className="border border-ink-700 bg-ink-900 px-5 py-3 text-sm font-bold text-fog hover:border-ember-500"
               >
-                Explorar galería
+                {chrome.exploreGallery}
               </a>
             </div>
           </div>
@@ -83,8 +118,8 @@ export function HistoryPage() {
             <figure className="comic-frame m-0 lg:ml-auto lg:max-w-md">
               <img src={portrait} alt={about.meta} className="aspect-[3/4] w-full object-cover" />
               <figcaption className="mt-3 flex items-center justify-between font-mono text-xs text-amber">
-                <span>Ciudad de Guatemala</span>
-                <span>2007 · Presente</span>
+                <span>{chrome.city}</span>
+                <span>{chrome.present}</span>
               </figcaption>
             </figure>
           </div>
@@ -99,25 +134,25 @@ export function HistoryPage() {
           <figure className="comic-frame relative z-10 m-0">
             <img
               src={llegada}
-              alt="Llegada a Fundación Kinal"
+              alt={chrome.arrivalAlt}
               className="aspect-[5/4] w-full object-cover"
             />
             <figcaption className="mt-3 flex items-center justify-between font-mono text-xs text-amber">
-              <span>Fundación Kinal</span>
-              <span>Desarrollo de Software</span>
+              <span>{chrome.kinal}</span>
+              <span>{chrome.software}</span>
             </figcaption>
           </figure>
 
           <div className="relative z-10">
             <h2
               className="m-0 font-display font-black uppercase tracking-[-0.04em] text-fog"
-              style={{ fontSize: 'clamp(2rem, 5.5vw, 4.25rem)', lineHeight: 0.92 }}
+              style={{ fontSize: 'clamp(2rem, 5.5vw, 4.25rem)', lineHeight: 1.05 }}
             >
               {about.studyTitle}
             </h2>
             <p className="mt-3 font-mono text-xs text-ember-300">{about.studyRole}</p>
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-8 space-y-6">
               {about.studyParagraphs.map((paragraph) => (
                 <p key={paragraph.slice(0, 28)} className="max-w-xl text-base leading-relaxed text-fog-dim">
                   {paragraph}
@@ -138,17 +173,17 @@ export function HistoryPage() {
 
             <p className="mt-6 flex flex-wrap gap-6 font-mono text-xs">
               <a href="/gallery?frame=1" className="text-ember-300 underline decoration-ember-500/50 underline-offset-4 hover:text-ember-500">
-                Fotos de esa etapa →
+                {chrome.photos}
               </a>
               <a href="/certificaciones" className="text-ember-300 underline decoration-ember-500/50 underline-offset-4 hover:text-ember-500">
-                Ver reconocimientos →
+                {chrome.awardsLink}
               </a>
             </p>
           </div>
         </section>
 
         <ScrollPhrase phrase={phraseB} />
-        <EditorialBanner phrases={HISTORY_BANNER_PHRASES} marquee />
+        <EditorialBanner phrases={banner} marquee />
 
         <section
           id="about-path"
@@ -157,24 +192,24 @@ export function HistoryPage() {
           <div className="relative z-10 max-w-3xl">
             <h2
               className="m-0 font-display font-black uppercase tracking-[-0.04em] text-fog"
-              style={{ fontSize: 'clamp(2rem, 5.5vw, 4.25rem)', lineHeight: 0.92 }}
+              style={{ fontSize: 'clamp(2rem, 5.5vw, 4.25rem)', lineHeight: 1.05 }}
             >
-              {historyPath.title}
+              {path.title}
             </h2>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-fog-dim">
-              {historyPath.body}
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-fog-dim">
+              {path.body}
             </p>
           </div>
 
           <div className="relative z-10 mt-10">
-            <PathGraph stages={milestones} />
+            <PathGraph stages={stages} />
           </div>
 
-          <div className="relative z-10 mt-14">
+          <div className="relative z-10 mt-16">
             <h2 className="font-display text-3xl font-black uppercase tracking-[-0.03em] text-fog sm:text-4xl">
-              Reconocimientos
+              {chrome.awardsTitle}
             </h2>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="mt-8 grid gap-6 sm:grid-cols-2">
               {about.awards.map((item) => (
                 <article key={item.title} className="comic-inset">
                   <p className="font-mono text-xs text-ember-300">{item.date}</p>
@@ -186,16 +221,16 @@ export function HistoryPage() {
           </div>
 
           <div className="relative z-10 mt-10 flex flex-wrap gap-3">
-            <a href={historyPath.ctaHref} className="bg-ember-500 px-5 py-3 text-sm font-bold text-ink-950">
-              {historyPath.cta}
+            <a href={path.ctaHref} className="bg-ember-500 px-5 py-3 text-sm font-bold text-ink-950">
+              {path.cta}
             </a>
             <a href="/projects" className="border border-ink-700 bg-ink-900 px-5 py-3 text-sm font-bold text-fog hover:border-ember-500">
-              Ver proyectos
+              {chrome.projects}
             </a>
           </div>
         </section>
 
-        <EditorialBanner phrases={HISTORY_BANNER_PHRASES} marquee className="mt-4 mb-10" />
+        <EditorialBanner phrases={banner} marquee className="mt-4 mb-10" />
         </div>
       </div>
     </PageShell>

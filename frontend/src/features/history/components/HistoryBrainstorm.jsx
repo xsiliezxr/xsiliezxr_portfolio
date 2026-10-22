@@ -3,15 +3,16 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.js'
+import { useLocalized } from '../../../shared/i18n/useLocalized.js'
 import { HISTORY_BRAINSTORM, HISTORY_CORE_PHRASE } from '../history.data.js'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
-const PHRASE_WORDS = HISTORY_CORE_PHRASE.split(' ')
-
 export function HistoryBrainstorm() {
   const rootRef = useRef(null)
   const reduce = useReducedMotion()
+  const phrase = useLocalized(HISTORY_CORE_PHRASE)
+  const phraseWords = String(phrase).split(' ')
 
   useGSAP(() => {
     const root = rootRef.current
@@ -118,7 +119,7 @@ export function HistoryBrainstorm() {
     )
 
     return undefined
-  }, { scope: rootRef, dependencies: [reduce], revertOnUpdate: true })
+  }, { scope: rootRef, dependencies: [reduce, phrase], revertOnUpdate: true })
 
   return (
     <section ref={rootRef} className="history-brain-stage" aria-hidden="true">
@@ -153,14 +154,14 @@ export function HistoryBrainstorm() {
           </div>
 
           <p data-brain-core className="history-brain-core">
-            {PHRASE_WORDS.map((word, wordIndex) => (
+            {phraseWords.map((word, wordIndex) => (
               <span key={`${word}-${wordIndex}`} className="history-brain-core-word">
                 {Array.from(word).map((char, charIndex) => (
                   <span key={`${word}-${charIndex}`} data-core-char className="history-brain-core-char">
                     {char}
                   </span>
                 ))}
-                {wordIndex < PHRASE_WORDS.length - 1 ? (
+                {wordIndex < phraseWords.length - 1 ? (
                   <span data-core-char className="history-brain-core-space">
                     {'\u00a0'}
                   </span>

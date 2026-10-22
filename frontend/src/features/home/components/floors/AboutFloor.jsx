@@ -1,5 +1,6 @@
-import { galleryFrames } from '../../../gallery/gallery.data.js'
-import { about } from '../../content/journey.content.js'
+import { useLocalized } from '../../../../shared/i18n/useLocalized.js'
+import { about as aboutSource } from '../../content/journey.content.js'
+import { filmFrames } from '../../lib/filmFrames.js'
 import { CorridorLayout, FloorCard } from './FloorCard.jsx'
 
 const FILM_ROWS = [
@@ -11,13 +12,15 @@ const FILM_ROWS = [
   { id: 'f', rotate: 4, top: '92%', origin: 'right center', shift: -1 },
 ]
 
-function filmFrames(offset) {
-  const list = [...galleryFrames, ...galleryFrames]
-  const cut = offset % galleryFrames.length
+function rowFrames(frames, offset) {
+  if (!frames.length) return []
+  const list = [...frames, ...frames]
+  const cut = offset % frames.length
   return [...list.slice(cut), ...list.slice(0, cut)]
 }
 
 export function AboutWash() {
+  const frames = useLocalized(filmFrames)
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden bg-ink-950" aria-hidden="true">
       <div className="film-unroll">
@@ -34,7 +37,7 @@ export function AboutWash() {
           >
             <div className="film-holes" />
             <div className="film-cells">
-              {filmFrames(index * 2).map((frame, cell) => (
+              {rowFrames(frames, index * 2).map((frame, cell) => (
                 <figure key={`${row.id}-${frame.id}-${cell}`} className="film-cell">
                   <img src={frame.src} alt="" />
                   <figcaption>{frame.caption}</figcaption>
@@ -51,31 +54,34 @@ export function AboutWash() {
 }
 
 function AboutLeft() {
+  const about = useLocalized(aboutSource)
   return (
     <FloorCard slot="nw" band="top" tone="film">
       <h2 className="journey-card-title text-base md:text-lg">{about.title}</h2>
-      <p className="mt-2 text-xs leading-relaxed text-fog md:text-sm">
-        Soy Angel David Siliezar López, estudiante Full Stack en Fundación Kinal. Nací el 23 de agosto de 2007 en Ciudad de Guatemala.
-      </p>
-      <p className="mt-2 hidden text-xs leading-relaxed text-fog-dim md:block">
-        A los 12 desarmé una PC vieja solo por curiosidad, limpié cada pieza y la dejé funcionando.
-      </p>
-      <p className="journey-card-meta">{about.meta}</p>
+      <div className="mt-2 space-y-2 text-xs leading-relaxed text-fog md:text-sm">
+        {about.paragraphs.map((paragraph, index) =>
+          paragraph ? <p key={index}>{paragraph}</p> : <span key={index} className="block h-2" />,
+        )}
+      </div>
+      <p className="journey-card-meta mt-2">{about.meta}</p>
     </FloorCard>
   )
 }
 
 function AboutRight() {
+  const about = useLocalized(aboutSource)
   return (
     <FloorCard slot="se" band="bottom" tone="film">
-      <p className="text-xs leading-relaxed text-fog md:text-sm">
-        El basket llegó en un 21 en el parque. En Kinal encontré programar: React, Node, bases de datos y la regla del trabajo bien hecho.
-      </p>
+      <div className="space-y-2 text-xs leading-relaxed text-fog md:text-sm">
+        <p>{about.purposeLead}</p>
+        <p>{about.purposeTeam}</p>
+        <p>{about.purposeSeek}</p>
+      </div>
       <div className="mt-2.5 hidden md:block">
-        <p className="font-mono text-[11px] text-amber">Excelencia académica · Abanderado hasta 2024</p>
+        <p className="font-mono text-[11px] text-amber">{about.readMore}</p>
       </div>
       <a href="/history" data-ui className="journey-card-link">
-        Leer la historia
+        {about.readStory}
       </a>
     </FloorCard>
   )

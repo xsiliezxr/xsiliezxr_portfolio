@@ -7,32 +7,32 @@ import learn from '../../assets/images/hobbies/learn.webp'
 export const HOBBIES = [
   {
     id: 'control',
-    label: 'Jugar videojuegos',
-    hint: 'Está en la foto del inicio.',
+    label: { es: 'Jugar videojuegos', en: 'Play video games' },
+    hint: { es: 'Está en la foto del inicio.', en: 'It is in the opening photo.' },
     image: control,
   },
   {
     id: 'cleancode',
-    label: 'Aprender',
-    hint: 'Está en la página de herramientas.',
+    label: { es: 'Aprender', en: 'Learn' },
+    hint: { es: 'Está en la página de herramientas.', en: 'It is on the tools page.' },
     image: learn,
   },
   {
     id: 'basketball',
-    label: 'Jugar basket',
-    hint: 'Está en la página de proyectos.',
+    label: { es: 'Jugar basket', en: 'Play basketball' },
+    hint: { es: 'Está en la página de proyectos.', en: 'It is on the projects page.' },
     image: basket,
   },
   {
     id: 'cap',
-    label: 'Coleccionar gorras',
-    hint: 'Está en el botón de Sil.',
+    label: { es: 'Coleccionar gorras', en: 'Collect caps' },
+    hint: { es: 'Está en el botón de Sili.', en: 'It is on Sili’s button.' },
     image: cap,
   },
   {
     id: 'headphones',
-    label: 'Escuchar música',
-    hint: 'Está en la página de contacto.',
+    label: { es: 'Escuchar música', en: 'Listen to music' },
+    hint: { es: 'Está en la página de contacto.', en: 'It is on the contact page.' },
     image: headphones,
   },
 ]

@@ -53,6 +53,7 @@ export function PageShell({ path, children, bleed = false }) {
   const mainRef = useRef(null)
   const routeKey = canonicalPath(path)
   const atmos = ATMOSPHERE[routeKey] || DEFAULT_ATMOSPHERE
+  const cornerOpen = useJourneyStore((state) => state.cornerOpen)
   usePageMeta(routeKey)
 
   useEffect(() => {
@@ -116,7 +117,7 @@ export function PageShell({ path, children, bleed = false }) {
         {children}
       </main>
       <JourneyFooter variant="page" />
-      <div className="journey-corner" style={{ right: '0.75rem' }}>
+      <div className={`journey-corner${cornerOpen ? ' is-open' : ''}`} style={{ right: '0.75rem' }}>
         <SiliPreview />
         <HobbyCounter />
       </div>

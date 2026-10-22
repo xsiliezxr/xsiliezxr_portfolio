@@ -1,7 +1,9 @@
 import { create } from 'zustand'
 import { scrollToProgress } from '../../home/lib/journeyRig.js'
+import { contact } from '../../../shared/config/contact.js'
 import { HOBBY_TOTAL } from '../../../shared/hobbies/hobbies.constants.js'
 import { knownFound, useHobbiesStore } from '../../../shared/hobbies/hobbies.store.js'
+import { useLocaleStore } from '../../../shared/i18n/locale.store.js'
 import { postChat, sanitizeChatText, SILI_MAX_CHARS, SILI_MAX_MESSAGES, SILI_SUMMARY_MAX } from '../api/sili.api.js'
 import { destinationById, floorProgress } from '../destinations.js'
 
@@ -129,6 +131,9 @@ function applyResult(result) {
   const movement = goTo(destination)
   if (movement === 'locked') return { reply: SECRET_LOCKED_REPLY, placeNote: SECRET_LOCKED_NOTE }
   if (movement !== 'moved') return { reply: '', placeNote: null }
+  if (destination.id === 'contacto' && contact.email) {
+    window.location.href = `mailto:${contact.email}`
+  }
   return { reply: `Te llevé a ${destination.label}.`, placeNote: destination.hint }
 }
 
@@ -190,7 +195,8 @@ export const useSiliStore = create((set, get) => ({
     const payload = pending.slice(skipped)
 
     try {
-      const result = await postChat({ messages: payload, summary: current.summary })
+      const lang = useLocaleStore.getState().lang === 'en' ? 'en' : 'es'
+      const result = await postChat({ messages: payload, summary: current.summary, lang })
       if (get().epoch !== epoch) return
       const applied = applyResult(result)
       const nextCount = Math.min(

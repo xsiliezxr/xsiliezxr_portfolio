@@ -1,6 +1,7 @@
 import learn from '../../../../assets/images/hobbies/learn.webp'
 import { HobbyMark } from '../../../../shared/hobbies/HobbyMark.jsx'
-import { studies } from '../../content/journey.content.js'
+import { useLocalized } from '../../../../shared/i18n/useLocalized.js'
+import { studies as studiesSource } from '../../content/journey.content.js'
 import { CorridorLayout, FloorCard } from './FloorCard.jsx'
 
 function DraftingPencil({ id, stroke = '#C2410C', accent = '#FF5B14' }) {
@@ -194,26 +195,34 @@ export function StudiesField() {
 }
 
 function StudiesLeft() {
+  const studies = useLocalized(studiesSource)
   return (
     <FloorCard slot="nw" band="top" tone="paper">
       <h2 className="journey-card-title text-base md:text-lg">{studies.leftTitle}</h2>
-      <p className="mt-2 text-xs leading-relaxed md:text-sm">{studies.leftBody}</p>
+      <div className="mt-2 space-y-3 text-xs leading-relaxed md:text-sm">
+        <p>{studies.leftBody}</p>
+        <p>{studies.leftBody2}</p>
+      </div>
       <p className="mt-2 hidden font-mono text-[11px] text-ember-800 md:block">{studies.leftNote}</p>
       <a href="/certificaciones" data-ui className="journey-card-link">
-        Ver reconocimientos
+        {studies.awardsCta}
       </a>
     </FloorCard>
   )
 }
 
 function StudiesRight() {
+  const studies = useLocalized(studiesSource)
   return (
     <FloorCard slot="se" band="bottom" tone="paper">
       <h2 className="journey-card-title text-base md:text-lg">{studies.rightTitle}</h2>
-      <p className="mt-2 text-xs leading-relaxed md:text-sm">{studies.rightBody}</p>
+      <div className="mt-2 space-y-3 text-xs leading-relaxed md:text-sm">
+        <p>{studies.rightBody}</p>
+        <p>{studies.rightBody2}</p>
+      </div>
       <p className="mt-2 hidden font-mono text-[11px] text-ember-800 md:block">{studies.rightNote}</p>
       <a href="/gallery?frame=1" data-ui className="journey-card-link">
-        Ver la galería
+        {studies.galleryCta}
       </a>
     </FloorCard>
   )

@@ -1,6 +1,7 @@
 import { WhatsappLogo } from '@phosphor-icons/react'
 import { whatsappHref } from '../../../../shared/config/contact.js'
-import { secret } from '../../content/journey.content.js'
+import { useLocalized } from '../../../../shared/i18n/useLocalized.js'
+import { secret as secretSource } from '../../content/journey.content.js'
 import { FloorCard } from './FloorCard.jsx'
 
 const FLICKER = [
@@ -20,7 +21,7 @@ export function SecretCourt() {
           viewBox="0 0 1440 900"
           preserveAspectRatio="xMidYMid slice"
         >
-          <g data-shot="hoop" transform="translate(380 40)">
+          <g data-shot="hoop" transform="translate(520 168)">
             <line x1="724" y1="268" x2="724" y2="198" stroke="#6B2508" strokeWidth="12" />
             <line x1="720" y1="268" x2="720" y2="198" stroke="#FF5B14" strokeWidth="6" />
             <line x1="684" y1="268" x2="720" y2="222" stroke="#C2410C" strokeWidth="2.5" />
@@ -67,23 +68,22 @@ export function SecretCourt() {
 
 export function SecretRoom() {
   const whatsapp = whatsappHref()
+  const secret = useLocalized(secretSource)
 
   return (
     <div className="journey-panel secret-deck">
       <FloorCard slot="nw" band="top" tone="court" className="secret-deck-card secret-deck-card-nw">
-        <p className="journey-card-meta">SALA SECRETA · NIVEL -1</p>
-        <h2 className="journey-card-title mt-1 text-base md:text-lg">Recompensas</h2>
+        <p className="journey-card-meta">{secret.kicker} · -1</p>
+        <h2 className="journey-card-title mt-1 text-base md:text-lg">{secret.title}</h2>
         <p className="mt-2 text-sm leading-relaxed text-fog">{secret.message}</p>
         <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-amber">
-          Próximamente · todavía no hay premio publicado
+          {secret.reward}
         </p>
       </FloorCard>
 
       <FloorCard slot="se" band="bottom" tone="court" className="secret-deck-card secret-deck-card-se">
-        <p className="journey-card-meta">23 DE AGOSTO · MENTALIDAD DE CANCHA</p>
-        <p className="mt-2 text-sm leading-relaxed text-fog">
-          Cumplo años el mismo día que Kobe Bryant. La beca en Leones se cortó, pero la cancha de colonia sigue.
-        </p>
+        <p className="journey-card-meta">{secret.kicker}</p>
+        <p className="mt-2 text-sm leading-relaxed text-fog">{secret.fact}</p>
         <p className="mt-2 text-sm leading-relaxed text-fog-dim">{secret.closing}</p>
         {whatsapp ? (
           <a

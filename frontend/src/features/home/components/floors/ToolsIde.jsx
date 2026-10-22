@@ -1,12 +1,9 @@
 import vscodeShot from '../../../../assets/vscode.png'
-import { tools } from '../../content/journey.content.js'
+import { useLocalized } from '../../../../shared/i18n/useLocalized.js'
+import { tools as toolsSource } from '../../content/journey.content.js'
 import { CorridorLayout, FloorCard } from './FloorCard.jsx'
 
-const SESSION = [
-  tools.files.find((file) => file.id === 'vision.py'),
-  tools.files.find((file) => file.id === 'graphics.js'),
-  tools.files.find((file) => file.id === 'server.js'),
-].filter(Boolean)
+const SESSION_IDS = ['vision.py', 'graphics.js', 'server.js']
 
 function CodeChars({ text, token }) {
   return Array.from(text).map((char, index) => (
@@ -17,6 +14,9 @@ function CodeChars({ text, token }) {
 }
 
 export function ToolsWash() {
+  const tools = useLocalized(toolsSource)
+  const session = SESSION_IDS.map((id) => tools.files.find((file) => file.id === id)).filter(Boolean)
+
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden bg-ink-950">
       <div
@@ -26,7 +26,7 @@ export function ToolsWash() {
         aria-hidden="true"
       />
 
-      <div className="vscode-mini" data-depth="mid" data-ui aria-label="VS Code en vivo">
+      <div className="vscode-mini" data-depth="mid" data-ui aria-label="VS Code">
         <aside className="vscode-activity" aria-hidden="true">
           <span data-active="1" />
           <span />
@@ -38,7 +38,7 @@ export function ToolsWash() {
           <p className="vscode-side-title">Explorer</p>
           <p className="vscode-side-folder">PORTAFOLIO</p>
           <ul className="vscode-tree">
-            {SESSION.map((file, index) => (
+            {session.map((file, index) => (
               <li key={file.id} data-ide-file={file.id} data-active={index === 0 ? '1' : '0'}>
                 {file.id}
               </li>
@@ -47,8 +47,8 @@ export function ToolsWash() {
         </aside>
 
         <div className="vscode-main">
-          <div className="vscode-tabs" role="tablist" aria-label="Archivos">
-            {SESSION.map((file, index) => (
+          <div className="vscode-tabs" role="tablist" aria-label="Files">
+            {session.map((file, index) => (
               <span
                 key={file.id}
                 role="tab"
@@ -62,7 +62,7 @@ export function ToolsWash() {
           </div>
 
           <div className="vscode-editor">
-            {SESSION.map((file, fileIndex) => (
+            {session.map((file, fileIndex) => (
               <div
                 key={file.id}
                 className="vscode-pane"
@@ -88,14 +88,14 @@ export function ToolsWash() {
 
             <aside className="vscode-chat" data-copilot="chat">
               <p className="journey-copilot-name">Copilot</p>
-              <p data-ide-hint>OpenCV, YOLO y Python leen el frame en tiempo real.</p>
+              <p data-ide-hint>{session[0]?.summary}</p>
             </aside>
           </div>
 
           <div className="vscode-status">
-            <span data-ide-status>{SESSION[0]?.id} · editing</span>
+            <span data-ide-status>{session[0]?.id} · editing</span>
             <span>UTF-8</span>
-            <span data-ide-lang>{SESSION[0]?.label || 'Python'}</span>
+            <span data-ide-lang>{session[0]?.label || 'Python'}</span>
             <span data-ide-cursor>Ln 1, Col 1</span>
           </div>
         </div>
@@ -105,34 +105,46 @@ export function ToolsWash() {
 }
 
 function ToolsLeft() {
+  const tools = useLocalized(toolsSource)
   const vision = tools.files.find((file) => file.id === 'vision.py')
   const graphics = tools.files.find((file) => file.id === 'graphics.js')
 
   return (
     <FloorCard slot="nw" band="top" tone="ide">
       <h2 className="journey-card-title">{tools.title}</h2>
-      <p>{tools.body}</p>
-      <p className="journey-card-meta">{vision.id} · {vision.label}</p>
-      <p>{vision.summary}</p>
-      <p className="journey-card-meta">{graphics.id} · {graphics.label}</p>
-      <p>{graphics.summary}</p>
+      <div className="mt-2 space-y-2 text-xs leading-relaxed md:text-sm">
+        <p>{tools.body}</p>
+        <p className="journey-card-meta">
+          {vision.id} · {vision.label}
+        </p>
+        <p>{vision.summary}</p>
+        <p className="journey-card-meta">
+          {graphics.id} · {graphics.label}
+        </p>
+        <p>{graphics.summary}</p>
+      </div>
     </FloorCard>
   )
 }
 
 function ToolsRight() {
+  const tools = useLocalized(toolsSource)
   const stack = tools.files.find((file) => file.id === 'server.js')
   const certs = tools.files.find((file) => file.id === 'certs.md')
 
   return (
     <FloorCard slot="se" band="bottom" tone="ide">
-      <p className="journey-card-meta">{stack.id} · {stack.label}</p>
+      <p className="journey-card-meta">
+        {stack.id} · {stack.label}
+      </p>
       <h2 className="journey-card-title">{stack.label}</h2>
-      <p>{stack.summary}</p>
-      <p className="journey-card-meta">{certs.label}</p>
-      <p>{certs.summary}</p>
+      <div className="mt-2 space-y-2 text-xs leading-relaxed md:text-sm">
+        <p>{stack.summary}</p>
+        <p className="journey-card-meta">{certs.label}</p>
+        <p>{certs.summary}</p>
+      </div>
       <a href="/skills" data-ui className="journey-card-link">
-        Abrir herramientas
+        {tools.skillsCta}
       </a>
     </FloorCard>
   )

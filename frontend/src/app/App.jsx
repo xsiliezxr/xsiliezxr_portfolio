@@ -8,7 +8,6 @@ import { HomePage } from '../features/home/pages/HomePage.jsx'
 import { ProjectsPage } from '../features/projects/pages/ProjectsPage.jsx'
 import { SkillsPage } from '../features/skills/pages/SkillsPage.jsx'
 import { PageShell } from '../shared/components/PageShell.jsx'
-import { SiteCursor } from '../shared/components/SiteCursor.jsx'
 import { canonicalPath } from '../shared/siteNav.js'
 
 const PAGES = {
@@ -61,15 +60,10 @@ export function App() {
   }, [])
 
   const Page = PAGES[canonicalPath(path)]
-  return (
-    <>
-      <SiteCursor />
-      {Page ? <Page /> : (
-        <PageShell path={path}>
-          <h1 className="py-16 font-display text-5xl font-black uppercase">Esa ruta no existe</h1>
-          <a href="/" className="text-ember-300">Volver al inicio</a>
-        </PageShell>
-      )}
-    </>
+  return Page ? <Page /> : (
+    <PageShell path={path}>
+      <h1 className="py-16 font-display text-5xl font-black uppercase">Esa ruta no existe</h1>
+      <a href="/" className="text-ember-300">Volver al inicio</a>
+    </PageShell>
   )
 }

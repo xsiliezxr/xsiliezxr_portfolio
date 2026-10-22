@@ -1,5 +1,5 @@
 export const SILI_MAX_CHARS = 800
-export const SILI_MAX_MESSAGES = 16
+export const SILI_MAX_MESSAGES = 20
 export const SILI_SUMMARY_MAX = 1200
 
 function fail(kind) {
@@ -24,9 +24,23 @@ export function trimMessages(messages) {
     .filter((message) => message.content.length > 0)
 }
 
-export async function postChat({ messages, summary }) {
-  const base = String(import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
-  if (!base) throw fail('network')
+function apiBase() {
+  const raw = String(import.meta.env.VITE_API_URL ?? '').trim().replace(/\/$/, '')
+  if (!raw) return '/api'
+  if (!/^https?:\/\//i.test(raw)) return raw
+  try {
+    if (typeof window !== 'undefined') {
+      const target = new URL(raw, window.location.origin)
+      if (target.origin !== window.location.origin) return '/api'
+    }
+  } catch {
+    return '/api'
+  }
+  return raw
+}
+
+export async function postChat({ messages, summary, lang = 'es' }) {
+  const base = apiBase()
 
   let response
   try {
@@ -39,6 +53,7 @@ export async function postChat({ messages, summary }) {
       body: JSON.stringify({
         messages: trimMessages(messages),
         summary: sanitizeChatText(summary ?? '', SILI_SUMMARY_MAX),
+        lang: lang === 'en' ? 'en' : 'es',
       }),
     })
   } catch {

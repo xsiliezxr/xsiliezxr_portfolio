@@ -1,13 +1,18 @@
 import cvUrl from '../../../assets/cv/cv-siliezar.pdf'
 import { PageShell } from '../../../shared/components/PageShell.jsx'
 import { contactLinks } from '../../../shared/config/contact.js'
-import { closing } from '../../home/content/journey.content.js'
+import { CHROME } from '../../../shared/i18n/copy.js'
+import { useLocaleStore } from '../../../shared/i18n/locale.store.js'
+import { useLocalized } from '../../../shared/i18n/useLocalized.js'
+import { closing as closingSource } from '../../home/content/journey.content.js'
 import { ContactForm } from '../components/ContactForm.jsx'
 import { ContactLinks } from '../components/ContactLinks.jsx'
 import { GuatemalaMap } from '../components/GuatemalaMap.jsx'
 
 export function ContactPage() {
   const links = contactLinks({ includeWhatsapp: false })
+  const closing = useLocalized(closingSource)
+  const chrome = CHROME[useLocaleStore((state) => state.lang)]
 
   return (
     <PageShell path="/contact">
@@ -18,8 +23,8 @@ export function ContactPage() {
               className="m-0 font-display font-black uppercase tracking-[-0.05em] text-fog [overflow-wrap:anywhere]"
               style={{ fontSize: 'clamp(2.25rem, 7vw, 5.5rem)', lineHeight: 0.9 }}
             >
-              Hablemos
-              <span className="mt-1 block text-ember-500">de un proyecto</span>
+              {chrome.contactTitle}
+              <span className="mt-1 block text-ember-500">{chrome.contactTitleAccent}</span>
             </h1>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-fog-dim sm:text-lg">
               {closing.status}
@@ -28,16 +33,16 @@ export function ContactPage() {
           <a
             href={cvUrl}
             download="Angel-Siliezar-CV.pdf"
-            className="inline-flex h-12 items-center justify-center bg-ember-500 px-5 text-sm font-bold text-ink-950"
+            className="inline-flex h-12 items-center justify-center bg-ember-500 px-5 text-sm font-bold text-ink-950 transition-[transform,filter] hover:brightness-110 active:scale-[0.98]"
           >
-            Descargar CV
+            {chrome.cvDownload}
           </a>
         </header>
 
         <div className="mt-10 grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
           <div className="flex min-h-0 flex-col gap-5">
-            <section aria-label="Canales" className="border border-ink-700 bg-ink-900 p-4 md:p-5">
-              <p className="m-0 font-mono text-[11px] uppercase tracking-[0.12em] text-amber">Canales</p>
+            <section aria-label={chrome.contactChannels} className="border border-ink-700 bg-ink-900 p-4 md:p-5">
+              <p className="m-0 font-mono text-[11px] uppercase tracking-[0.12em] text-amber">{chrome.contactChannels}</p>
               <div className="mt-4">
                 <ContactLinks links={links} />
               </div>
@@ -48,14 +53,14 @@ export function ContactPage() {
           </div>
 
           <section
-            aria-label="Formulario de contacto"
+            aria-label={chrome.contactFormAria}
             className="flex min-h-full flex-col border border-ink-700 bg-ink-900 p-5 text-fog md:p-6"
           >
             <h2 className="m-0 font-display text-2xl font-black uppercase tracking-[-0.03em] text-fog">
-              Escribe aquí
+              {chrome.contactForm}
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-fog-dim">
-              Si prefieres no abrir el correo, deja el mensaje aquí.
+              {chrome.contactFormHint}
             </p>
             <div className="mt-5 flex-1">
               <ContactForm />

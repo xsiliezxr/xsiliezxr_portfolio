@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Environment, Lightformer, PerformanceMonitor } from '@react-three/drei'
+import { PerformanceMonitor } from '@react-three/drei'
 import { Color, Fog } from 'three'
 import { FALLBACK_METRICS, FOV, projectFace, readSceneMetrics } from '../../lib/journeyRig.js'
 import { CameraRig } from './CameraRig.jsx'
@@ -78,26 +78,31 @@ function RoomLights({ rig, unlocked }) {
   const fogA = useRef(new Color())
   const fogB = useRef(new Color())
 
+  const lightKey = useRef(-1)
+
   useFrame(() => {
     const held = !unlocked && rig.progress > 0.92 ? 0.92 : rig.progress
-    const { prev, next, u } = mixStop(held)
-    if (ambient.current) ambient.current.intensity = lerpChannel(prev.ambient, next.ambient, u)
-    if (sun.current) {
-      sun.current.intensity = lerpChannel(prev.sun, next.sun, u)
-      sun.current.color.copy(sunA.current.set(prev.sunColor)).lerp(sunB.current.set(next.sunColor), u)
-    }
-    if (fill.current) {
-      fill.current.intensity = lerpChannel(prev.fill, next.fill, u)
-      fill.current.color.copy(fillA.current.set(prev.fillColor)).lerp(fillB.current.set(next.fillColor), u)
-    }
-    if (scene.fog) {
-      // Niebla lejana y en tinta: si copia el color del piso, el modelo se funde con el wash.
-      scene.fog.near = lerpChannel(prev.near, next.near, u)
-      scene.fog.far = lerpChannel(prev.far, next.far, u)
-      scene.fog.color.copy(fogA.current.set(prev.fog)).lerp(fogB.current.set(next.fog), u)
+    const key = Math.round(held * 200)
+    if (key !== lightKey.current) {
+      lightKey.current = key
+      const { prev, next, u } = mixStop(held)
+      if (ambient.current) ambient.current.intensity = lerpChannel(prev.ambient, next.ambient, u)
+      if (sun.current) {
+        sun.current.intensity = lerpChannel(prev.sun, next.sun, u)
+        sun.current.color.copy(sunA.current.set(prev.sunColor)).lerp(sunB.current.set(next.sunColor), u)
+      }
+      if (fill.current) {
+        fill.current.intensity = lerpChannel(prev.fill, next.fill, u)
+        fill.current.color.copy(fillA.current.set(prev.fillColor)).lerp(fillB.current.set(next.fillColor), u)
+      }
+      if (scene.fog) {
+        scene.fog.near = lerpChannel(prev.near, next.near, u)
+        scene.fog.far = lerpChannel(prev.far, next.far, u)
+        scene.fog.color.copy(fogA.current.set(prev.fog)).lerp(fogB.current.set(next.fog), u)
+      }
+      if (figure.current) figure.current.intensity = lerpChannel(prev.figure, next.figure, u)
     }
     if (figure.current) {
-      figure.current.intensity = lerpChannel(prev.figure, next.figure, u)
       figure.current.position.set(
         rig.platform.x * 0.72 + rig.pos.x * 0.28,
         rig.platform.y + 2.35,
@@ -119,45 +124,62 @@ function RoomLights({ rig, unlocked }) {
 function ScreenPlate({ rig, metrics, plateRef, groupRef }) {
   const camera = useThree((state) => state.camera)
   const size = useThree((state) => state.size)
+  const last = useRef({ opacity: '', transform: '', width: 0, height: 0, orient: '', visible: true })
 
   useFrame(() => {
     const shown = Math.min(Math.max(rig.setupVisible ?? 1, 0), 1)
-    if (groupRef?.current) {
-      groupRef.current.visible = shown > 0.02
+    const visible = shown > 0.02
+    if (groupRef?.current && last.current.visible !== visible) {
+      groupRef.current.visible = visible
+      last.current.visible = visible
     }
     const plate = plateRef.current
     if (!plate) return
     const width = Math.max(size.width, 1)
     const height = Math.max(size.height, 1)
     const portrait = width / height < 0.92
-    plate.dataset.orient = portrait ? 'tall' : 'wide'
-    plate.style.width = `${width}px`
-    plate.style.height = `${height}px`
+    const orient = portrait ? 'tall' : 'wide'
+    if (last.current.orient !== orient) {
+      plate.dataset.orient = orient
+      last.current.orient = orient
+    }
+    if (last.current.width !== width || last.current.height !== height) {
+      plate.style.width = `${width}px`
+      plate.style.height = `${height}px`
+      last.current.width = width
+      last.current.height = height
+    }
     const leaving = Math.min(Math.max(rig.zoomOut ?? 0, 0), 1)
-    if (shown < 0.03) {
-      plate.style.opacity = '0'
-      return
+    let opacity = '0'
+    let transform = 'none'
+    if (shown >= 0.03) {
+      if (!metrics || leaving < 0.04) {
+        opacity = String(shown)
+        transform = 'none'
+      } else {
+        const face = portrait ? metrics.screens.tall : metrics.screens.wide
+        const matrix = projectFace(face, camera, width, height, 1)
+        if (matrix) {
+          opacity = String(shown)
+          transform = `matrix3d(${matrix.join(',')})`
+        }
+      }
     }
-    if (!metrics || leaving < 0.04) {
-      plate.style.opacity = String(shown)
-      plate.style.transform = 'none'
-      return
+    if (last.current.opacity !== opacity) {
+      plate.style.opacity = opacity
+      last.current.opacity = opacity
     }
-    const face = portrait ? metrics.screens.tall : metrics.screens.wide
-    const matrix = projectFace(face, camera, width, height, 1)
-    if (!matrix) {
-      plate.style.opacity = '0'
-      return
+    if (last.current.transform !== transform) {
+      plate.style.transform = transform
+      last.current.transform = transform
     }
-    plate.style.opacity = String(shown)
-    plate.style.transform = `matrix3d(${matrix.join(',')})`
   })
 
   return null
 }
 
 export function JourneyCanvas({ rig, eventSource, onReady, unlocked, plateRef }) {
-  const [dpr, setDpr] = useState([1, 1.25])
+  const [dpr, setDpr] = useState(1)
   const [metrics, setMetrics] = useState(null)
   const groupRef = useRef(null)
   const readyOnce = useRef(false)
@@ -175,22 +197,28 @@ export function JourneyCanvas({ rig, eventSource, onReady, unlocked, plateRef })
       eventSource={eventSource}
       eventPrefix="client"
       camera={{ fov: FOV, near: 0.05, far: 120, position: [0, 4, 8] }}
-      gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
+      gl={{
+        alpha: true,
+        antialias: false,
+        powerPreference: 'high-performance',
+        stencil: false,
+        depth: true,
+        failIfMajorPerformanceCaveat: false,
+      }}
+      performance={{ min: 0.45, max: 1, debounce: 200 }}
       onCreated={({ gl, scene }) => {
         scene.background = null
         scene.fog = new Fog('#0a0a0a', 18, 52)
         gl.setClearColor(0x000000, 0)
+        gl.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.15))
       }}
     >
-      <PerformanceMonitor onDecline={() => setDpr(1)} />
+      <PerformanceMonitor
+        onDecline={() => setDpr(0.85)}
+        onIncline={() => setDpr(Math.min(window.devicePixelRatio || 1, 1.1))}
+      />
       <RoomLights rig={rig} unlocked={unlocked} />
-      <Environment frames={1} resolution={128}>
-        <Lightformer form="rect" intensity={2.2} color="#ff5b14" position={[0, 4, 3]} scale={[8, 3, 1]} />
-        <Lightformer form="rect" intensity={2.4} color="#f1efec" position={[-3, 4, 2]} scale={[4, 5, 1]} />
-        <Lightformer form="rect" intensity={0.8} color="#2a0e03" position={[3, 1, 4]} scale={[6, 2, 1]} />
-      </Environment>
       <Suspense fallback={null}>
-        {/* El escritorio se queda en y=0; solo la plataforma baja por el hueco. */}
         <group ref={groupRef} position={[0, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
           <SetupModel rig={rig} />
         </group>

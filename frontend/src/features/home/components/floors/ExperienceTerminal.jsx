@@ -2,7 +2,8 @@ import { useState } from 'react'
 import consoleShot from '../../../../assets/images/console.png'
 import basket from '../../../../assets/images/hobbies/basket.webp'
 import { HobbyMark } from '../../../../shared/hobbies/HobbyMark.jsx'
-import { experience } from '../../content/journey.content.js'
+import { useLocalized } from '../../../../shared/i18n/useLocalized.js'
+import { experience as experienceSource } from '../../content/journey.content.js'
 import { CorridorLayout, FloorCard } from './FloorCard.jsx'
 
 const BOOT_LINES = [
@@ -14,17 +15,18 @@ const BOOT_LINES = [
   { kind: 'plain', text: 'combex' },
 ]
 
-function replyFor(raw) {
-  const cmd = raw.trim().toLowerCase()
-  if (!cmd) return null
-  if (cmd === 'help') return experience.help
-  if (cmd === 'clear') return '__clear__'
-  return experience.replies[cmd] || experience.unknown
-}
-
 export function ExperienceWash() {
+  const experience = useLocalized(experienceSource)
   const [input, setInput] = useState('')
   const [lines, setLines] = useState(BOOT_LINES)
+
+  const replyFor = (raw) => {
+    const cmd = raw.trim().toLowerCase()
+    if (!cmd) return null
+    if (cmd === 'help') return experience.help
+    if (cmd === 'clear') return '__clear__'
+    return experience.replies[cmd] || experience.unknown
+  }
 
   const run = (event) => {
     event.preventDefault()
@@ -51,10 +53,10 @@ export function ExperienceWash() {
         style={{ '--sheet-image': `url("${consoleShot}")` }}
         aria-hidden="true"
       />
-      <div className="journey-boot" data-depth="mid" data-ui aria-label="Terminal interactiva">
+      <div className="journey-boot" data-depth="mid" data-ui aria-label="Terminal">
         <header className="journey-boot-bar">
           <span>angel@kinal:~</span>
-          <span>bash · interactivo</span>
+          <span>{experience.termLabel}</span>
         </header>
         <div className="journey-boot-body">
           <p className="journey-log">
@@ -95,33 +97,47 @@ export function ExperienceWash() {
 }
 
 function ExperienceLeft() {
+  const experience = useLocalized(experienceSource)
   const sales = experience.timeline[0]
   const hack = experience.timeline[1]
 
   return (
     <FloorCard slot="nw" band="top" tone="term">
       <h2 className="journey-card-title">{experience.title}</h2>
-      <p>{experience.body}</p>
-      <p>{sales.title}, {sales.date}. {sales.detail}</p>
-      <p>{hack.title}. {hack.detail} Cursor Buildathon en El Salvador y Hack@Latam.</p>
+      <div className="mt-2 space-y-2 text-xs leading-relaxed md:text-sm">
+        <p>{experience.body}</p>
+        <p>
+          {sales.title}, {sales.date}. {sales.detail}
+        </p>
+        <p>
+          {hack.title}. {hack.detail}
+        </p>
+      </div>
     </FloorCard>
   )
 }
 
 function ExperienceRight() {
+  const experience = useLocalized(experienceSource)
   const combex = experience.timeline[4]
   const community = experience.timeline[6]
 
   return (
     <FloorCard slot="se" band="bottom" tone="term">
       <h2 className="journey-card-title">{combex.title}</h2>
-      <p>{combex.date}. {combex.detail}</p>
-      <p>{community.title}. {community.detail}</p>
+      <div className="mt-2 space-y-2 text-xs leading-relaxed md:text-sm">
+        <p>
+          {combex.date}. {combex.detail}
+        </p>
+        <p>
+          {community.title}. {community.detail}
+        </p>
+      </div>
       <a href="/history#about-path" data-ui className="journey-card-link">
-        Arco en Historia
+        {experience.historyCta}
       </a>
       <a href="/experiencia" data-ui className="journey-card-link-quiet">
-        Registro completo
+        {experience.experienceCta}
       </a>
     </FloorCard>
   )

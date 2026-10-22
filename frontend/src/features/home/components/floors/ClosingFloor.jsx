@@ -1,5 +1,6 @@
 import { useUnlocked } from '../../../../shared/hobbies/hobbies.store.js'
-import { closing } from '../../content/journey.content.js'
+import { useLocalized } from '../../../../shared/i18n/useLocalized.js'
+import { closing as closingSource } from '../../content/journey.content.js'
 import { CorridorLayout, FloorCard } from './FloorCard.jsx'
 
 export function ClosingWash() {
@@ -28,6 +29,7 @@ export function ClosingWash() {
 }
 
 function ClosingLeft() {
+  const closing = useLocalized(closingSource)
   return (
     <FloorCard slot="nw" band="top" tone="ember">
       <h2 className="journey-card-title text-base md:text-xl">
@@ -41,6 +43,7 @@ function ClosingLeft() {
 }
 
 function ClosingRight({ unlocked }) {
+  const closing = useLocalized(closingSource)
   return (
     <FloorCard slot="se" band="bottom" tone="ember">
       <p className="text-xs leading-relaxed md:text-sm">
@@ -49,10 +52,10 @@ function ClosingRight({ unlocked }) {
       <p className="mt-2 hidden text-xs md:block">{closing.thanks}</p>
       <div className="mt-2.5 flex flex-wrap items-center gap-3">
         <a href="/contact" data-ui className="journey-card-link">
-          Contacto
+          {closing.contactCta}
         </a>
         <a href="/projects" data-ui className="journey-card-link-quiet">
-          Proyectos
+          {closing.projectsCta}
         </a>
       </div>
     </FloorCard>

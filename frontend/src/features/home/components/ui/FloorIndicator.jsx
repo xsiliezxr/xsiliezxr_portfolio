@@ -1,6 +1,6 @@
 import { LockSimple } from '@phosphor-icons/react'
 import { indicator } from '../../content/journey.content.js'
-import { scrollToProgress } from '../../lib/journeyRig.js'
+import { floorAnchor, scrollToProgress } from '../../lib/journeyRig.js'
 import { floorReadsLight, useJourneyStore } from '../../store/journey.store.js'
 import { useUnlocked } from '../../../../shared/hobbies/hobbies.store.js'
 
@@ -26,7 +26,7 @@ export function FloorIndicator() {
             disabled={locked}
             aria-current={active ? 'true' : undefined}
             aria-label={locked ? 'Piso -1 bloqueado' : `Piso ${floor.number}`}
-            onClick={() => scrollToProgress(floor.progress)}
+            onClick={() => scrollToProgress(floorAnchor(floor.id), 'smooth')}
             className={`editorial-float flex h-7 w-7 items-center justify-center font-mono text-[11px] disabled:opacity-40 md:h-8 md:w-8 md:text-xs ${
               active
                 ? onLight

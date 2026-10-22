@@ -1,5 +1,6 @@
 import { HOBBIES, HOBBY_TOTAL } from '../../../../shared/hobbies/hobbies.constants.js'
 import { knownFound, useHobbiesStore } from '../../../../shared/hobbies/hobbies.store.js'
+import { useLocalized } from '../../../../shared/i18n/useLocalized.js'
 import { LOCKED_PROGRESS, scrollToProgress } from '../../lib/journeyRig.js'
 import { useJourneyStore } from '../../store/journey.store.js'
 
@@ -14,7 +15,14 @@ function HobbyGlyph() {
   )
 }
 
+const hobbyCopy = {
+  label: { es: 'Hobbies', en: 'Hobbies' },
+  empty: { es: 'Vaciar', en: 'Clear' },
+}
+
 export function HobbyCounter() {
+  const hobbies = useLocalized(HOBBIES)
+  const copy = useLocalized(hobbyCopy)
   const found = useHobbiesStore((state) => state.found)
   const reset = useHobbiesStore((state) => state.reset)
   const shown = useJourneyStore((state) => state.chrome.counter)
@@ -31,11 +39,15 @@ export function HobbyCounter() {
   }
 
   return (
-    <section className={`hobby-counter ${shown ? 'is-shown' : ''}`} aria-label="Hobbies">
+    <section
+      data-tour="hobbies"
+      className={`hobby-counter${shown ? ' is-shown' : ''}${open ? ' is-active' : ''}`}
+      aria-label={copy.label}
+    >
       {open ? (
         <div className="hobby-panel">
           <ul className="hobby-found">
-            {HOBBIES.map((hobby) => {
+            {hobbies.map((hobby) => {
               const got = owned.includes(hobby.id)
               return (
                 <li key={hobby.id} data-found={got ? '1' : '0'}>
@@ -49,7 +61,7 @@ export function HobbyCounter() {
             })}
           </ul>
           <button type="button" data-ui className="hobby-reset" onClick={empty}>
-            Vaciar
+            {copy.empty}
           </button>
         </div>
       ) : null}
@@ -58,7 +70,7 @@ export function HobbyCounter() {
         data-ui
         className="hobby-card"
         aria-expanded={open}
-        aria-label={`Hobbies ${count}`}
+        aria-label={`${copy.label} ${count}`}
         onClick={() => setCornerOpen(open ? null : 'hobbies')}
       >
         <HobbyGlyph />

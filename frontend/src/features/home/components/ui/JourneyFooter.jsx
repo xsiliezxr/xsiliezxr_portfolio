@@ -1,32 +1,35 @@
 import headphones from '../../../../assets/images/hobbies/headphones.webp'
 import { HobbyMark } from '../../../../shared/hobbies/HobbyMark.jsx'
 import { contact, contactLinks } from '../../../../shared/config/contact.js'
+import { CHROME, NAV } from '../../../../shared/i18n/copy.js'
+import { useLocaleStore } from '../../../../shared/i18n/locale.store.js'
 import { SITE_LINKS } from '../../../../shared/siteNav.js'
-import { closing } from '../../content/journey.content.js'
+import { useLocalized } from '../../../../shared/i18n/useLocalized.js'
+import { closing as closingSource } from '../../content/journey.content.js'
 import { AsciiHands } from './AsciiHands.jsx'
 
 const YEAR = new Date().getFullYear()
-const MAP = SITE_LINKS.filter((link) => link.href !== '/')
 
-function FooterMeta({ links }) {
+function FooterMeta({ links, chrome, labels }) {
+  const map = SITE_LINKS.filter((link) => link.href !== '/')
   return (
     <>
-      <nav className="journey-footer-col" aria-label="Mapa del sitio">
-        <p className="journey-footer-label">Recorrido</p>
+      <nav className="journey-footer-col" aria-label={chrome.footerMap}>
+        <p className="journey-footer-label">{chrome.footerMap}</p>
         <ul>
-          {MAP.map((link) => (
+          {map.map((link) => (
             <li key={link.href}>
-              <a href={link.href}>{link.label}</a>
+              <a href={link.href}>{labels[link.href] || link.label}</a>
             </li>
           ))}
         </ul>
       </nav>
 
-      <nav className="journey-footer-col" aria-label="Contacto">
-        <p className="journey-footer-label">Contacto</p>
+      <nav className="journey-footer-col" aria-label={chrome.footerContact}>
+        <p className="journey-footer-label">{chrome.footerContact}</p>
         <ul>
           <li>
-            <a href="/contact">Escribirme</a>
+            <a href="/contact">{chrome.footerWrite}</a>
           </li>
           {links.map((link) => (
             <li key={link.id}>
@@ -52,10 +55,10 @@ function FooterMeta({ links }) {
   )
 }
 
-function FooterBar() {
+function FooterBar({ chrome, closing }) {
   return (
     <div className="journey-footer-bar">
-      <p className="journey-footer-copy">© {YEAR} Angel Siliezar. Hecho a mano en Guatemala.</p>
+      <p className="journey-footer-copy">© {YEAR} Angel Siliezar. {chrome.footerMade}</p>
       <p className="journey-footer-credit">
         Setup 3D:{' '}
         <a href={closing.creditModel} target="_blank" rel="noreferrer">
@@ -72,6 +75,10 @@ function FooterBar() {
 
 export function JourneyFooter({ variant = 'stage' }) {
   const links = contactLinks()
+  const lang = useLocaleStore((state) => state.lang)
+  const chrome = CHROME[lang]
+  const labels = NAV[lang]
+  const closing = useLocalized(closingSource)
   const compact = variant === 'page'
 
   if (compact) {
@@ -88,10 +95,10 @@ export function JourneyFooter({ variant = 'stage' }) {
             <p className="journey-footer-place">{closing.place}</p>
           </div>
           <div className="journey-footer-cols">
-            <FooterMeta links={links} />
+            <FooterMeta links={links} chrome={chrome} labels={labels} />
           </div>
         </div>
-        <FooterBar />
+        <FooterBar chrome={chrome} closing={closing} />
       </footer>
     )
   }
@@ -100,7 +107,7 @@ export function JourneyFooter({ variant = 'stage' }) {
     <footer className="journey-footer" data-footer>
       <div className="journey-footer-frame">
         <div className="journey-footer-rail">
-          <p className="journey-footer-kicker">Angel Siliezar · Pieza de cierre</p>
+          <p className="journey-footer-kicker">Angel Siliezar · {chrome.footerPiece}</p>
           <p className="journey-footer-place">{closing.place}</p>
         </div>
 
@@ -115,11 +122,11 @@ export function JourneyFooter({ variant = 'stage' }) {
         <div className="journey-footer-base">
           <p className="journey-footer-status">{closing.status}</p>
           <div className="journey-footer-cols">
-            <FooterMeta links={links} />
+            <FooterMeta links={links} chrome={chrome} labels={labels} />
           </div>
         </div>
 
-        <FooterBar />
+        <FooterBar chrome={chrome} closing={closing} />
       </div>
     </footer>
   )

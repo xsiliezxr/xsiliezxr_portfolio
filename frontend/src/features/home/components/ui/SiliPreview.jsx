@@ -4,7 +4,7 @@ import { useJourneyStore } from '../../store/journey.store.js'
 import { SiliFace } from './SiliFace.jsx'
 
 const LINES = [
-  'Hola, soy Sil. Pregúntame cuando quieras.',
+  'Hola, soy Sili. Pregúntame cuando quieras.',
   'Historia, proyectos y contacto tienen su propia página.',
   'Si lo puedes imaginar, lo puedes programar.',
 ]
@@ -59,7 +59,7 @@ export function SiliPreview() {
   }, [shown, open])
 
   return (
-    <div className={`sili-dock ${shown ? 'is-shown' : ''}`}>
+    <div data-tour="sili" className={`sili-dock${shown ? ' is-shown' : ''}${open ? ' is-active' : ''}`}>
       {open ? (
         <div data-ui className="sili-panel p-3 text-fog">
           <SiliChat />
@@ -70,7 +70,7 @@ export function SiliPreview() {
       ) : null}
       {!open && bubble ? (
         <div className="sili-bubble" aria-live="polite">
-          <p className="sili-bubble-name">Sil</p>
+          <p className="sili-bubble-name">Sili</p>
           <p className="sili-bubble-line">{LINES[line]}</p>
         </div>
       ) : null}
@@ -79,7 +79,7 @@ export function SiliPreview() {
         data-ui
         className="sili-card"
         aria-expanded={open}
-        aria-label="Abrir a Sil"
+        aria-label="Abrir a Sili"
         onClick={() => setCornerOpen(open ? null : 'sili')}
       >
         <SiliFace />

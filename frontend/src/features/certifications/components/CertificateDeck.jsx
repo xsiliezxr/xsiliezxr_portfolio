@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useLocalized } from '../../../shared/i18n/useLocalized.js'
 
 const PEEK = 3.5
 
-export function CertificateDeck({ items }) {
-  const [order, setOrder] = useState(() => items.map((item) => item.id))
+export function CertificateDeck({ items: source }) {
+  const items = useLocalized(source)
+  const [order, setOrder] = useState(() => (source ?? []).map((item) => item.id))
   const [sheet, setSheet] = useState('diploma')
   const byId = new Map(items.map((item) => [item.id, item]))
   const active = byId.get(order[0]) ?? items[0]

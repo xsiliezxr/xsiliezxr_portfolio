@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocalized } from '../../../shared/i18n/useLocalized.js'
 import { ARCHIVE_FILTERS } from '../projects.data.js'
 
 function ExternalLink({ href, className, children }) {
@@ -10,8 +11,9 @@ function ExternalLink({ href, className, children }) {
 }
 
 export function ProjectArchive({ projects }) {
+  const localized = useLocalized(projects)
   const [filter, setFilter] = useState('all')
-  const visible = filter === 'all' ? projects : projects.filter((project) => project.group === filter)
+  const visible = filter === 'all' ? localized : localized.filter((project) => project.group === filter)
   const countLabel = String(visible.length).padStart(2, '0')
 
   return (

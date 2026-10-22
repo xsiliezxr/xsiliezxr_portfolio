@@ -1,29 +1,77 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import learn from '../../../assets/images/hobbies/learn.webp'
 import { FrameDialog } from '../../../shared/components/FrameDialog.jsx'
 import { HobbyMark } from '../../../shared/hobbies/HobbyMark.jsx'
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.js'
+import { GALLERY } from '../../../shared/i18n/copy.js'
+import { useLocaleStore } from '../../../shared/i18n/locale.store.js'
+import { useLocalized } from '../../../shared/i18n/useLocalized.js'
 import { galleryFrames as frameRecords } from '../gallery.data.js'
 
-const CANVAS = { width: 2820, height: 2350, refWidth: 1440, refHeight: 900 }
-
-const LAYOUT = [
-  { tx: -445, ty: -285, w: 460, h: 190, aspect: 'landscapeWide' },
-  { tx: 460, ty: 270, w: 380, h: 240, aspect: 'landscape' },
-  { tx: -455, ty: 255, w: 420, h: 270, aspect: 'landscape' },
-  { tx: 0, ty: -330, w: 210, h: 210, aspect: 'medium' },
-  { tx: 480, ty: -215, w: 220, h: 330, aspect: 'portrait' },
-  { tx: 0, ty: 280, w: 220, h: 300, aspect: 'portrait' },
+const SIZES = [
+  { w: 440, h: 200, aspect: 'landscapeWide' },
+  { w: 380, h: 240, aspect: 'landscape' },
+  { w: 220, h: 320, aspect: 'portrait' },
+  { w: 240, h: 240, aspect: 'medium' },
 ]
 
-const FALLBACK_LAYOUT = { tx: 0, ty: 120, w: 280, h: 200, aspect: 'landscape' }
+const STEP = { x: 520, y: 420 }
 
-const galleryFrames = frameRecords.map((frame, index) => ({
-  ...frame,
-  ...(LAYOUT[index] ?? FALLBACK_LAYOUT),
-}))
+function spiralCells(count) {
+  const cells = [[0, 0]]
+  const dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+  let x = 0
+  let y = 0
+  let dir = 0
+  let leg = 1
+  while (cells.length < count) {
+    for (let turn = 0; turn < 2 && cells.length < count; turn += 1) {
+      const [dx, dy] = dirs[dir % 4]
+      for (let step = 0; step < leg && cells.length < count; step += 1) {
+        x += dx
+        y += dy
+        cells.push([x, y])
+      }
+      dir += 1
+    }
+    leg += 1
+  }
+  return cells
+}
 
-function StoryFrame({ frame, onEnter, onLeave, onOpen }) {
+function sceneFor(records) {
+  const cells = spiralCells(records.length)
+  const frames = records.map((frame, index) => {
+    const size = SIZES[index % SIZES.length]
+    const [cx, cy] = cells[index]
+    return {
+      ...frame,
+      tx: cx * STEP.x,
+      ty: cy * STEP.y,
+      w: size.w,
+      h: size.h,
+      aspect: size.aspect,
+    }
+  })
+  let reachX = 280
+  let reachY = 220
+  for (const frame of frames) {
+    reachX = Math.max(reachX, Math.abs(frame.tx) + frame.w / 2)
+    reachY = Math.max(reachY, Math.abs(frame.ty) + frame.h / 2)
+  }
+  const pad = 220
+  return {
+    canvas: {
+      width: Math.ceil(reachX * 2 + pad),
+      height: Math.ceil(reachY * 2 + pad),
+      refWidth: 1440,
+      refHeight: 900,
+    },
+    frames,
+  }
+}
+
+function StoryFrame({ frame, openLabel, onEnter, onLeave, onOpen }) {
   const origin = useRef(null)
 
   return (
@@ -36,7 +84,7 @@ function StoryFrame({ frame, onEnter, onLeave, onOpen }) {
       }}
       role="button"
       tabIndex={0}
-      aria-label={`Abrir detalle: ${frame.title}`}
+      aria-label={`${openLabel}: ${frame.title}`}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
       onFocus={onEnter}
@@ -75,6 +123,10 @@ function StoryFrame({ frame, onEnter, onLeave, onOpen }) {
 
 export function SpatialGallery() {
   const reduced = useReducedMotion()
+  const ui = GALLERY[useLocaleStore((state) => state.lang)]
+  const scene = useMemo(() => sceneFor(frameRecords), [])
+  const frames = useLocalized(scene.frames)
+  const canvas = scene.canvas
   const stageRef = useRef(null)
   const canvasRef = useRef(null)
   const target = useRef({ x: 0, y: 0 })
@@ -84,22 +136,27 @@ export function SpatialGallery() {
   const lastTouch = useRef({ x: 0, y: 0 })
   const [scale, setScale] = useState(1)
   const [caption, setCaption] = useState('')
-  const [selected, setSelected] = useState(null)
+  const [selectedId, setSelectedId] = useState(null)
+  const selected = frames.find((frame) => frame.id === selectedId) ?? null
+  const urlApplied = useRef(false)
 
   useEffect(() => {
+    if (urlApplied.current) return undefined
+    urlApplied.current = true
     const params = new URLSearchParams(window.location.search)
     const frameParam = params.get('frame')
-    if (!frameParam) return
-    const match = galleryFrames.find((frame, index) => frame.id === frameParam || String(index + 1) === frameParam)
-    if (match) setSelected(match)
-  }, [])
+    if (!frameParam) return undefined
+    const match = frames.find((frame, index) => frame.id === frameParam || String(index + 1) === frameParam)
+    if (match) setSelectedId(match.id)
+    return undefined
+  }, [frames])
 
   useEffect(() => {
     const stage = stageRef.current
     if (!stage) return undefined
     const measure = () => {
       const rect = stage.getBoundingClientRect()
-      const next = Math.min(rect.width / CANVAS.refWidth, rect.height / CANVAS.refHeight)
+      const next = Math.min(rect.width / canvas.refWidth, rect.height / canvas.refHeight)
       scaleRef.current = next
       setScale(next)
     }
@@ -110,7 +167,7 @@ export function SpatialGallery() {
   }, [])
 
   useEffect(() => {
-    if (reduced || selected) return undefined
+    if (reduced || selectedId) return undefined
     let frame = 0
     const tick = () => {
       current.current.x += (target.current.x - current.current.x) * 0.06
@@ -123,11 +180,11 @@ export function SpatialGallery() {
     }
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
-  }, [reduced, selected])
+  }, [reduced, selectedId])
 
   useEffect(() => {
     const stage = stageRef.current
-    if (!stage || reduced || selected) return undefined
+    if (!stage || reduced || selectedId) return undefined
     const onPointerMove = (event) => {
       if (dragging.current) return
       const rect = stage.getBoundingClientRect()
@@ -168,21 +225,21 @@ export function SpatialGallery() {
       stage.removeEventListener('touchend', onTouchEnd)
       stage.removeEventListener('touchcancel', onTouchEnd)
     }
-  }, [reduced, selected])
+  }, [reduced, selectedId])
 
   return (
-    <section ref={stageRef} className="relative h-[calc(100dvh-var(--masthead))] w-full touch-none overflow-hidden" aria-label="Galería">
+    <section ref={stageRef} className="relative h-[calc(100dvh-var(--masthead))] w-full touch-none overflow-hidden" aria-label={ui.label}>
       <header className="pointer-events-none absolute top-4 left-4 z-[3] w-[min(86vw,22rem)] sm:top-6 sm:left-8">
         <div className="flex items-end justify-between gap-3">
           <h1 className="m-0 font-display text-[clamp(1.5rem,3.8vw,2.25rem)] font-black uppercase leading-[0.92] tracking-[-0.04em] text-fog">
-            Cosas que me pasaron
+            {ui.title}
           </h1>
           <span className="shrink-0 font-mono text-[11px] text-amber">
-            {String(galleryFrames.length).padStart(2, '0')} fotos
+            {String(frames.length).padStart(2, '0')} {ui.photos}
           </span>
         </div>
         <p className="m-0 mt-2 font-mono text-[11px] text-ember-300">
-          Mueve el cursor o arrastra · Clic para abrir
+          {ui.hint}
         </p>
         {caption && !selected ? (
           <p className="m-0 mt-2.5 truncate font-mono text-xs text-amber">
@@ -195,9 +252,9 @@ export function SpatialGallery() {
           ref={canvasRef}
           className="relative will-change-transform"
           style={{
-            width: CANVAS.width,
-            height: CANVAS.height,
-            transform: reduced || selected ? `scale(${scale})` : undefined,
+            width: canvas.width,
+            height: canvas.height,
+            transform: reduced || selectedId ? `scale(${scale})` : undefined,
             transformOrigin: 'center center',
           }}
         >
@@ -206,22 +263,23 @@ export function SpatialGallery() {
             image={learn}
             className="hobby-mark-gallery"
           />
-          {galleryFrames.map((frame) => (
+          {frames.map((frame) => (
             <StoryFrame
               key={frame.id}
               frame={frame}
+              openLabel={ui.open}
               onEnter={() => setCaption(frame.caption)}
               onLeave={() => setCaption('')}
-              onOpen={() => setSelected(frame)}
+              onOpen={() => setSelectedId(frame.id)}
             />
           ))}
         </div>
       </div>
-      <FrameDialog open={Boolean(selected)} title={selected?.title ?? 'Foto'} onClose={() => setSelected(null)}>
+      <FrameDialog open={Boolean(selected)} title={selected?.title ?? ui.photo} closeLabel={ui.close} onClose={() => setSelectedId(null)}>
         {({ titleId, closeRef }) => (
           <>
-            <div className={`relative bg-ink-950 ${selected?.aspect === 'portrait' ? 'min-h-[42vh] md:min-h-[28rem]' : 'min-h-[34vh] md:min-h-[24rem]'}`}>
-              {selected?.src ? <img src={selected.src} alt={selected.alt} className="absolute inset-0 h-full w-full object-cover" /> : null}
+            <div className="relative min-h-[38vh] bg-paper md:min-h-[28rem]">
+              {selected?.src ? <img src={selected.src} alt={selected.alt} className="absolute inset-0 size-full object-contain p-4" /> : null}
             </div>
             <div className="flex flex-col justify-between gap-6 px-5 py-6">
               <div>
@@ -236,10 +294,10 @@ export function SpatialGallery() {
               <button
                 ref={closeRef}
                 type="button"
-                onClick={() => setSelected(null)}
+                onClick={() => setSelectedId(null)}
                 className="self-start rounded-[12px] bg-ember-500 px-4 py-2.5 font-mono text-xs font-bold text-ink-950 transition-colors hover:bg-ember-300"
               >
-                Cerrar
+                {ui.close}
               </button>
             </div>
           </>

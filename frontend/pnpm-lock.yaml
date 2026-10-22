@@ -20,6 +20,9 @@ importers:
       '@react-three/fiber':
         specifier: 9.8.1
         version: 9.8.1(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(three@0.186.1)
+      driver.js:
+        specifier: 1.10.2
+        version: 1.10.2
       gsap:
         specifier: 3.15.0
         version: 3.15.0
@@ -710,6 +713,9 @@ packages:
 
   draco3d@1.5.7:
     resolution: {integrity: sha512-m6WCKt/erDXcw+70IJXnG7M3awwQPAsZvJGX5zY7beBqpELw6RDGkYVU0W43AFxye4pDZ5i2Lbyc/NNGqwjUVQ==}
+
+  driver.js@1.10.2:
+    resolution: {integrity: sha512-L/EMTriJPAmg+5kIFmrjzt3TI+1NblhHOV/UZkfpgU/uxhSflGheynMBxk5oImDSy6seAEkIl6MzNOc0zdoKtg==}
 
   electron-to-chromium@1.5.452:
     resolution: {integrity: sha512-cVvk1YBSj6571VmV6hdJTqj94Y79xSu8cj6Y9t6ae4Y4431z8/7EJFvu3rVp90xhfuv9BpPKUmaLfTo4+FOGBg==}
@@ -1683,6 +1689,8 @@ snapshots:
   detect-libc@2.1.2: {}
 
   draco3d@1.5.7: {}
+
+  driver.js@1.10.2: {}
 
   electron-to-chromium@1.5.452: {}
 

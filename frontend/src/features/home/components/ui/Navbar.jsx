@@ -7,6 +7,7 @@ export function Navbar() {
   return (
     <header
       data-ui
+      data-tour="nav"
       aria-hidden={shown ? undefined : true}
       inert={shown ? undefined : true}
       className={`masthead-shell fixed z-[90] ${shown ? 'masthead-shell-on' : ''}`}

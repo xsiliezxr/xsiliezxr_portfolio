@@ -3,6 +3,7 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.js'
+import { useLocalized } from '../../../shared/i18n/useLocalized.js'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -268,8 +269,9 @@ function FeaturedScrub({ projects }) {
 }
 
 export function FeaturedProjects({ projects }) {
+  const localized = useLocalized(projects)
   const reduced = useReducedMotion()
-  if (!projects?.length) return null
-  if (reduced) return <FeaturedStack projects={projects} />
-  return <FeaturedScrub projects={projects} />
+  if (!localized?.length) return null
+  if (reduced) return <FeaturedStack projects={localized} />
+  return <FeaturedScrub projects={localized} />
 }
