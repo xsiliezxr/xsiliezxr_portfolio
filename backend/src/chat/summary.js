@@ -1,7 +1,7 @@
-export const SUMMARY_MESSAGE_THRESHOLD = 12
-export const SUMMARY_CHAR_THRESHOLD = 6000
-export const RECENT_TURNS = 6
-export const SUMMARY_MAX_CHARS = 700
+export const SUMMARY_MESSAGE_THRESHOLD = 20
+export const SUMMARY_CHAR_THRESHOLD = 8000
+export const RECENT_TURNS = 20
+export const SUMMARY_MAX_CHARS = 900
 
 // El historial visible no se toca: este párrafo solo acorta lo que ve el modelo.
 export function foldTranscript(previousSummary, messages) {
@@ -16,7 +16,7 @@ export function foldTranscript(previousSummary, messages) {
   const old = messages.slice(0, -RECENT_TURNS)
   const chunk = old
     .filter((message) => message.content)
-    .map((message) => `${message.role === 'user' ? 'Visitante' : 'Sil'}: ${message.content}`)
+    .map((message) => `${message.role === 'user' ? 'Visitante' : 'Sili'}: ${message.content}`)
     .join(' ')
   const merged = [summary, chunk].filter(Boolean).join(' ')
 

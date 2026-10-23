@@ -1,4 +1,4 @@
-import { ChatInputError, prepareChat, replySaysMissing } from './chat.boundary.js'
+import { ChatInputError, GAP_REPLY, prepareChat, replySaysMissing } from './chat.boundary.js'
 import { ChatUnavailableError, CHAT_UNAVAILABLE_REPLY, replyToChat } from './chat.service.js'
 
 export async function postChat(req, res, next) {
@@ -10,25 +10,27 @@ export async function postChat(req, res, next) {
       return
     }
 
-    // Gaps ya no se exponen ni se persisten en prod serverless; el chat sigue igual.
     if (prepared.needsGap) {
-      console.info('chat gap', { query: prepared.query?.slice(0, 120), matched: prepared.matched })
+      console.info('chat gap', { matched: prepared.matched.length })
+      res.status(200).json(toBody(GAP_REPLY[prepared.lang] || GAP_REPLY.es, prepared))
+      return
     }
 
-    const reply = await replyToChat(prepared)
-    if (replySaysMissing(reply)) {
-      console.info('chat missing', { query: prepared.query?.slice(0, 120) })
+    const result = await replyToChat(prepared)
+    if (replySaysMissing(result.reply)) {
+      console.info('chat missing', { matched: prepared.matched.length })
     }
 
-    res.status(200).json(toBody(reply, prepared))
+    res.status(200).json(toBody(result.reply, prepared, result.destination))
   } catch (error) {
     if (error instanceof ChatInputError) {
       res.status(400).json({ error: 'Invalid request payload' })
       return
     }
     if (error instanceof ChatUnavailableError) {
+      const lang = prepared?.lang || error.lang || 'es'
       res.status(503).json({
-        reply: CHAT_UNAVAILABLE_REPLY,
+        reply: CHAT_UNAVAILABLE_REPLY[lang] || CHAT_UNAVAILABLE_REPLY.es,
         destination: null,
         summary: prepared?.summary ?? '',
         covered: prepared?.covered ?? 0,
@@ -39,10 +41,10 @@ export async function postChat(req, res, next) {
   }
 }
 
-function toBody(reply, prepared) {
+function toBody(reply, prepared, destination = null) {
   return {
     reply: reply ?? '',
-    destination: prepared.destination,
+    destination: destination || prepared.destination || null,
     summary: prepared.summary,
     covered: prepared.covered,
   }

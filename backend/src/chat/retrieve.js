@@ -1,10 +1,38 @@
-import { CHUNKS, GENERAL_CHUNK_IDS, section } from './knowledge.js'
+import { CHUNKS, GENERAL_CHUNK_IDS, section, contactPayload } from './knowledge.js'
 
 const STOP = new Set([
-  'a', 'al', 'de', 'del', 'el', 'la', 'las', 'los', 'un', 'una', 'y', 'o', 'en', 'con', 'por', 'para',
-  'que', 'se', 'su', 'sus', 'es', 'son', 'me', 'te', 'lo', 'le', 'mi', 'tu', 'hay', 'como', 'mas',
+  'a', 'al', 'de', 'del', 'la', 'las', 'los', 'un', 'una', 'y', 'o', 'en', 'con', 'por', 'para',
+  'que', 'se', 'su', 'sus', 'es', 'son', 'me', 'te', 'lo', 'le', 'mi', 'hay', 'como', 'mas',
   'the', 'of', 'and', 'or', 'to', 'in', 'is', 'are', 'what', 'who', 'how',
 ])
+
+const ALIASES = {
+  anos: ['edad', 'nacimiento'],
+  años: ['edad', 'nacimiento'],
+  edad: ['anos', 'nacimiento'],
+  contactarlo: ['contacto'],
+  contactar: ['contacto'],
+  contactarme: ['contacto'],
+  escribirle: ['contacto', 'email'],
+  correo: ['email', 'contacto'],
+  mail: ['email', 'contacto'],
+  apartado: ['contacto', 'pagina', 'seccion'],
+  seccion: ['contacto', 'pagina', 'pisos'],
+  pagina: ['contacto', 'seccion'],
+  puedes: ['sili', 'ayuda', 'agente'],
+  hacer: ['sili', 'ayuda'],
+  sirves: ['sili', 'ayuda'],
+  ayuda: ['sili', 'agente'],
+  manejas: ['skills', 'habilidades', 'angel'],
+  maneja: ['skills', 'habilidades', 'angel'],
+  sabe: ['skills', 'habilidades'],
+  sabes: ['skills', 'habilidades'],
+  anterior: ['sili'],
+  pregunte: ['sili'],
+  preguntaste: ['sili'],
+  proyectos: ['proyecto'],
+  cuantos: ['proyectos', 'edad'],
+}
 
 export function foldAccents(value) {
   return String(value ?? '')
@@ -14,10 +42,18 @@ export function foldAccents(value) {
 }
 
 function queryWords(query) {
-  return foldAccents(query)
+  const base = foldAccents(query)
     .split(/[^a-z0-9+#.]+/i)
     .map((word) => word.trim())
     .filter((word) => word.length > 1 && !STOP.has(word))
+
+  const expanded = new Set(base)
+  for (const word of base) {
+    const aliases = ALIASES[word]
+    if (!aliases) continue
+    for (const alias of aliases) expanded.add(foldAccents(alias))
+  }
+  return [...expanded]
 }
 
 function scoreChunk(chunk, words) {
@@ -54,7 +90,10 @@ export function generalChunks(limit = 4) {
 }
 
 export function formatKnowledge(chunks) {
-  return chunks.map((chunk) => chunk.text ?? section(chunk.title, '')).join('\n\n')
+  return chunks.map((chunk) => {
+    if (chunk.id === 'contact') return section('Contacto', contactPayload())
+    return chunk.text ?? section(chunk.title, '')
+  }).join('\n\n')
 }
 
 export function bestRetrievalScore(chunks) {

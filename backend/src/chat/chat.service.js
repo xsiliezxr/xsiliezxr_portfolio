@@ -1,81 +1,115 @@
 import { GoogleGenAI } from '@google/genai'
+import { env } from '../../configs/env.js'
 import { apiKey, model, provider } from '../../configs/llm.js'
-import { INJECTION_REPLY } from './destinations.js'
+import { CHAT_MESSAGE_CAP, normalizeLang } from './chat.boundary.js'
+import { INJECTION_REPLY, isDestination } from './destinations.js'
 import { PROMPT_LEAK_MARKERS, buildChatInput } from './prompt.js'
 
-const TIMEOUT_MS = 20_000
+const TIMEOUT_MS = 25_000
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
-const BRIDGE = '{"reply":"Listo."}'
+const GROQ_FALLBACK_MODEL = 'openai/gpt-oss-20b'
+const GEMINI_FALLBACK_MODEL = 'gemini-3.5-flash-lite'
+const REPLY_MAX = 900
+const OUTPUT_TOKENS = 420
 
-export const CHAT_UNAVAILABLE_REPLY = 'Sili no está disponible en este momento.'
+export const CHAT_UNAVAILABLE_REPLY = {
+  es: 'Sili no está disponible en este momento.',
+  en: 'Sili is unavailable right now.',
+}
 
 export class ChatUnavailableError extends Error {
-  constructor() {
-    super(CHAT_UNAVAILABLE_REPLY)
+  constructor(lang = 'es') {
+    super(CHAT_UNAVAILABLE_REPLY[normalizeLang(lang)])
     this.name = 'ChatUnavailableError'
     this.status = 503
+    this.lang = normalizeLang(lang)
   }
 }
 
-export async function replyToChat({ summary, recent, query }) {
-  const recentChars = recent.reduce((sum, turn) => sum + turn.content.length, 0)
-  console.info(`chat context summaryChars=${summary.length} recentTurns=${recent.length} recentChars=${recentChars}`)
+export async function replyToChat(prepared) {
+  const lang = normalizeLang(prepared?.lang)
+  const query = prepared?.query ?? ''
+  const summary = prepared?.summary ?? ''
+  const thread = Array.isArray(prepared?.recent) ? prepared.recent : []
+  const recentChars = thread.reduce((sum, turn) => sum + turn.content.length, 0)
+  console.info(`chat context summaryChars=${summary.length} recentTurns=${thread.length} recentChars=${recentChars} lang=${lang}`)
 
-  if (!apiKey) throw new ChatUnavailableError()
+  const { instructions, data } = buildChatInput(summary, query, lang)
+  const conversation = conversationForModel(data, thread, query, lang)
 
-  const { instructions, data } = buildChatInput(summary, query ?? '')
-  const conversation = conversationForModel(data, recent)
-
-  try {
-    const raw = provider === 'groq'
-      ? await callGroq(instructions, conversation)
-      : await callGemini(instructions, conversation)
-    return publicReply(raw)
-  } catch (error) {
-    if (error instanceof ChatUnavailableError) throw error
-    throw new ChatUnavailableError()
+  const errors = []
+  for (const attempt of providersToTry()) {
+    try {
+      const raw = attempt.provider === 'groq'
+        ? await callGroq(instructions, conversation, attempt.apiKey, attempt.model)
+        : await callGemini(instructions, conversation, attempt.apiKey, attempt.model)
+      return publicReply(raw, lang)
+    } catch (error) {
+      errors.push(`${attempt.provider}:${error?.message || error}`)
+    }
   }
+
+  console.error('chat llm failed', errors.join(' | '))
+  throw new ChatUnavailableError(lang)
 }
 
-async function callGemini(instructions, conversation) {
-  if (provider !== 'gemini') throw new ChatUnavailableError()
+function providersToTry() {
+  const list = []
+  if (provider === 'gemini' && apiKey) {
+    list.push({ provider: 'gemini', apiKey, model })
+  }
+  if (provider === 'groq' && apiKey) {
+    list.push({ provider: 'groq', apiKey, model })
+  }
+  if (env.GROQ_API_KEY && !list.some((item) => item.provider === 'groq')) {
+    list.push({ provider: 'groq', apiKey: env.GROQ_API_KEY, model: GROQ_FALLBACK_MODEL })
+  } else if (provider === 'groq' && apiKey && model !== GROQ_FALLBACK_MODEL) {
+    list.push({ provider: 'groq', apiKey, model: GROQ_FALLBACK_MODEL })
+  }
+  if (env.GEMINI_API_KEY && provider === 'gemini' && model !== GEMINI_FALLBACK_MODEL) {
+    list.push({ provider: 'gemini', apiKey: env.GEMINI_API_KEY, model: GEMINI_FALLBACK_MODEL })
+  } else if (env.GEMINI_API_KEY && !list.some((item) => item.provider === 'gemini')) {
+    list.push({ provider: 'gemini', apiKey: env.GEMINI_API_KEY, model: GEMINI_FALLBACK_MODEL })
+  }
+  if (!list.length) throw new ChatUnavailableError()
+  return list
+}
 
-  const ai = new GoogleGenAI({ apiKey, vertexai: false })
+async function callGemini(instructions, conversation, key, modelName) {
+  const ai = new GoogleGenAI({ apiKey: key, vertexai: false })
   const response = await ai.models.generateContent({
-    model,
+    model: modelName,
     contents: conversation.map((turn) => ({
       role: turn.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: turn.content }],
     })),
     config: {
       systemInstruction: instructions,
-      temperature: 0.3,
-      maxOutputTokens: 400,
+      temperature: 0.35,
+      maxOutputTokens: OUTPUT_TOKENS,
       responseMimeType: 'application/json',
       abortSignal: AbortSignal.timeout(TIMEOUT_MS),
-      // Apaga el pensamiento para que los 400 tokens salgan en el JSON.
-      thinkingConfig: { thinkingBudget: 0 },
     },
   })
 
   if (typeof response.text !== 'string' || response.text.trim() === '') {
-    throw new ChatUnavailableError()
+    throw new Error('empty gemini reply')
   }
   return response.text
 }
 
-async function callGroq(instructions, conversation) {
+async function callGroq(instructions, conversation, key, modelName) {
   const response = await fetch(GROQ_URL, {
     method: 'POST',
     signal: AbortSignal.timeout(TIMEOUT_MS),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${key}`,
     },
     body: JSON.stringify({
-      model,
-      temperature: 0.3,
-      max_tokens: 400,
+      model: modelName,
+      temperature: 0.35,
+      max_tokens: OUTPUT_TOKENS,
       response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: instructions },
@@ -86,21 +120,24 @@ async function callGroq(instructions, conversation) {
 
   if (!response.ok) {
     await response.arrayBuffer().catch(() => {})
-    throw new ChatUnavailableError()
+    throw new Error(`groq ${response.status}`)
   }
 
   const payload = await response.json()
   const text = payload?.choices?.[0]?.message?.content
-  if (typeof text !== 'string' || text.trim() === '') throw new ChatUnavailableError()
+  if (typeof text !== 'string' || text.trim() === '') throw new Error('empty groq reply')
   return text
 }
 
-function publicReply(raw) {
+function publicReply(raw, lang = 'es') {
   const text = raw.trim()
   const parsed = parseJsonObject(text)
   const reply = parsed && typeof parsed.reply === 'string' ? parsed.reply.trim() : text
-  if (!reply || leaksPrompt(reply)) return INJECTION_REPLY
-  return reply.slice(0, 1500)
+  const destination = parsed && isDestination(parsed.destination) ? parsed.destination : null
+  if (!reply || leaksPrompt(reply)) {
+    return { reply: INJECTION_REPLY[normalizeLang(lang)], destination: null }
+  }
+  return { reply: reply.slice(0, REPLY_MAX), destination }
 }
 
 function leaksPrompt(text) {
@@ -131,20 +168,28 @@ function tryParse(value) {
   }
 }
 
-function conversationForModel(data, recent) {
-  const literal = recent[0]?.role === 'assistant' ? recent.slice(1) : recent
+function conversationForModel(data, recent, query, lang = 'es') {
+  const bridge = lang === 'en' ? '{"reply":"Ready.","destination":null}' : '{"reply":"Listo.","destination":null}'
   const turns = [
     { role: 'user', content: data },
-    { role: 'assistant', content: BRIDGE },
+    { role: 'assistant', content: bridge },
   ]
-  for (const turn of literal) {
-    const safe = turn.content.replaceAll('<', '').replaceAll('>', '')
-    const last = turns[turns.length - 1]
-    if (last.role === turn.role) {
-      last.content = `${last.content}\n${safe}`
-      continue
-    }
-    turns.push({ role: turn.role, content: safe })
+
+  const thread = recent
+    .filter((turn) => turn && (turn.role === 'user' || turn.role === 'assistant') && typeof turn.content === 'string')
+    .map((turn) => ({
+      role: turn.role,
+      content: turn.content.replaceAll('<', '').replaceAll('>', '').trim().slice(0, 700),
+    }))
+    .filter((turn) => turn.content)
+    .slice(-CHAT_MESSAGE_CAP)
+
+  for (const turn of thread) turns.push(turn)
+
+  const safe = String(query).replaceAll('<', '').replaceAll('>', '').trim()
+  const last = thread[thread.length - 1]
+  if (safe && (!last || last.role !== 'user' || last.content !== safe)) {
+    turns.push({ role: 'user', content: safe })
   }
   return turns
 }

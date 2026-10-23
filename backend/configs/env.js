@@ -7,6 +7,10 @@ const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../.
 
 dotenv.config({ path: path.join(rootDir, '.env') })
 
+if (!process.env.CORS_ORIGIN) {
+  process.env.CORS_ORIGIN = process.env.URL || process.env.DEPLOY_PRIME_URL || 'http://localhost:5175'
+}
+
 const blankToUndefined = (value) => {
   if (typeof value !== 'string') return value
   const trimmed = value.trim()
@@ -28,8 +32,11 @@ const envSchema = z.object({
   // La key no bloquea el arranque; el chat responde 503 y createLlmClient falla si falta.
   GEMINI_API_KEY: optionalText,
   GROQ_API_KEY: optionalText,
-  CHAT_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
+  CHAT_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(12),
   CHAT_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60000),
+  CHAT_RATE_LIMIT_UNKNOWN_MIN: z.coerce.number().int().positive().default(8),
+  CHAT_RATE_LIMIT_DAY_IP: z.coerce.number().int().positive().default(40),
+  CHAT_RATE_LIMIT_DAY_SITE: z.coerce.number().int().positive().default(160),
 })
 
 const llmCredentialSchema = envSchema

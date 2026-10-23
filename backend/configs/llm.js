@@ -2,8 +2,8 @@ import { GoogleGenAI } from '@google/genai'
 import { env, requireLlmCredentials } from './env.js'
 
 const DEFAULT_MODELS = {
-  gemini: 'gemma-4-31b-it',
-  groq: 'llama-3.3-70b-versatile',
+  gemini: 'gemini-3.5-flash-lite',
+  groq: 'openai/gpt-oss-20b',
 }
 
 export const provider = env.LLM_PROVIDER
