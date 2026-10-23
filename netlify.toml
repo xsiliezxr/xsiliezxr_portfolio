@@ -17,6 +17,26 @@
     "frontend/src/features/home/lib/**/*.js"
   ]
 
+[dev]
+  command = "pnpm --dir frontend dev"
+  targetPort = 5175
+  port = 8888
+  publish = "frontend/dist"
+  framework = "vite"
+
+# --- RATE LIMITS ---
+[[rate_limits]]
+  for = "/*"
+  window_limit = 100
+  window_size = "1m"
+
+# --- REDIRECTS ---
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# --- HEADERS ---
 [[headers]]
   for = "/*"
   [headers.values]
@@ -28,6 +48,7 @@
     Cross-Origin-Opener-Policy = "same-origin"
     X-DNS-Prefetch-Control = "off"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; object-src 'none'; frame-ancestors 'none'"
+
 [[headers]]
   for = "/assets/*"
   [headers.values]
@@ -43,15 +64,3 @@
   [headers.values]
     Cache-Control = "no-store"
     X-Content-Type-Options = "nosniff"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[dev]
-  command = "pnpm --dir frontend dev"
-  targetPort = 5175
-  port = 8888
-  publish = "frontend/dist"
-  framework = "vite"
