@@ -37,19 +37,14 @@ export function ContactPage() {
           >
             {chrome.cvDownload}
           </a>
+          <div className="md:col-span-2">
+            <ContactLinks links={links} />
+          </div>
         </header>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
-          <div className="flex min-h-0 flex-col gap-5">
-            <section aria-label={chrome.contactChannels} className="border border-ink-700 bg-ink-900 p-4 md:p-5">
-              <p className="m-0 font-mono text-[11px] uppercase tracking-[0.12em] text-amber">{chrome.contactChannels}</p>
-              <div className="mt-4">
-                <ContactLinks links={links} />
-              </div>
-            </section>
-            <div className="min-h-0 flex-1">
-              <GuatemalaMap />
-            </div>
+        <div className="mt-10 grid items-stretch gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
+          <div className="min-h-0 lg:h-full">
+            <GuatemalaMap />
           </div>
 
           <section

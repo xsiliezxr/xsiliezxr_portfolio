@@ -1205,6 +1205,11 @@ textarea {
   background-size: 32px 32px;
 }
 
+.journey-sheet-studies .journey-card-title,
+.journey-sheet-studies .copy-bubble-ink {
+  color: #1a1917;
+}
+
 .journey-sheet-closing {
   background-color: #ff5b14;
 }
@@ -1559,6 +1564,17 @@ textarea {
 
   .secret-deck-card-se {
     left: 0.5rem;
+    bottom: 7.25rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .secret-deck-card-nw {
+    top: calc(var(--masthead) + 0.55rem);
+  }
+
+  .secret-deck-card-se {
+    top: auto;
     bottom: 7.25rem;
   }
 }
@@ -3557,6 +3573,13 @@ textarea {
 .gt-map-stage {
   aspect-ratio: 640 / 720;
   min-height: 18rem;
+}
+
+@media (min-width: 1024px) {
+  .gt-map-stage {
+    aspect-ratio: auto;
+    min-height: 0;
+  }
 }
 
 .gt-map-path {

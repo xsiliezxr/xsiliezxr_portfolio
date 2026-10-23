@@ -21,7 +21,6 @@ const PAGE = {
   title: { es: 'Experiencia de Angel Siliezar', en: 'Angel Siliezar experience' },
   roles: { es: 'Roles', en: 'Roles' },
   hackathons: { es: 'Hackatones', en: 'Hackathons' },
-  events: { es: 'Eventos', en: 'Events' },
   filter: { es: 'Filtrar experiencia', en: 'Filter experience' },
   arc: { es: 'Arco en Historia', en: 'Arc in Story' },
   projects: { es: 'Ver proyectos', en: 'See projects' },
@@ -46,7 +45,7 @@ function DetailBlock({ label, body }) {
 }
 
 export function ExperiencePage() {
-  const [filter, setFilter] = useState('hackaton')
+  const [filter, setFilter] = useState('all')
   const [openId, setOpenId] = useState(null)
   const page = useLocalized(PAGE)
   const banner = useLocalized(BANNER)
@@ -64,7 +63,6 @@ export function ExperiencePage() {
     all: entries.length,
     trabajo: entries.filter((item) => item.filtro === 'trabajo').length,
     hackaton: entries.filter((item) => item.filtro === 'hackaton').length,
-    evento: entries.filter((item) => item.filtro === 'evento').length,
   }
 
   return (
@@ -77,7 +75,7 @@ export function ExperiencePage() {
         <div className="grid items-start gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16">
           <aside className="flex flex-col gap-6 lg:sticky lg:top-24">
             <div className="border border-ink-700 bg-ink-900 p-4">
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <div>
                   <p className="font-display text-2xl font-black text-ember-500">{counts.trabajo}</p>
                   <p className="font-mono text-[11px] text-fog-dim">{page.roles}</p>
@@ -85,10 +83,6 @@ export function ExperiencePage() {
                 <div>
                   <p className="font-display text-2xl font-black text-ember-500">{counts.hackaton}</p>
                   <p className="font-mono text-[11px] text-fog-dim">{page.hackathons}</p>
-                </div>
-                <div>
-                  <p className="font-display text-2xl font-black text-ember-500">{counts.evento}</p>
-                  <p className="font-mono text-[11px] text-fog-dim">{page.events}</p>
                 </div>
               </div>
             </div>

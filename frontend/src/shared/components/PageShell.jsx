@@ -118,7 +118,7 @@ export function PageShell({ path, children, bleed = false }) {
       </main>
       <JourneyFooter variant="page" />
       <div className={`journey-corner${cornerOpen ? ' is-open' : ''}`} style={{ right: '0.75rem' }}>
-        <SiliPreview />
+        <SiliPreview route={routeKey} />
         <HobbyCounter />
       </div>
     </div>

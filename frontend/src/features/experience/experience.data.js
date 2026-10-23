@@ -4,10 +4,9 @@ export const EXPERIENCE_FILTERS = [
   { id: 'all', label: { es: 'Todo', en: 'All' } },
   { id: 'trabajo', label: { es: 'Trabajo', en: 'Work' } },
   { id: 'hackaton', label: { es: 'Hackatones', en: 'Hackathons' } },
-  { id: 'evento', label: { es: 'Eventos', en: 'Events' } },
 ]
 
-export const experienceEntries = [
+const RAW_EXPERIENCE_ENTRIES = [
   {
     id: 'combex',
     prioridad: 1,
@@ -39,35 +38,94 @@ export const experienceEntries = [
     },
   },
   {
-    id: 'buildathon',
+    id: 'qtalk-hackathon',
     prioridad: 2,
     hito: true,
     hitoOrden: 3,
     filtro: 'hackaton',
-    rol: { es: 'Cursor Buildathon · San Salvador', en: 'Cursor Buildathon · San Salvador' },
-    fecha: { es: '3 de julio', en: 'July 3' },
-    lugar: { es: 'San Salvador', en: 'San Salvador' },
+    rol: { es: 'Cursor · Hackathon TEC · Open2 · Q-Talk', en: 'Cursor · TEC Hackathon · Open2 · Q-Talk' },
+    fecha: { es: '4.º lugar', en: '4th place' },
+    lugar: { es: 'Fundación Kinal', en: 'Fundación Kinal' },
     resumen: {
-      es: 'El 3 de julio viajé con 15 personas de Guatemala a San Salvador para el #CursorBuildathon de Ai Labs. Casi 32 horas construyendo desde cero, siendo aún estudiante.',
-      en: 'On July 3 I traveled with 15 people from Guatemala to San Salvador for Ai Labs’ #CursorBuildathon. I spent nearly 32 hours building from scratch while still a student.',
+      es: 'Con Q-Talk quedamos en cuarto lugar. Construimos un tutor de inglés por voz con IA y lo presentamos con un tiempo limitado.',
+      en: 'Q-Talk placed fourth. We built an AI voice tutor for English practice and presented it under a tight deadline.',
     },
     arco: {
-      es: 'Salir del país a construir: el salto de estudiante a quien entrega bajo presión.',
-      en: 'First delivery outside the country, on a fixed deadline, while still a student.',
+      es: 'El primer pitch donde la voz, la interfaz y la idea tenían que funcionar juntas.',
+      en: 'The first pitch where voice, interface, and idea had to work together.',
     },
     hice: {
-      es: 'Construí desde cero en la Cursor Buildathon de Ai Labs, casi 32 horas, con el grupo de 15 que salió de Guatemala.',
-      en: 'I built from scratch at Ai Labs’ Cursor Buildathon for nearly 32 hours, with the group of 15 that left Guatemala.',
+      es: 'Diseñé el frontend, la experiencia de llamada y la integración con Gemini Live para capturar y reproducir audio en el navegador.',
+      en: 'I designed the frontend, call experience, and Gemini Live integration for capturing and playing audio in the browser.',
     },
     aprendido: {
-      es: 'Fuera del aula el estándar cambia. Ya no era una tarea: era un build con reloj, sueño corto y gente esperando el entregable.',
-      en: 'Outside the classroom the standard changes. It was no longer an assignment: it was a build on the clock, with little sleep and people waiting for the delivery.',
+      es: 'Una demo de voz se siente frágil si el estado no está claro. La interfaz tiene que explicar qué está escuchando y qué está respondiendo.',
+      en: 'A voice demo feels fragile when state is unclear. The interface has to explain what it is hearing and what it is answering.',
     },
     resolvi: {
-      es: 'Casi 32 horas y un proyecto que no existía al empezar. Me quedé en el build, con poco sueño, hasta dejar algo construido desde cero.',
-      en: 'Nearly 32 hours, and a project that did not exist at the start. I stayed on the build, with little sleep, until there was something made from scratch.',
+      es: 'Separé el estado de la llamada, la captura de audio y la reproducción para que el equipo pudiera mostrar el flujo completo.',
+      en: 'I separated call state, audio capture, and playback so the team could show the complete flow.',
     },
-    image: 'hack-sv',
+  },
+  {
+    id: 'radas-hackathon',
+    prioridad: 3,
+    hito: false,
+    hitoOrden: 0,
+    filtro: 'hackaton',
+    rol: { es: 'Hackathon RADAS', en: 'RADAS Hackathon' },
+    fecha: { es: 'Equipo nuevo · tiempo limitado', en: 'New team · limited time' },
+    lugar: { es: 'Hackatón', en: 'Hackathon' },
+    resumen: {
+      es: 'Me integré a un equipo formado por personas que no conocía. Trabajamos, aprendimos y nos divertimos; por tiempo tuve que retirarme del desarrollo principal y terminé apoyando con la landing.',
+      en: 'I joined a team made up of people I did not know. We worked, learned, and had fun; because of time, I stepped away from the main build and finished by supporting the landing page.',
+    },
+    arco: {
+      es: 'Aprender a integrarme rápido y seguir aportando aunque mi rol cambie.',
+      en: 'Learning to integrate quickly and keep contributing when my role changes.',
+    },
+    hice: {
+      es: 'Me incorporé al equipo, entendí el producto y desarrollé la landing para que el trabajo pudiera presentarse de forma clara.',
+      en: 'I joined the team, understood the product, and built the landing page so the work could be presented clearly.',
+    },
+    aprendido: {
+      es: 'Trabajar con desconocidos exige escuchar, adaptarse y dejar claro qué puedes entregar en el tiempo que queda.',
+      en: 'Working with strangers requires listening, adapting, and being clear about what you can deliver in the time left.',
+    },
+    resolvi: {
+      es: 'Cuando ya no podía seguir el desarrollo principal, cambié de frente y cerré una landing que ayudara al equipo a explicar RADAS.',
+      en: 'When I could no longer continue the main build, I changed focus and finished a landing page that helped the team explain RADAS.',
+    },
+  },
+  {
+    id: 'aisentinel',
+    prioridad: 2,
+    hito: true,
+    hitoOrden: 3,
+    filtro: 'trabajo',
+    rol: { es: 'AI Sentinel · visión por computadora', en: 'AI Sentinel · computer vision' },
+    fecha: { es: 'ExpoKinal 2026', en: 'ExpoKinal 2026' },
+    lugar: { es: 'Proyecto de equipo', en: 'Team project' },
+    resumen: {
+      es: 'Desarrollé el servicio de visión y coordiné entregas entre repositorios para un sistema que reconoce estudiantes, revisa uniformes y notifica incidencias.',
+      en: 'I developed the computer vision service and coordinated deliveries across repositories for a system that recognizes students, checks uniforms, and reports incidents.',
+    },
+    arco: {
+      es: 'Pasar de aprender IA a llevarla a una operación concreta.',
+      en: 'Moving from learning AI to applying it to a concrete operation.',
+    },
+    hice: {
+      es: 'Construí la API de visión en Python con FastAPI, ChromaDB, YOLO y Docker con soporte para GPU. También amplié el backend administrativo con tiempo real, cámaras, reportes y healthcheck.',
+      en: 'I built the Python vision API with FastAPI, ChromaDB, YOLO, and Docker with GPU support. I also extended the admin backend with real-time updates, cameras, reports, and a healthcheck.',
+    },
+    aprendido: {
+      es: 'Un modelo no es el producto. También hay que integrarlo, observarlo y hacer que el resto del sistema pueda confiar en él.',
+      en: 'A model is not the product. It also has to be integrated, observed, and made reliable for the rest of the system.',
+    },
+    resolvi: {
+      es: 'Separé el servicio de visión, lo dejé ejecutable con Docker y conecté sus resultados con el backend y las notificaciones del equipo.',
+      en: 'I separated the vision service, made it runnable with Docker, and connected its results to the backend and the team notifications.',
+    },
   },
   {
     id: 'ecobuild',
@@ -100,63 +158,63 @@ export const experienceEntries = [
     },
   },
   {
-    id: 'pitch-hacktec',
-    prioridad: 5.5,
-    hito: false,
-    hitoOrden: 0,
-    filtro: 'hackaton',
-    rol: { es: 'Primer pitch · Hackathon TEC', en: 'First pitch · Hackathon TEC' },
-    fecha: { es: '4.º lugar', en: '4th place' },
-    lugar: { es: 'Fundación Kinal', en: 'Fundación Kinal' },
+    id: 'restaurantes',
+    prioridad: 3,
+    hito: true,
+    hitoOrden: 4,
+    filtro: 'trabajo',
+    rol: { es: 'Gestión de Restaurantes', en: 'Restaurant Management' },
+    fecha: { es: 'Proyecto de equipo', en: 'Team project' },
+    lugar: { es: 'Sistema multi-servicio', en: 'Multi-service system' },
     resumen: {
-      es: 'Primera vez pitcheando, en el Hackathon TEC de Fundación Kinal. El proyecto era una IA para aprender inglés. Quedamos en cuarto lugar.',
-      en: 'First pitch, at Hackathon TEC at Fundación Kinal. The project was an AI tool for learning English. The team placed fourth.',
+      es: 'Trabajé en autenticación, API de dominio y clientes web para pedidos, reservas, promociones y administración.',
+      en: 'I worked on authentication, a domain API, and web clients for orders, reservations, promotions, and administration.',
     },
     arco: {
-      es: 'El primer pitch, frente a gente de verdad.',
-      en: 'The first pitch, in front of a real audience.',
+      es: 'Construir un sistema que un negocio pueda usar todos los días.',
+      en: 'Building a system a business could use every day.',
     },
     hice: {
-      es: 'Con el equipo armé un proyecto de IA para aprender inglés y lo pitcheé por primera vez. Quedamos en cuarto lugar.',
-      en: 'With the team I built an AI project for learning English and pitched it for the first time. We placed fourth.',
+      es: 'Desarrollé el servicio de autenticación en C# .NET 8 y buena parte de la API en Node.js y MongoDB. También construí flujos de la app de clientes y documenté endpoints para el equipo.',
+      en: 'I developed the C# .NET 8 authentication service and much of the Node.js and MongoDB API. I also built client-app flows and documented endpoints for the team.',
     },
     aprendido: {
-      es: 'Explicar la idea pesa tanto como el código. Si el jurado no la entiende, el producto no existe para esa sala.',
-      en: 'Explaining the idea carries as much weight as the code. If the jury does not understand it, the product does not exist for that room.',
+      es: 'Separar identidad, negocio e interfaz ayuda a que cada parte pueda cambiar sin romper todo el sistema.',
+      en: 'Separating identity, business, and interface helps each part change without breaking the whole system.',
     },
     resolvi: {
-      es: 'El nervio era la primera vez frente a gente de verdad. Me quedé con un mensaje corto, mostré el producto y no me escondí detrás de la demo.',
-      en: 'The pressure was a first pitch in front of a real audience. I kept the message short, showed the product, and did not hide behind the demo.',
+      es: 'Trabajé por responsabilidad, probé los endpoints antes de conectarlos y dejé documentación para que otros pudieran integrarse.',
+      en: 'I worked by responsibility, tested endpoints before connecting them, and left documentation so others could integrate.',
     },
   },
   {
-    id: 'becas-bi',
-    prioridad: 6.5,
+    id: 'shootai',
+    prioridad: 4,
     hito: false,
     hitoOrden: 0,
-    filtro: 'evento',
-    rol: { es: 'Becas simbólicas Fundación BI', en: 'Fundación BI symbolic scholarships' },
-    fecha: { es: '2025 y 2026', en: '2025 and 2026' },
-    lugar: { es: 'Fundación Kinal', en: 'Fundación Kinal' },
+    filtro: 'trabajo',
+    rol: { es: 'Shoot AI · backend y despliegue', en: 'Shoot AI · backend and deployment' },
+    fecha: { es: 'Cursor Buildathon', en: 'Cursor Buildathon' },
+    lugar: { es: 'San Salvador', en: 'San Salvador' },
     resumen: {
-      es: 'Beca simbólica para continuar los estudios en Fundación Kinal, dos años seguidos.',
-      en: 'Symbolic scholarship supporting continued studies at Fundación Kinal, awarded two consecutive years.',
+      es: 'Construí el backend para convertir briefs de moda en combinaciones de prendas usando extracción de requisitos, análisis de imágenes y color.',
+      en: 'I built the backend that turns fashion briefs into clothing combinations using requirement extraction, image analysis, and color.',
     },
     arco: {
-      es: 'Dos años seguidos. La constancia también se reconoce.',
-      en: 'Two years in a row. Consistency was recognized as well.',
+      es: 'De una idea rápida a un backend que el frontend puede usar.',
+      en: 'From a fast idea to a backend the frontend can use.',
     },
     hice: {
-      es: 'Recibí la beca simbólica de Fundación BI para seguir en Fundación Kinal, en 2025 y otra vez en 2026.',
-      en: 'I received the Fundación BI symbolic scholarship to continue at Fundación Kinal, in 2025 and again in 2026.',
+      es: 'Implementé empresas, clientes, proyectos y catálogo en Express y Supabase. Integré OpenAI, Firecrawl, Cloudinary, lectura de PDF, CORS y despliegue.',
+      en: 'I implemented companies, clients, projects, and a catalog in Express and Supabase. I integrated OpenAI, Firecrawl, Cloudinary, PDF reading, CORS, and deployment.',
     },
     aprendido: {
-      es: 'La constancia también se reconoce. No fue un golpe de un solo ciclo: fueron dos años seguidos de estudio.',
-      en: 'Consistency is also recognized. It was not a single-term result: it was two consecutive years of study.',
+      es: 'En un build corto, el backend debe resolver lo esencial y dejar claros sus límites para que el equipo pueda avanzar.',
+      en: 'In a short build, the backend must solve the essential part and make its limits clear so the team can move forward.',
     },
     resolvi: {
-      es: 'No había un atajo. Seguí el ritmo de Kinal y el reconocimiento llegó después del trabajo, no antes.',
-      en: 'There was no shortcut. I kept Kinal’s pace, and the recognition followed the work.',
+      es: 'Cerré el flujo de datos, conecté el frontend del equipo y resolví proxy, CORS y variables de entorno para desplegar.',
+      en: 'I closed the data flow, connected the team frontend, and handled proxying, CORS, and environment variables for deployment.',
     },
   },
   {
@@ -388,6 +446,17 @@ export const experienceEntries = [
     },
   },
 ]
+
+const EXPERIENCE_ONLY_IDS = new Set([
+  'comunidad',
+  'aidev',
+  'demo-day',
+  'expokinal',
+  'aisentinel',
+  'restaurantes',
+  'shootai',
+])
+export const experienceEntries = RAW_EXPERIENCE_ENTRIES.filter((item) => !EXPERIENCE_ONLY_IDS.has(item.id))
 
 export function listExperience(filter = 'all') {
   const pool = [...experienceEntries].sort((a, b) => a.prioridad - b.prioridad)

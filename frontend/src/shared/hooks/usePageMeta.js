@@ -32,6 +32,7 @@ export function usePageMeta(path) {
     const meta = metaForPath(path, lang)
     const origin = siteOrigin()
     const canonical = origin ? `${origin}${path === '/' ? '/' : path}` : path
+    const socialImage = origin ? `${origin}/og-preview.png` : '/og-preview.png'
 
     document.title = meta.title
     upsertMeta('meta[name="description"]', { name: 'description', content: meta.description })
@@ -39,9 +40,12 @@ export function usePageMeta(path) {
     upsertMeta('meta[property="og:description"]', { property: 'og:description', content: meta.description })
     upsertMeta('meta[property="og:type"]', { property: 'og:type', content: 'website' })
     upsertMeta('meta[property="og:locale"]', { property: 'og:locale', content: lang === 'en' ? 'en_US' : 'es_GT' })
+    upsertMeta('meta[property="og:image"]', { property: 'og:image', content: socialImage })
+    upsertMeta('meta[property="og:image:alt"]', { property: 'og:image:alt', content: meta.title })
     upsertMeta('meta[name="twitter:card"]', { name: 'twitter:card', content: 'summary_large_image' })
     upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title', content: meta.title })
     upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description', content: meta.description })
+    upsertMeta('meta[name="twitter:image"]', { name: 'twitter:image', content: socialImage })
 
     if (origin) {
       upsertMeta('meta[property="og:url"]', { property: 'og:url', content: canonical })

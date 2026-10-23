@@ -104,12 +104,12 @@ function ExperienceLeft() {
   return (
     <FloorCard slot="nw" band="top" tone="term">
       <h2 className="journey-card-title">{experience.title}</h2>
-      <div className="mt-2 space-y-2 text-xs leading-relaxed md:text-sm">
-        <p>{experience.body}</p>
-        <p>
+      <div className="copy-bubbles mt-3 text-xs leading-relaxed md:text-sm">
+        <p className="copy-bubble-title text-amber">{experience.body}</p>
+        <p className="copy-bubble copy-bubble-ink">
           {sales.title}, {sales.date}. {sales.detail}
         </p>
-        <p>
+        <p className="copy-bubble copy-bubble-ink">
           {hack.title}. {hack.detail}
         </p>
       </div>
@@ -125,11 +125,11 @@ function ExperienceRight() {
   return (
     <FloorCard slot="se" band="bottom" tone="term">
       <h2 className="journey-card-title">{combex.title}</h2>
-      <div className="mt-2 space-y-2 text-xs leading-relaxed md:text-sm">
-        <p>
+      <div className="copy-bubbles mt-3 text-xs leading-relaxed md:text-sm">
+        <p className="copy-bubble copy-bubble-ink">
           {combex.date}. {combex.detail}
         </p>
-        <p>
+        <p className="copy-bubble copy-bubble-ink text-fog-dim">
           {community.title}. {community.detail}
         </p>
       </div>

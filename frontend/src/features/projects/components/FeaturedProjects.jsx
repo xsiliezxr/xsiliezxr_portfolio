@@ -20,7 +20,7 @@ function FeaturedVisual({ project, index }) {
   const num = String(index + 1).padStart(2, '0')
 
   return (
-    <div className="relative min-h-0 overflow-hidden border border-ink-700 bg-ink-950">
+    <div className="relative order-first min-h-0 overflow-hidden border border-ink-700 bg-ink-950 lg:order-none">
       <div className="flex items-center justify-between border-b border-ink-700 bg-ink-900 px-4 py-2.5 font-mono text-[11px] text-fog-dim">
         <span className="flex items-center gap-2">
           <span className="h-2 w-2 bg-ember-500" aria-hidden="true" />
@@ -28,11 +28,11 @@ function FeaturedVisual({ project, index }) {
         </span>
         <span className="truncate">{project.status}{project.role ? ` · ${project.role}` : ''}</span>
       </div>
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink-950 lg:aspect-auto lg:h-full lg:min-h-[18rem]">
+      <div className="relative aspect-video w-full overflow-hidden bg-ink-950">
         <img
           src={project.src}
           alt={project.title}
-          className="h-full w-full object-cover object-top"
+          className="h-full w-full object-contain object-center"
           loading={index === 0 ? 'eager' : 'lazy'}
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-transparent" aria-hidden="true" />
@@ -47,7 +47,7 @@ function FeaturedEvidenceCard({ project, index, total }) {
   const repoLabel = project.repoLabel || 'Repositorio'
 
   return (
-    <div className="flex min-w-0 flex-col justify-center gap-4">
+    <div className="order-last flex min-w-0 flex-col justify-center gap-4 lg:order-none">
       <div className="flex flex-wrap items-baseline gap-3">
         <span className="font-mono text-[clamp(2rem,4.5vw,3.5rem)] font-bold leading-none text-ember-500">
           {num}

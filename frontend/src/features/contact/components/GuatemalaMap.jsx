@@ -4,7 +4,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import mapData from '../../../assets/maps/guatemala-departments.json'
 import { useReducedMotion } from '../../../shared/hooks/useReducedMotion.js'
-import { SiliMark } from '../../home/components/ui/SiliMark.jsx'
+import { SiliFace } from '../../home/components/ui/SiliFace.jsx'
 
 gsap.registerPlugin(ScrollTrigger, useGSAP)
 
@@ -46,7 +46,7 @@ export function GuatemalaMap() {
   }, { scope: rootRef, dependencies: [reduce], revertOnUpdate: true })
 
   return (
-    <figure ref={rootRef} className="gt-map m-0 h-full border border-ink-700 bg-ink-900 p-4 md:p-5">
+    <figure ref={rootRef} className="gt-map m-0 flex h-full min-h-0 flex-col border border-ink-700 bg-ink-900 p-4 md:p-5">
       <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="m-0 font-display text-xl font-black uppercase tracking-[-0.03em] text-fog">
@@ -59,9 +59,9 @@ export function GuatemalaMap() {
         <p className="m-0 font-mono text-[11px] text-amber">{mapData.capital.label}</p>
       </div>
 
-      <div className="gt-map-stage relative overflow-hidden border border-ink-700 bg-ink-950">
+      <div className="gt-map-stage relative min-h-0 flex-1 overflow-hidden border border-ink-700 bg-ink-950">
         <svg
-          className="gt-map-svg block h-auto w-full"
+          className="gt-map-svg block h-full w-full"
           viewBox={mapData.viewBox}
           role="img"
           aria-label="Mapa de departamentos de Guatemala. Sili marca Ciudad de Guatemala."
@@ -83,11 +83,9 @@ export function GuatemalaMap() {
             ))}
           </g>
           <g className="gt-map-pin" transform={`translate(${mapData.capital.cx} ${mapData.capital.cy})`}>
-            <circle r="18" className="gt-map-pin-ring" />
-            <foreignObject x="-16" y="-34" width="32" height="44">
-              <div className="gt-map-sili">
-                <SiliMark />
-              </div>
+            <circle r="25" className="gt-map-pin-ring" />
+            <foreignObject x="-16" y="-22" width="32" height="44">
+              <SiliFace className="gt-map-sili h-6 w-6" />
             </foreignObject>
           </g>
         </svg>

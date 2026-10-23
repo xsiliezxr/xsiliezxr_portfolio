@@ -63,6 +63,7 @@ export function HeroIntro() {
   const root = useRef(null)
   const timelineRef = useRef(null)
   const finishedRef = useRef(false)
+  const startedTokenRef = useRef(null)
   const [play, setPlay] = useState(false)
 
   useLayoutEffect(() => {
@@ -81,6 +82,9 @@ export function HeroIntro() {
 
   useLayoutEffect(() => {
     if (!ready || !play || !root.current) return undefined
+    if (startedTokenRef.current === token) return undefined
+    startedTokenRef.current = token
+    if (token === 0) markIntroSeen()
 
     const scroller = document.getElementById('journey-scroll')
     if (scroller) scroller.style.overflow = 'hidden'

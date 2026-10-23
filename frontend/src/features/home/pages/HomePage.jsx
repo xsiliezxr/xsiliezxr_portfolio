@@ -267,7 +267,7 @@ function Journey() {
   return (
     <div id="journey-scroll" ref={scrollerRef} data-journey-cap={unlocked ? '1' : String(LOCKED_PROGRESS)}>
       <JourneyBoot />
-      <div ref={trackRef} className="relative" style={{ height: `${trackDvh(unlocked)}dvh` }}>
+      <div ref={trackRef} data-journey-track className="relative" style={{ height: `${trackDvh(unlocked)}dvh` }}>
         <a href="#contenido" className="absolute -left-[999px] top-4 z-50 bg-ember-500 px-3 py-2 text-sm text-ink-950 focus:left-4">
           Saltar al contenido
         </a>

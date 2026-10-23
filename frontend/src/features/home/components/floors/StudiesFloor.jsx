@@ -199,11 +199,12 @@ function StudiesLeft() {
   return (
     <FloorCard slot="nw" band="top" tone="paper">
       <h2 className="journey-card-title text-base md:text-lg">{studies.leftTitle}</h2>
-      <div className="mt-2 space-y-3 text-xs leading-relaxed md:text-sm">
-        <p>{studies.leftBody}</p>
-        <p>{studies.leftBody2}</p>
+      <p className="copy-bubble-title mt-3 hidden text-ember-800 md:block">{studies.leftSubtitle}</p>
+      <div className="copy-bubbles mt-3 text-xs c leading-relaxed md:text-sm">
+        <p className="copy-bubble copy-bubble-ink !text-black">{studies.leftBody}</p>
+        <p className="copy-bubble copy-bubble-ink !text-black">{studies.leftBody2}</p>
       </div>
-      <p className="mt-2 hidden font-mono text-[11px] text-ember-800 md:block">{studies.leftNote}</p>
+      <p className="copy-bubble-title mt-3 hidden text-ember-800 md:block">{studies.leftNote}</p>
       <a href="/certificaciones" data-ui className="journey-card-link">
         {studies.awardsCta}
       </a>
@@ -216,11 +217,12 @@ function StudiesRight() {
   return (
     <FloorCard slot="se" band="bottom" tone="paper">
       <h2 className="journey-card-title text-base md:text-lg">{studies.rightTitle}</h2>
-      <div className="mt-2 space-y-3 text-xs leading-relaxed md:text-sm">
-        <p>{studies.rightBody}</p>
-        <p>{studies.rightBody2}</p>
+      <p className="copy-bubble-title mt-3 hidden text-ember-800 md:block">{studies.rightSubtitle}</p>
+      <div className="copy-bubbles mt-3 text-xs leading-relaxed md:text-sm">
+        <p className="copy-bubble copy-bubble-ink !text-black">{studies.rightBody}</p>
+        <p className="copy-bubble copy-bubble-ink !text-black">{studies.rightBody2}</p>
       </div>
-      <p className="mt-2 hidden font-mono text-[11px] text-ember-800 md:block">{studies.rightNote}</p>
+      <p className="copy-bubble-title mt-3 hidden text-ember-800 md:block">{studies.rightNote}</p>
       <a href="/gallery?frame=1" data-ui className="journey-card-link">
         {studies.galleryCta}
       </a>

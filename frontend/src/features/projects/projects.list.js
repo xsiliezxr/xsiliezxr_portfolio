@@ -46,7 +46,7 @@ const PROJECTS = [
       demo: 'https://ecobuild-gt.vercel.app',
       repo: null,
       repoLabel: { es: 'Repositorio privado', en: 'Private repository' },
-      image: null,
+      image: 'ecobuild.webp',
       status: { es: 'Prototipo en evolución', en: 'Prototype in progress' },
       role: { es: 'Desarrollador full-stack y responsable de datos', en: 'Full-stack developer and data lead' },
       tags: ['React', 'TypeScript', 'Vite', 'Three.js', 'GSAP', 'Firecrawl', 'Python'],

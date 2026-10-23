@@ -36,8 +36,10 @@ function ClosingLeft() {
         {closing.line1}
         <span className="mt-1 block normal-case">{closing.line2}</span>
       </h2>
-      <p className="mt-2 text-xs leading-relaxed md:text-sm">{closing.status}</p>
-      <p className="journey-card-meta">{closing.place}</p>
+      <div className="copy-bubbles mt-3 text-xs leading-relaxed md:text-sm">
+        <p className="copy-bubble-title">{closing.status}</p>
+        <p className="copy-bubble copy-bubble-ink">{closing.place}</p>
+      </div>
     </FloorCard>
   )
 }
@@ -46,10 +48,12 @@ function ClosingRight({ unlocked }) {
   const closing = useLocalized(closingSource)
   return (
     <FloorCard slot="se" band="bottom" tone="ember">
-      <p className="text-xs leading-relaxed md:text-sm">
+      <div className="copy-bubbles text-xs leading-relaxed md:text-sm">
+        <p className="copy-bubble-title">
         {unlocked ? closing.unlocked : `${closing.locked} ${closing.hobbies}`}
-      </p>
-      <p className="mt-2 hidden text-xs md:block">{closing.thanks}</p>
+        </p>
+        <p className="copy-bubble copy-bubble-ink mt-2 hidden md:block">{closing.thanks}</p>
+      </div>
       <div className="mt-2.5 flex flex-wrap items-center gap-3">
         <a href="/contact" data-ui className="journey-card-link">
           {closing.contactCta}

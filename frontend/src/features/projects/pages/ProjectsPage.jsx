@@ -8,16 +8,16 @@ import { archiveProjects, featuredProjects } from '../projects.data.js'
 
 const HEAD = {
   lead: { es: 'Tres', en: 'Three' },
-  accent: { es: 'proyectos', en: 'projects' },
+  accent: { es: 'Más destacados', en: ' More Featured Projects' },
 }
 
 export function ProjectsPage() {
   const head = useLocalized(HEAD)
   return (
     <PageShell path="/projects" bleed>
-      <header className="mx-auto flex w-full max-w-7xl min-w-0 flex-wrap items-end justify-between gap-6 border-b border-ink-700 px-4 pt-8 pb-6 md:px-8">
-        <div className="min-w-0 max-w-3xl">
-          <h1 className="min-w-0 font-display text-[clamp(2.25rem,7vw,5.5rem)] font-black uppercase leading-[0.88] tracking-[-0.04em] text-fog">
+      <header className="mx-auto flex w-full max-w-7xl min-w-0 flex-wrap items-end justify-between gap-6 border-b border-ink-700 pt-8 pb-6 ">
+        <div className="min-w-0 max-w-5xl">
+          <h1 className="min-w-0 font-display text-[clamp(2.25rem,7vw,4.5rem)] font-black uppercase leading-[0.88] tracking-[-0.04em] text-fog">
             {head.lead}{' '}
             <span className="inline-block text-transparent" style={{ WebkitTextStroke: '2px #ff5b14' }}>
               {head.accent}

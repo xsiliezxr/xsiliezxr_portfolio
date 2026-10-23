@@ -5,16 +5,18 @@ import { EditorialBanner } from '../../../shared/components/EditorialBanner.jsx'
 import { PageShell } from '../../../shared/components/PageShell.jsx'
 import { ScrollPhrase } from '../../../shared/components/ScrollPhrase.jsx'
 import { useLocalized } from '../../../shared/i18n/useLocalized.js'
-import { about as aboutSource, studies as studiesSource } from '../../home/content/journey.content.js'
 import { HistoryBrainstorm } from '../components/HistoryBrainstorm.jsx'
 import { PathGraph } from '../components/PathGraph.jsx'
 import {
   HISTORY_BANNER_PHRASES,
+  HISTORY_INTRO,
   HISTORY_SCROLL_PHRASES,
+  historyAwards,
   historyChrome,
   historyNarrative,
   historyPath,
   historyStages,
+  historyTraining,
 } from '../history.data.js'
 
 function QuoteLine({ quote, mark }) {
@@ -43,8 +45,9 @@ function QuoteLine({ quote, mark }) {
 }
 
 export function HistoryPage() {
-  const about = useLocalized(aboutSource)
-  const studies = useLocalized(studiesSource)
+  const intro = useLocalized(HISTORY_INTRO)
+  const training = useLocalized(historyTraining)
+  const awards = useLocalized(historyAwards)
   const path = useLocalized(historyPath)
   const chrome = useLocalized(historyChrome)
   const banner = useLocalized(HISTORY_BANNER_PHRASES)
@@ -71,14 +74,14 @@ export function HistoryPage() {
                 className="m-0 font-display font-black uppercase tracking-[-0.04em] text-fog"
                 style={{ fontSize: 'clamp(1.55rem, 4.2vw, 2.85rem)', lineHeight: 1.12 }}
               >
-                <QuoteLine quote={about.quote} mark={about.quoteMark} />
+                <QuoteLine quote={intro.quote} mark={intro.quoteMark} />
               </p>
-              <footer className="mt-3 font-mono text-xs text-amber">{about.author}</footer>
+              <footer className="mt-3 font-mono text-xs text-amber">{intro.author}</footer>
             </blockquote>
-            <p className="mt-6 font-mono text-xs text-ember-300">{about.meta}</p>
+            <p className="mt-6 font-mono text-xs text-ember-300">{intro.meta}</p>
 
             <div className="mt-8 space-y-7">
-              {about.paragraphs.filter(Boolean).map((paragraph, index) => (
+              {intro.paragraphs.map((paragraph, index) => (
                 <p
                   key={`${index}-${paragraph.slice(0, 24)}`}
                   className={
@@ -116,7 +119,7 @@ export function HistoryPage() {
 
           <div className="relative z-10 lg:pt-4">
             <figure className="comic-frame m-0 lg:ml-auto lg:max-w-md">
-              <img src={portrait} alt={about.meta} className="aspect-[3/4] w-full object-cover" />
+              <img src={portrait} alt={intro.meta} className="aspect-[3/4] w-full object-cover" />
               <figcaption className="mt-3 flex items-center justify-between font-mono text-xs text-amber">
                 <span>{chrome.city}</span>
                 <span>{chrome.present}</span>
@@ -148,12 +151,12 @@ export function HistoryPage() {
               className="m-0 font-display font-black uppercase tracking-[-0.04em] text-fog"
               style={{ fontSize: 'clamp(2rem, 5.5vw, 4.25rem)', lineHeight: 1.05 }}
             >
-              {about.studyTitle}
+              {training.title}
             </h2>
-            <p className="mt-3 font-mono text-xs text-ember-300">{about.studyRole}</p>
+            <p className="mt-3 font-mono text-xs text-ember-300">{training.role}</p>
 
             <div className="mt-8 space-y-6">
-              {about.studyParagraphs.map((paragraph) => (
+              {training.paragraphs.map((paragraph) => (
                 <p key={paragraph.slice(0, 28)} className="max-w-xl text-base leading-relaxed text-fog-dim">
                   {paragraph}
                 </p>
@@ -162,12 +165,12 @@ export function HistoryPage() {
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <article className="comic-inset">
-                <h3 className="font-display text-base font-extrabold uppercase text-fog">{studies.leftTitle}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-fog-dim">{studies.leftBody}</p>
+                <h3 className="font-display text-base font-extrabold uppercase text-fog">{training.academicTitle}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-fog-dim">{training.academicBody}</p>
               </article>
               <article className="comic-inset">
-                <h3 className="font-display text-base font-extrabold uppercase text-fog">{studies.rightTitle}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-fog-dim">{studies.rightBody}</p>
+                <h3 className="font-display text-base font-extrabold uppercase text-fog">{training.technicalTitle}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-fog-dim">{training.technicalBody}</p>
               </article>
             </div>
 
@@ -210,7 +213,7 @@ export function HistoryPage() {
               {chrome.awardsTitle}
             </h2>
             <div className="mt-8 grid gap-6 sm:grid-cols-2">
-              {about.awards.map((item) => (
+              {awards.map((item) => (
                 <article key={item.title} className="comic-inset">
                   <p className="font-mono text-xs text-ember-300">{item.date}</p>
                   <h3 className="mt-2 font-display text-lg font-extrabold uppercase text-fog">{item.title}</h3>

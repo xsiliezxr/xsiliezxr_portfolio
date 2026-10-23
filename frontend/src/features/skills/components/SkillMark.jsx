@@ -11,6 +11,18 @@ const SOFT = {
   initiative: Lightning,
   discipline: Barbell,
   aidev: Lightning,
+  agent: Lightning,
+  subagent: UsersThree,
+  'skills-ai': ArrowsClockwise,
+  mcp: Lightning,
+  'tools-ai': Users,
+  rag: ArrowsClockwise,
+  vectors: Lightning,
+  notion: UsersThree,
+  postman: Lightning,
+  pnpm: ArrowsClockwise,
+  npm: ArrowsClockwise,
+  supabase: Lightning,
 }
 
 export function SkillMark({ icon, className = 'h-6 w-6' }) {
@@ -18,5 +30,5 @@ export function SkillMark({ icon, className = 'h-6 w-6' }) {
   if (Soft) return <Soft size={22} weight="fill" className="text-ink-950" aria-hidden="true" />
   const src = resolveAsset(files, `${icon}.svg`)
   if (!src) return null
-  return <img src={src} alt="" className={className} />
+  return <img src={src} alt="" draggable={false} className={`${className} pointer-events-none select-none`} />
 }

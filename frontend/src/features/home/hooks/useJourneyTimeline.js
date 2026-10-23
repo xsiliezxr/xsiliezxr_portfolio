@@ -276,9 +276,11 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
 
       const tokens = [...el.querySelectorAll('[data-pass-token]')]
       const slots = [
-        { x: -42, y: 28 },
-        { x: 52, y: 12 },
-        { x: -18, y: 36 },
+        { x: -58, y: 30, rotate: -4, scale: 0.92 },
+        { x: 64, y: 14, rotate: 3, scale: 0.96 },
+        { x: -24, y: 42, rotate: -2, scale: 0.9 },
+        { x: 46, y: 34, rotate: 2, scale: 0.94 },
+        { x: -46, y: 18, rotate: 4, scale: 0.93 },
       ]
       if (tokens.length) {
         tokens.forEach((node, index) => {
@@ -289,6 +291,8 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
             opacity: reduce ? 1 : 0,
             x: reduce ? 0 : slot.x * travel,
             y: reduce ? 0 : slot.y * travel,
+            rotate: reduce ? 0 : slot.rotate,
+            scale: reduce ? 1 : slot.scale,
           })
         })
         if (!reduce) {
@@ -302,18 +306,21 @@ export function useJourneyTimeline({ trackRef, scrollerRef, rig, panels, heroRef
               y: 0,
               duration: Math.max(0.24, Math.min(spanTime * (accent ? 0.48 : 0.32), spanTime * 0.7)),
               ease: 'power2.out',
+              rotate: 0,
+              scale: 1,
               immediateRender: false,
             }, beat.pass + fadeIn * 0.2 + index * step)
           })
         }
       } else {
         const chars = [...el.querySelectorAll('[data-pass-char]')]
-        gsap.set(chars, { opacity: reduce ? 1 : 0 })
+        gsap.set(chars, { opacity: reduce ? 1 : 0, y: reduce ? 0 : 8 })
         if (!reduce && chars.length) {
           const typeStart = beat.pass + fadeIn
           chars.forEach((node, index) => {
             timeline.to(node, {
               opacity: 1,
+              y: 0,
               duration: 0.012,
               ease: 'none',
               immediateRender: false,

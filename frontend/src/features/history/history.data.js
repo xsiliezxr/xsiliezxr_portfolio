@@ -7,8 +7,8 @@ export const HISTORY_SCROLL_PHRASES = [
   {
     id: 'history-study',
     variant: 'editorial',
-    top: { es: 'NO TENÍA EL MAPA', en: "I DIDN'T HAVE THE MAP" },
-    bottom: { es: 'IGUAL EMPECÉ A CONSTRUIR', en: 'I STARTED BUILDING ANYWAY' },
+    top: { es: 'TENÍA TODO CLARO HASTA QUE...', en: "I HAD EVERYTHING CLEAR UNTIL..." },
+    bottom: { es: 'APRENDÍ SALIENDO DE MI ZONA DE COMFORT', en: 'I LEARNED BY STEPPING OUT OF MY COMFORT ZONE' },
   },
   {
     id: 'study-path',
@@ -21,18 +21,95 @@ export const HISTORY_SCROLL_PHRASES = [
   },
 ]
 
+export const HISTORY_INTRO = {
+  quote: {
+    es: 'La única manera de hacer un trabajo genial es amar lo que haces',
+    en: 'The only way to do great work is to love what you do',
+  },
+  quoteMark: { es: 'amar lo que haces', en: 'each delivery' },
+  author: { es: 'Steve Jobs', en: 'Steve Jobs' },
+  meta: { es: 'Estudiante de desarrollo de software · Guatemala', en: 'Software development student · Guatemala' },
+  paragraphs: [
+    {
+      es: 'Mi historia no empezó con una empresa ni con un cargo técnico. Empezó con curiosidad, con ganas de entender cómo funcionaban las computadoras y con la decisión de aprender sea como sea...',
+      en: 'My story did not start with a company or a technical title. It started with curiosity, a need to understand how things worked, and the decision to learn by building.',
+    },
+    {
+      es: 'Hoy trabajo como desarrollador Full Stack en proyectos donde puedo ser parte de todo: producto, backend, frontend, datos. Sobre todo entender el negocio detrás de cada proyecto.',
+      en: 'Today I work as a Full Stack developer on projects where I can be part of everything: product, backend, frontend, data. Above all, understanding the business behind each project.',
+    },
+  ],
+}
+
+export const historyTraining = {
+  title: { es: 'Convertí mi miedo en leña', en: 'I turned my fear into kindling' },
+  role: { es: 'El cambio de mentalidad', en: 'The change of mindset' },
+  paragraphs: [
+    {
+      es: 'Antes de 2026 tenía claro lo que quería: conseguir una beca, estudiar en la universidad, graduarme, ser ingeníero y trabajar... Pero hasta principios de ese año, asistí a mi primera hackaton, donde me di un cambio de realidad grande, poder construir desde ya, trabajar, estudiar... Cursor, eventos, talleres, fue un BOOM de experiencia que me hizo ver que podía hacer más de lo que pensaba.',
+      en: 'Before 2026 I had a clear idea of what I wanted: to get a scholarship, study at the university, graduate, become an engineer, and work... But until the beginning of that year, I attended my first hackathon, where I experienced a big reality check, the ability to build right away, work, study... Cursor, events, workshops, it was a BOOM of experience that made me realize I could do more than I thought.',
+    },
+    {
+      es: 'Pero eso me daba miedo, muchas veces me autosaboteaba diciendome que no estaba preparado, que esto no era lo mío, en fin... El sindrome del Impostor en la acción. Pero hasta que un día me di cuenta que estaba perdiendo muchas oportunidades / experiencas por ese mismo miedo, así que lo utilice como motivación y entonces ganamos el tercer lugar en la Buildathon con EcoBuild, siendo 4 estudiantes, sin tener idea de construcción y me di cuenta que la única limitante es nuestra mente.',
+      en: 'But that scared me, many times I undermined myself by telling myself that I was not ready, that this was not my thing, well... The Impostor Syndrome in action. But until one day I realized that I was missing many opportunities / experiences because of that same fear, so I used it as motivation and then we won third place in the Buildathon with EcoBuild, being 4 students, without having any idea of construction and I realized that the only limitation is our mind.',
+    },
+    ,
+    {
+      es: 'Actualmente me gusta el trabajo que se puede mostrar. Un pitch, un sistema que usa alguien, una hora de más cuando el demo todavía no corre. Si se rompe, es mío hasta que se recupere el sistema. Esa es la frase del colegio que se me quedó: el trabajo bien hecho.',
+      en: 'I care about work that can be shown. A pitch, a system someone uses, an extra hour when the demo still does not run. If it breaks, it is mine until it stands. That is the school line that stayed with me: work done right.',
+    },
+    {
+      es: 'Pero todo fue un proceso de aprendizaje. En Fe y Alegría No. 9-40 desarrollé habilidades para trabajar con personas y asumir responsabilidades. En Fundación Kinal encontré la parte técnica: programación, bases de datos, Git y trabajo por entregas.',
+      en: 'At Fe y Alegría No. 9-40 I developed the skills to work with people and take responsibility. At Fundación Kinal I found the technical side: programming, databases, Git, and delivery-based work.',
+    },
+    {
+      es: 'La diferencia es que esa formación no se quedó en clases. En 2026 la llevé a hackatones, pitches, proyectos de equipo y prácticas en Combex.',
+      en: 'The difference is that this training did not stay in class. In 2026 I took it to hackathons, pitches, team projects, and an internship at Combex.',
+    },
+  ],
+  academicTitle: { es: 'Base académica', en: 'Academic foundation' },
+  academicBody: {
+    es: 'Me formé en Fe y Alegría y actualmente egresado del Perito en Desarrollo de Software y a futuro aspirante a ingeniero.',
+    en: 'I studied at Fe y Alegría and am finishing the Software Development diploma at Fundación Kinal.',
+  },
+  technicalTitle: { es: 'Trabajo técnico', en: 'Technical work' },
+  technicalBody: {
+    es: 'He aplicado React, Node.js, C#, Python, bases de datos, APIs, IA y despliegue en proyectos propios y de equipo. Proyectos en desarrollo para salir a producción.',
+    en: 'I have applied React, Node.js, C#, Python, databases, APIs, AI, and deployment in personal and team projects.',
+  },
+}
+
+export const historyAwards = [
+  {
+    title: { es: 'Excelencia académica', en: 'Academic excellence' },
+    date: { es: 'Fundación BI · Fundación Kinal', en: 'Fundación BI · Fundación Kinal' },
+    detail: {
+      es: 'Reconocimiento a la excelencia académica por segundo año consecutivo.',
+      en: 'Recognition for academic excellence for the second consecutive year.',
+    },
+  },
+  {
+    title: { es: 'Tercer lugar · EcoBuild', en: 'Third place · EcoBuild' },
+    date: { es: 'Buildathon Semana de la Construcción 2026', en: 'Construction Week Buildathon 2026' },
+    detail: {
+      es: 'El prototipo obtuvo tercer lugar y financiamiento semilla de 2000 USD.',
+      en: 'The prototype placed third and received USD 2,000 in seed funding.',
+    },
+  },
+]
+
 export const historyPath = {
-  title: { es: 'De estudiante a desarrollador', en: 'From student to developer' },
+  title: { es: 'Mi camino: de estudiante a desarrollador', en: 'My path: from student to developer' },
   body: {
-    es: 'De Fe y Alegría No. 9-40, donde me formé como persona, a Fundación Kinal, donde el código se volvió oficio. De los hackathones de 2026 (UVG, UFG, la Buildathon, EcoBuild y Hack@Latam) a las prácticas en Combex, con software de operación real. De la comunidad 502, que me sacó del aula, hacia Ingeniería en Sistemas en la UMG en 2027. Toca una etapa. El detalle de cada entregable está en Experiencia.',
-    en: 'From Fe y Alegría No. 9-40, where I was formed as a person, to Fundación Kinal, where code became a craft. From the 2026 hackathons (UVG, UFG, the Buildathon, EcoBuild, and Hack@Latam) to the Combex internship, with software on a live operation. From the 502 community, which pulled me out of the classroom, toward Systems Engineering at UMG in 2027. Tap a stage. The detail of each delivery is in Experience.',
+    es: 'De Fe y Alegría No. 9-40, donde me formé como persona, a Fundación Kinal, donde el código se volvió oficio. De los hackathones de 2026 (UVG, UFG, la Buildathon, EcoBuild y Hack@Latam) a las prácticas en Combex. De la comunidad 502, que me sacó del salón, hacia Ingeniería en Sistemas en la UMG en 2027. Toca una etapa. El detalle de cada entregable está en Experiencia.',
+    en: 'From Fe y Alegría No. 9-40, where I was formed as a person, to Fundación Kinal, where code became a craft. From the 2026 hackathons (UVG, UFG, the Buildathon, EcoBuild, and Hack@Latam) to the Combex internship. From the 502 community, which pulled me out of the classroom, toward Systems Engineering at UMG in 2027. Tap a stage. The detail of each delivery is in Experience.',
   },
   cta: { es: 'Ver registro completo', en: 'See the full record' },
   ctaHref: '/experiencia',
 }
 
 export const historyChrome = {
-  title: { es: 'Historia de Angel Siliezar', en: "Angel Siliezar's story" },
+  title: { es: 'Mi historia', en: 'My story' },
   downloadCv: { es: 'Descargar CV', en: 'Download CV' },
   exploreGallery: { es: 'Explorar galería', en: 'Explore gallery' },
   city: { es: 'Ciudad de Guatemala', en: 'Guatemala City' },
@@ -88,8 +165,8 @@ export const historyStages = [
     fecha: { es: '+400 horas · IT', en: '+400 hours · IT' },
     lugar: { es: 'Combex', en: 'Combex' },
     arco: {
-      es: 'Primera vez con software que mueve operación real: logística de carga aérea en CombexIM. Cerré más de 400 horas en IT y quedé entre los seis mejores practicantes. El desayuno con el Director Ejecutivo cerró la etapa con consejos, no con un diploma vacío. Ahí dejó de ser tarea de clase.',
-      en: 'First time with software that moves a real operation: air-cargo logistics at CombexIM. I closed more than 400 hours in IT and landed among the top six interns. Breakfast with the Executive Director closed the stage with advice, not an empty diploma. That is where it stopped being a class assignment.',
+      es: 'Primera vez con software que no hice yo, con años de existir: logística de carga aérea en CombexIM. Cerré más de 400 horas en IT pasando por todas las áreas: Infraestructura y Redes, Base de Datos, Ciberseguridad y mi favorita Desarrollo. Además quedé entre los seis mejores practicantes.',
+      en: 'First time with software I didn’t make, with years of existence: air cargo logistics at CombexIM. I completed over 400 hours in IT going through all areas: Infrastructure and Networks, Database, Cybersecurity, and my favorite Development. I also ended up among the six best interns.',
     },
   },
   {
@@ -118,17 +195,21 @@ export const historyStages = [
 
 export const historyNarrative = [
   {
-    es: 'No tuve un mapa. En Fe y Alegría aprendí a estar con gente; en Kinal aprendí a construir. El resto lo fui armando en hackathones, en Combex y en la comunidad, con el reloj encima y sin esperar a que alguien me dijera que ya estaba listo.',
-    en: 'I did not have a map. At Fe y Alegría I learned how to be with people; at Kinal I learned how to build. The rest came together in hackathons, at Combex, and in the community, on the clock, without waiting for someone to tell me I was ready.',
+    es: 'Todo empezó un día que mi padre nos regalo a mi hermano y a mí una computadora de las viejisimas... En ella jugamos, ver videos, cosas muy sencillas... Pero años despúes de estar tanto tiempo viendo, a los 12 me dio curisiodad, así que le di su mantenimiento, desarme completamente la pc y la volví a armar, y funcionó. Ahí me di cuenta que me gustaba la tecnología y que quería aprender más.',
+    en: 'I wasn’t sure what to do... It all started one day when my father gave my brother and me a very old computer... We played on it, watched videos, very simple things... But years later, after spending so much time watching, at 12 I got curious, so I gave it maintenance, completely disassembled the PC and reassembled it, and it worked. That’s when I realized that I liked technology and wanted to learn more.',
   },
   {
-    es: 'Me gusta el trabajo que se puede mostrar. Un pitch, un sistema que usa alguien, una hora de más cuando el demo todavía no corre. Si se rompe, es mío hasta que queda de pie. Esa es la frase del colegio que se me quedó: el trabajo bien hecho.',
-    en: 'I care about work that can be shown. A pitch, a system someone uses, an extra hour when the demo still does not run. If it breaks, it is mine until it stands. That is the school line that stayed with me: work done right.',
+    es: 'Pero realmente no tenía claro qué hacer... En básicos debía de escoger una carrera, pero tras analizarlo, siempre ayudaba a mis compañeros en computación y aparte siempre la había pasado viendo videos, y veía mucho acerca de tecnología... Bien, ya tenía claro qué estudiar, pero faltaba ¿Donde? Un día le pregunté a uno de mis compañeros de ese entonces donde él iba a Estudiar, y me contó sobre Kinal, así que tras prepararme y preguntar en un par de colegios, finalmente acabe entrando en Kinal.',
+    en: 'But I really wasn’t sure what to do... In middle school I had to choose a career, but after analyzing it, I always helped my classmates in computing and besides I had always spent time watching videos, and I watched a lot about technology... Well, I was clear on what to study, but the question was where? One day I asked one of my classmates at the time where he was going to study, and he told me about Kinal, so after preparing and asking in a couple of schools, I finally ended up entering Kinal.',
   },
   {
-    es: 'Lo que sigue es la UMG y el primer rol formal. No para empezar de cero. Para seguir con lo mismo, con más oficio y con la misma exigencia.',
-    en: 'What comes next is UMG and a first formal role. Not to start from zero. To continue the same work, with more craft and the same standard.',
+    es: 'Antes de entrar siempre me esforcé en ser de los mejores de mi clase, obteniendo los primeros puestos de Abanderado. Pero en los primeros meses en Kinal me costó mucho adaptarme, no estaba acostumbrado a un cambio de manera de estudiar, de compañeros que compartían la misma pasión y tuve miedo de no poder dar la talla... Pero tras un par de desvelos y un hambre por salir adelante, logré quedar entre los mejores promedios del colegio, siendo becado simbolicamente 2 años consecutivos por Fundación Bi en Kinal.',
+    en: 'Before entering I always strived to be one of the best in my class, obtaining the top positions of Flag Bearer. But in the first few months at Kinal it was very difficult for me to adapt, I was not used to a change in the way of studying, of classmates who shared the same passion and I was afraid of not being able to measure up... But after a couple of sleepless nights and a hunger to get ahead, I managed to be among the best averages in the school, being symbolically awarded 2 consecutive years by Fundación Bi in Kinal.',
   },
+  {
+    es: 'Durante ese tiempo, me enamore de programar, resolver problemas y crear...',
+    en: 'During that time, I fell in love with programming, solving problems, and creating...',
+  }
 ]
 
 export const HISTORY_CORE_PHRASE = {

@@ -3,14 +3,14 @@ import { floorAnchor } from '../lib/journeyRig.js'
 export const hero = {
   first: 'Angel',
   last: 'Siliezar',
-  role: { es: 'Desarrollador Full Stack', en: 'Full Stack Developer' },
+  role: { es: 'Desarrollador Full Stack || Desarrollador de IA', en: 'Full Stack Developer || AI Developer' },
   stack: {
-    es: 'Construyo soluciones mediante software escalable y mantenible.',
-    en: 'I build things with software that can grow and that I can still maintain.',
+    es: 'Constuyo soluciones y agilización de procesos mediante software e Inteligencia Artificial que sean escalables y mantenibles.',
+    en: 'I build solutions through software and Artificial Intelligence that are scalable and maintainable.',
   },
   purpose: {
-    es: 'Me apasiona la tecnología y la innovación. Me gusta crear soluciones que impacten positivamente en la vida de las personas.',
-    en: 'I care about technology and building new things. I like making stuff that actually helps people.',
+    es: 'Me gusta entender el problema, construir una solución y dejarla funcionando.',
+    en: 'I like understanding the problem, building a solution, and leaving it working.',
   },
   primary: { es: 'Ver experiencia', en: 'See experience' },
   secondary: { es: 'Contacto', en: 'Contact' },
@@ -21,16 +21,16 @@ export const welcome = {
   meta: { es: 'Bienvenido a mi portafolio', en: 'Welcome to my portfolio' },
   title: { es: 'Me llamo Sili...', en: "I'm Sili..." },
   body: {
-    es: 'Soy el asistente de Angel Siliezar. Te acompañaré en el recorrido para conocer más sobre él.',
-    en: "I'm Angel Siliezar's assistant. I'll walk with you through the tour so you can get to know him.",
+    es: 'Soy el asistente de Angel. Te voy a mostrar quién es, qué ha construido y cómo trabaja.',
+    en: "I'm Angel's assistant. I will show you who he is, what he has built, and how he works.",
   },
   hintTower: {
-    es: 'Haz clic en la torre o el teclado del setup para cambiar las luces de la torre.',
-    en: 'Click the tower or the keyboard on the setup to change the tower lights.',
+    es: 'Puedes interactuar con la torre y el teclado del setup.',
+    en: 'You can interact with the tower and the setup keyboard.',
   },
   hintChat: {
-    es: 'Haz click sobre mi imagen abajo a la derecha para hablar conmigo por si tienes alguna pregunta.',
-    en: 'Click my face at the bottom right to talk to me if you have a question.',
+    es: 'Si tienes una pregunta, abre a Sili desde la esquina inferior derecha.',
+    en: 'If you have a question, open Sili from the bottom-right corner.',
   },
   routeMeta: { es: 'RECORRIDO', en: 'TOUR' },
   replayTour: { es: 'Repetir tutorial', en: 'Replay tutorial' },
@@ -38,21 +38,21 @@ export const welcome = {
 }
 
 export const about = {
-  title: { es: '¿Quién es Angel Siliezar?', en: 'Who is Angel Siliezar?' },
+  title: { es: '¿Quién es Angel Siliezar?', en: "Who is Angel Siliezar?" },
   paragraphs: [
     {
-      es: 'Si tuviera que definirme en una frase, sería: "Un apasionado por la tecnología y la innovación".',
-      en: 'If I had to put myself in one line: "Someone into technology and building new things."',
+      es: 'Te cuento cómo empezó: no había un mapa, solo curiosidad y una computadora que Angel quería entender.',
+      en: "I'll tell you how it started: there was no map, only curiosity and a computer Angel wanted to understand.",
     },
     '',
     {
-      es: 'Desde pequeño descubrí mi pasión y me siento priveligeado por poder estudiar y trabajar de lo que me gusta.',
-      en: 'I found what I like when I was a kid, and I feel lucky I get to study it and work on it.',
+      es: 'Con el tiempo esa curiosidad se volvió su forma de trabajar: preguntar, probar y arreglar lo que se rompe.',
+      en: 'Over time, that curiosity became his way of working: ask, test, and fix what breaks.',
     },
     '',
     {
-      es: 'Mi trabajo es el reflejo de la frase con la que me formé dentro del colegio:',
-      en: 'My work comes from the line I grew up with at school:',
+      es: 'La frase que se quedó con Angel desde su formación es sencilla:',
+      en: 'The line Angel kept from school is simple:',
     },
   ],
   meta: { es: '"El trabajo bien hecho."', en: '"Work done right."' },
@@ -66,12 +66,12 @@ export const about = {
   studyRole: { es: 'Desarrollador Full Stack', en: 'Full Stack Developer' },
   studyParagraphs: [
     {
-      es: 'No llegué a Kinal porque sonara bien en un perfil. No sabía qué estudiar y aquí encontré programación: React, Node, bases de datos, Git con gente de verdad, y la idea de que si algo se rompe, es tu problema hasta que lo arregles.',
-      en: "I didn't land at Kinal because it would sound good on a profile. I didn't know what to study, and here I found programming: React, Node, databases, Git with real people, and the idea that if something breaks, it's your problem until you fix it.",
+      es: 'Te cuento cómo llegó a Kinal: no fue por tener un perfil bonito. No sabía qué estudiar y aquí encontró programación: React, Node, bases de datos y Git trabajando con otras personas.',
+      en: "Here's how Angel got to Kinal: it was not for a better-looking profile. He did not know what to study, and here he found programming: React, Node, databases, and Git while working with other people.",
     },
     {
-      es: 'Voy aprendiendo arquitectura, IA y lo que el proyecto pida. El valor que más me marcaron: el trabajo bien hecho.',
-      en: "I'm learning architecture, AI, and whatever the project asks for. The value they drilled into me: work done right.",
+      es: 'Desde ahí ha aprendido arquitectura, IA y lo que cada proyecto exige. Si algo se rompe, lo entiende y lo deja de pie.',
+      en: 'Since then he has learned architecture, AI, and whatever each project requires. If something breaks, he understands it and leaves it standing.',
     },
   ],
   awards: [
@@ -93,65 +93,65 @@ export const about = {
     },
   ],
   purposeLead: {
-    es: 'Mi propósito es desarrollar software de alto impacto dentro de la industria y en la vida de las personas.',
-    en: 'My aim is to build high-impact software for the industry and for people.',
+    es: '"Busco construir software útil dentro de la industria y en la vida de las personas".',
+    en: 'I want to build useful software for industry and for people.',
   },
   purposeTeam: {
-    es: 'Me encanta trabajar en equipo y poder aportar mis conocimientos y habilidades para el desarrollo de proyectos.',
-    en: 'I like working in a team and bringing what I know into real projects.',
+    es: 'Una frase que el repite mucho... Además trabaja bien con equipos, tiene responsabilidad y ganas de esforzarse.',
+    en: 'I work well with teams that share context, ownership, and the drive to deliver.',
   },
   purposeSeek: {
-    es: 'En busca de aprender y crecer profesionalmente.',
-    en: 'Looking to learn and grow as a professional.',
+    es: 'Esta en busca de sus primeras experiencias formales para seguir creciendo con trabajo real y saltar a nuevos retos.',
+    en: 'I am looking for my first formal role and more real work to grow through.',
   },
   readMore: { es: '¿Quieres leer más?', en: 'Want to read more?' },
   readStory: { es: 'Leer la historia', en: 'Read the story' },
   indexTitle: { es: '¿Qué vas a encontrar?', en: "What you'll find" },
   stops: [
     { id: 'about', label: { es: '¿Quién es Angel?', en: 'Who is Angel?' }, progress: floorAnchor('about') },
-    { id: 'studies', label: { es: 'Dónde me formé', en: 'Where I trained' }, progress: floorAnchor('studies') },
-    { id: 'experience', label: { es: 'Qué he construido', en: "What I've built" }, progress: floorAnchor('experience') },
-    { id: 'tools', label: { es: 'Con qué construyo', en: 'What I build with' }, progress: floorAnchor('tools') },
-    { id: 'closing', label: { es: 'En qué ando ahora', en: "What I'm on now" }, progress: floorAnchor('closing') },
+    { id: 'studies', label: { es: '¿Donde se formó?', en: 'Where was he trained?' }, progress: floorAnchor('studies') },
+    { id: 'experience', label: { es: 'Qué ha construido', en: "What he's built" }, progress: floorAnchor('experience') },
+    { id: 'tools', label: { es: 'Con qué construye', en: 'What I build with' }, progress: floorAnchor('tools') },
+    { id: 'closing', label: { es: 'En qué anda ahora', en: "What he's up to now" }, progress: floorAnchor('closing') },
   ],
 }
 
 export const studies = {
   leftTitle: { es: 'Formación académica', en: 'Schooling' },
   leftBody: {
-    es: 'Mi formación comenzó en Fe y Alegría No. 9-40: Donde desarrollé mis habilidades blandas y me formé como persona, ya que participé en diferentes programas, actividades y eventos.',
-    en: 'School started for me at Fe y Alegría No. 9-40: that is where I built the soft skills and figured out who I was, because I was in programs, activities, and events.',
+    es: 'Te cuento dónde empezó su formación: en Fe y Alegría No. 9-40 aprendió a trabajar con personas, participar y hacerse responsable de lo que empezaba.',
+    en: 'I will show you where his training began: at Fe y Alegría No. 9-40 he learned to work with people, participate, and take responsibility for what he started.',
   },
   leftBody2: {
-    es: 'Luego ingresé a Fundación Kinal, donde fortalecí mis conocimientos y pude destacar obteniendo los mejores promedios de mi promoción.',
-    en: 'Then I got into Fundación Kinal, where I got sharper and stood out with the best averages in my class.',
+    es: 'Después llegó a Fundación Kinal, donde esas habilidades encontraron un oficio: desarrollo de software.',
+    en: 'Then he joined Fundación Kinal, where those skills found a craft: software development.',
   },
   leftNote: {
-    es: 'La evidencia está en la sección Galería y reconocimientos.',
-    en: 'The proof is in Gallery and awards.',
+    es: 'Si quieres ver la evidencia, te llevo a Galería y Reconocimientos.',
+    en: 'If you want the evidence, I will take you to Gallery and Awards.',
   },
   rightTitle: { es: 'Formación técnica y profesional', en: 'Technical and professional path' },
   rightBody: {
-    es: 'La mayor parte la desarrollé en Fundación Kinal, allí aprendí a programar, trabajar en equipo y la mayoría de mis conocimientos técnicos.',
-    en: 'Most of it happened at Fundación Kinal. That is where I learned to code, work with a team, and most of what I know technically.',
+    es: 'Aquí te muestro lo que aprendió en Kinal: programar, trabajar con Git y separar un problema grande en entregas que sí se pueden probar.',
+    en: 'Here I will show you what he learned at Kinal: coding, Git, and breaking a large problem into deliveries that can actually be tested.',
   },
   rightBody2: {
-    es: 'Pero no todo se aprende en el colegio, así que durante 2026 me dediqué a asitir a Hackatons, talleres, cursos, eventos, conferencias, entre otros donde aplicar y aprender mediante una situación real y contra reloj. ',
-    en: 'But you do not learn everything at school, so through 2026 I went to hackathons, workshops, courses, events, talks, and the rest, where I could apply it and learn in a real situation, against the clock.',
+    es: 'En 2026 salió del salón: hackatones, pitches, eventos y prácticas donde tuvo que entregar con el reloj encima.',
+    en: 'In 2026 he moved beyond the classroom: hackathons, pitches, events, and an internship where delivery happened against the clock.',
   },
   rightNote: {
-    es: 'En 2027: Ingeniería en Sistemas en la UMG para poder estudiar y trabajar de lo que me gusta. (Además de obtener más certificaciones).',
-    en: 'In 2027: Systems Engineering at UMG so I can study and work on what I like. (And pick up more certifications).',
+    es: 'En 2027 continuará con Ingeniería en Sistemas en la UMG. Te seguiré contando cómo estudia y trabaja en lo que ya está construyendo.',
+    en: 'In 2027 he will continue with Systems Engineering at UMG. I will keep showing you how he studies and works on what he is already building.',
   },
   awardsCta: { es: 'Ver reconocimientos', en: 'See awards' },
   galleryCta: { es: 'Ver la galería', en: 'See the gallery' },
 }
 
 export const experience = {
-  title: { es: '¿Qué he construido?', en: 'What have I built?' },
+  title: { es: '¿Qué ha construido?', en: "What has he built?" },
   body: {
-    es: 'En mis primeros años no pasaba de proyectos acádemicos... Pero desde 2026 he asistido a hackathones, donde quede en 3er lugar en la Buildathon de la Semana de la construcción ',
-    en: 'My first years never got past school projects... Since 2026 I have been at hackathons, and I placed 3rd at the Buildathon of Semana de la construcción',
+    es: 'Fijate que aprendió a entregar: soluciones problemas concretos y poco tiempo para decidir qué sí entra.',
+    en: "Notice that he learned to deliver: solutions to concrete problems and little time to decide what actually makes it in.",
   },
   command: 'pnpm run dev',
   timeline: [
@@ -159,16 +159,16 @@ export const experience = {
       title: { es: 'Vacacionista · asesor de ventas', en: 'Seasonal hire · sales advisor' },
       date: { es: 'Desde los 15 años', en: 'Since I was 15' },
       detail: {
-        es: 'Trabajé desde los 15 para armarme un setup decente. No era un rol tech, pero aprendí a hablar con gente, aguantar ritmo y no congelarme ante el cliente.',
-        en: 'I worked from 15 to put together a decent setup. It was not a tech role, but I learned to talk to people, hold the pace, and not freeze in front of a customer.',
+        es: 'Te cuento cómo empezó: trabajó desde los 15 para armarse un setup decente. No era un rol tech, pero aprendió a hablar con gente, aguantar ritmo y no congelarse ante el cliente.',
+        en: "I'll tell you how it started: he worked from 15 to build a decent setup. It was not a tech role, but he learned to talk to people, hold the pace, and not freeze in front of a customer.",
       },
     },
     {
       title: { es: 'Hackathones', en: 'Hackathons' },
       date: { es: 'UVG y UFG', en: 'UVG and UFG' },
       detail: {
-        es: 'UVG con The502Project (Open2) y UFG en El Salvador: producto con poco tiempo, poco sueño y mucha presión.',
-        en: 'UVG with The502Project (Open2) and UFG in El Salvador: a product, almost no time, almost no sleep, and a lot of pressure.',
+        es: 'Aquí te muestro UVG con The502Project (Open2) y UFG en El Salvador: producto con poco tiempo, poco sueño y mucha presión.',
+        en: 'Here I will show you UVG with The502Project (Open2) and UFG in El Salvador: a product, almost no time, almost no sleep, and a lot of pressure.',
       },
       links: [
         { href: '/gallery?frame=3', label: { es: 'Foto del hackathon en UVG', en: 'Photo from the UVG hackathon' } },
@@ -179,16 +179,16 @@ export const experience = {
       title: { es: 'Cursor Buildathon · El Salvador', en: 'Cursor Buildathon · El Salvador' },
       date: { es: '3 de julio', en: 'July 3' },
       detail: {
-        es: 'Viajé con 15 personas de Guatemala a San Salvador para el #CursorBuildathon de Ai Labs. Primer viaje fuera del país gracias a la tecnología, siendo aún estudiante.',
-        en: 'I traveled with 15 people from Guatemala to San Salvador for Ai Labs #CursorBuildathon. First trip out of the country thanks to tech, still a student.',
+        es: 'Te cuento de su primer viaje fuera del país: viajó con 15 personas de Guatemala a San Salvador para el #CursorBuildathon de Ai Labs, todavía como estudiante.',
+        en: 'I will tell you about his first trip abroad: he traveled with 15 people from Guatemala to San Salvador for Ai Labs #CursorBuildathon, still as a student.',
       },
     },
     {
       title: { es: 'Hack@Latam', en: 'Hack@Latam' },
       date: { es: '5 países en simultáneo', en: '5 countries at once' },
       detail: {
-        es: 'Hackatón internacional de indies.la, con Oscar Morales (The 502 Project) como host local. Equipo con Josue Boror y Ricardo González.',
-        en: 'International indie hackathon from indies.la, with Oscar Morales (The 502 Project) as the local host. Team with Josue Boror and Ricardo González.',
+        es: 'También participó en el hackatón internacional de indies.la, con Oscar Morales (The 502 Project) como host local y un equipo junto a Josue Boror y Ricardo González.',
+        en: 'He also joined indies.la international hackathon, with Oscar Morales (The 502 Project) as the local host and a team with Josue Boror and Ricardo González.',
       },
     },
     {
@@ -246,10 +246,10 @@ export const experience = {
 }
 
 export const tools = {
-  title: { es: 'Herramientas en acción', en: 'Tools in action' },
+  title: { es: 'Te muestro las herramientas en acción', en: "I'll show you the tools in action" },
   body: {
-    es: 'Dónde aprendí cada pieza y en qué proyecto la usé de verdad.',
-    en: 'Where I learned each piece, and which project I actually used it on.',
+    es: 'No es una lista de nombres. Te muestro las herramientas que Angel ya usó para construir, probar y desplegar.',
+    en: "This is not a list of names. I'll show you the tools Angel has already used to build, test, and deploy.",
   },
   files: [
     {
@@ -257,8 +257,8 @@ export const tools = {
       label: { es: 'Visión', en: 'Vision' },
       level: { es: 'En proyectos', en: 'In projects' },
       summary: {
-        es: 'OpenCV, YOLO y Python para leer el mundo físico en tiempo real.',
-        en: 'OpenCV, YOLO, and Python to read the physical world in real time.',
+        es: 'Aquí ves OpenCV, YOLO y Python trabajando para leer el mundo físico en tiempo real.',
+        en: 'Here you can see OpenCV, YOLO, and Python reading the physical world in real time.',
       },
       code: [
         'from sentinel.vision import YoloService',
@@ -276,8 +276,8 @@ export const tools = {
       label: { es: 'Gráficos 3D', en: '3D graphics' },
       level: { es: 'En proyectos', en: 'In projects' },
       summary: {
-        es: 'Three.js en este portafolio y JMonkeyEngine en el render de AR Java.',
-        en: 'Three.js in this portfolio and JMonkeyEngine in the Java AR render.',
+        es: 'Te muestro Three.js en este portafolio y JMonkeyEngine en el render de AR Java.',
+        en: 'I will show you Three.js in this portfolio and JMonkeyEngine in the Java AR render.',
       },
       code: [
         'import { createJourneyRig } from "./rig"',
@@ -294,8 +294,8 @@ export const tools = {
       label: { es: 'Full stack', en: 'Full stack' },
       level: { es: 'Uso diario', en: 'Daily use' },
       summary: {
-        es: 'React, Node, Express y bases relacionales y no relacionales. Incluye un SaaS de restaurantes.',
-        en: 'React, Node, Express, and relational and non-relational databases. Includes a restaurant SaaS.',
+        es: 'Aquí ves React, Node, Express y bases relacionales y no relacionales, incluido un SaaS de restaurantes.',
+        en: 'Here you can see React, Node, Express, and relational and non-relational databases, including a restaurant SaaS.',
       },
       code: [
         'import express from "express"',
@@ -314,8 +314,8 @@ export const tools = {
       label: { es: 'Certificaciones', en: 'Certifications' },
       level: { es: 'Vigentes', en: 'Current' },
       summary: {
-        es: 'El archivo con los diplomas está en el piso de estudios. Aquí solo el índice: Cisco CCNA e ITN, STEM, Fundación BI, Tech Day, AI Dev y Python.',
-        en: 'The diploma file is on the studies floor. This is just the index: Cisco CCNA and ITN, STEM, Fundación BI, Tech Day, AI Dev, and Python.',
+        es: 'Te dejo el índice; el archivo está en el piso de estudios: Cisco CCNA e ITN, STEM, Fundación BI, Tech Day, AI Dev y Python.',
+        en: 'I will leave you the index; the archive is on the studies floor: Cisco CCNA and ITN, STEM, Fundación BI, Tech Day, AI Dev, and Python.',
       },
       code: [
         'Cisco CCNA',
@@ -332,15 +332,15 @@ export const tools = {
 }
 
 export const closing = {
-  line1: { es: 'Si lo puedes imaginar,', en: 'If you can imagine it,' },
-  line2: { es: 'lo puedes programar', en: 'you can program it' },
+  line1: { es: 'En resumen es...', en: 'In summary, he is...' },
+  line2: { es: 'Un apasionado por construir', en: 'A passionate builder' },
   thanks: {
-    es: 'Gracias por el tiempo de bajar hasta aquí.',
-    en: 'Thanks for taking the time to come all the way down.',
+    es: 'Gracias por bajar hasta aquí. Yo te seguiré guiando si quieres conocer más.',
+    en: 'Thanks for coming all the way down. I will keep guiding you if you want to know more.',
   },
   status: {
-    es: 'Último año en Kinal, Perito en Desarrollo de Software. Busco mi primer rol formal, Full Stack.',
-    en: 'Last year at Kinal, Perito en Desarrollo de Software. Looking for my first formal role, Full Stack.',
+    es: 'Angel está abierto a oportunidades de trabajo en Guatemala, remoto o por proyectos freelance.',
+    en: 'Angel is open to work opportunities in Guatemala, remotely, or through freelance projects.',
   },
   place: { es: 'Ciudad de Guatemala', en: 'Guatemala City' },
   hobbies: {
@@ -352,7 +352,7 @@ export const closing = {
     en: 'The floor hatch is still shut. Floor -1 is locked.',
   },
   unlocked: {
-    es: 'La base se abre. El avatar entra por el tubo, como si el suelo fuera un conducto.',
+    es: 'Consigue los 5 hobbies y la compuerta se abre. Y baja a la sala secreta.',
     en: 'The base opens. The avatar goes in through the tube, like the floor is a duct.',
   },
   credit: {
@@ -399,9 +399,9 @@ export const passages = [
     id: 'experience',
     variant: 'editorial',
     lines: [
-      { es: '¿Donde he aprendido todo lo que hago?', en: 'Where did I learn everything I do?' },
-      { es: 'Haciendo...', en: 'By doing it...' },
-      { es: 'Aprendiendo...', en: 'By learning...' },
+      { es: '¿Dónde aprendió a construir?', en: 'Where did he learn to build?' },
+      { es: 'Cuando tocó entregar.', en: 'When it was time to deliver.' },
+      { es: 'Cuando algo se rompió y tocó arreglarlo.', en: 'When something broke and it was time to fix it.' },
     ],
   },
   {
@@ -409,7 +409,7 @@ export const passages = [
     variant: 'led',
     lines: [
       { es: 'Si lo puedes imaginar, lo puedes programar.', en: 'If you can imagine it, you can program it.' },
-      { es: 'Último año en Kinal. Busco el primer rol.', en: 'Last year at Kinal. Looking for the first role.' },
+      { es: 'Último año en Kinal. Listo para el primer rol.', en: 'Last year at Kinal. Ready for the first role.' },
     ],
   },
   {

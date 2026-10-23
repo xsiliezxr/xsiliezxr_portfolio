@@ -112,16 +112,16 @@ function ToolsLeft() {
   return (
     <FloorCard slot="nw" band="top" tone="ide">
       <h2 className="journey-card-title">{tools.title}</h2>
-      <div className="mt-2 space-y-2 text-xs leading-relaxed md:text-sm">
-        <p>{tools.body}</p>
-        <p className="journey-card-meta">
+      <div className="copy-bubbles mt-3 text-xs leading-relaxed md:text-sm">
+        <p className="copy-bubble-title text-ember-300">{tools.body}</p>
+        <p className="copy-bubble copy-bubble-ink">
           {vision.id} · {vision.label}
         </p>
-        <p>{vision.summary}</p>
-        <p className="journey-card-meta">
+        <p className="copy-bubble copy-bubble-ink">{vision.summary}</p>
+        <p className="copy-bubble copy-bubble-ink text-ember-300">
           {graphics.id} · {graphics.label}
         </p>
-        <p>{graphics.summary}</p>
+        <p className="copy-bubble copy-bubble-ink">{graphics.summary}</p>
       </div>
     </FloorCard>
   )
@@ -134,14 +134,14 @@ function ToolsRight() {
 
   return (
     <FloorCard slot="se" band="bottom" tone="ide">
-      <p className="journey-card-meta">
+      <p className="copy-bubble-title text-ember-300">
         {stack.id} · {stack.label}
       </p>
       <h2 className="journey-card-title">{stack.label}</h2>
-      <div className="mt-2 space-y-2 text-xs leading-relaxed md:text-sm">
-        <p>{stack.summary}</p>
-        <p className="journey-card-meta">{certs.label}</p>
-        <p>{certs.summary}</p>
+      <div className="copy-bubbles mt-3 text-xs leading-relaxed md:text-sm">
+        <p className="copy-bubble copy-bubble-ink">{stack.summary}</p>
+        <p className="copy-bubble copy-bubble-ink text-ember-300">{certs.label}</p>
+        <p className="copy-bubble copy-bubble-ink">{certs.summary}</p>
       </div>
       <a href="/skills" data-ui className="journey-card-link">
         {tools.skillsCta}

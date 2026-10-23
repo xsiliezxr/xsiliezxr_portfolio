@@ -58,12 +58,12 @@ function AboutLeft() {
   return (
     <FloorCard slot="nw" band="top" tone="film">
       <h2 className="journey-card-title text-base md:text-lg">{about.title}</h2>
-      <div className="mt-2 space-y-2 text-xs leading-relaxed text-fog md:text-sm">
+      <div className="copy-bubbles mt-3 text-xs leading-relaxed text-fog md:text-sm">
         {about.paragraphs.map((paragraph, index) =>
-          paragraph ? <p key={index}>{paragraph}</p> : <span key={index} className="block h-2" />,
+          paragraph ? <p key={index} className={index === 0 ? 'copy-bubble copy-bubble-ink' : 'copy-bubble copy-bubble-ink text-fog-dim'}>{paragraph}</p> : null,
         )}
       </div>
-      <p className="journey-card-meta mt-2">{about.meta}</p>
+      <p className="copy-bubble-title mt-3 text-ember-500">{about.meta}</p>
     </FloorCard>
   )
 }
@@ -72,10 +72,10 @@ function AboutRight() {
   const about = useLocalized(aboutSource)
   return (
     <FloorCard slot="se" band="bottom" tone="film">
-      <div className="space-y-2 text-xs leading-relaxed text-fog md:text-sm">
-        <p>{about.purposeLead}</p>
-        <p>{about.purposeTeam}</p>
-        <p>{about.purposeSeek}</p>
+      <div className="copy-bubbles mt-2 text-xs leading-relaxed text-fog md:text-sm">
+        <p className="copy-bubble-title text-ember-500">{about.purposeLead}</p>
+        <p className="copy-bubble copy-bubble-ink">{about.purposeTeam}</p>
+        <p className="copy-bubble copy-bubble-ink text-fog-dim">{about.purposeSeek}</p>
       </div>
       <div className="mt-2.5 hidden md:block">
         <p className="font-mono text-[11px] text-amber">{about.readMore}</p>

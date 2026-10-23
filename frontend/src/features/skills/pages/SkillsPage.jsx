@@ -5,8 +5,8 @@ import { SkillConstellation } from '../components/SkillConstellation.jsx'
 const PAGE = {
   title: { es: 'Habilidades de Angel Siliezar', en: 'Angel Siliezar skills' },
   intro: {
-    es: 'Lenguajes, bases de datos y herramientas en un mismo mapa. Arrastra o selecciona un nodo para ver relaciones.',
-    en: 'Languages, databases, and tools on one map. Drag or select a node to see how they connect.',
+      es: 'Mis habilidades, divididas en categorías conectadas através un grafo con nodos para representar las relaciones entre sí.',
+    en: 'My skills, divided into categories connected through a graph with nodes to represent the relationships between them.',
   },
 }
 

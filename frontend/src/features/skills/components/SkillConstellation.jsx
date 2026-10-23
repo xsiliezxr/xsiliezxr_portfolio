@@ -6,15 +6,22 @@ import { skillConstellations } from '../skills.data.js'
 
 const UI = {
   maps: { es: 'Mapas de habilidades', en: 'Skill maps' },
-  drag: { es: 'Arrastra un nodo para tensar la red', en: 'Drag a node to tension the net' },
-  mark: { es: 'CONSTELACIÓN', en: 'CONSTELLATION' },
-  connected: { es: 'Nodos conectados', en: 'Connected nodes' },
+  drag: { es: 'Arrastra un nodo', en: 'Drag a node' },
+  connected: { es: 'Nodos relacionados', en: 'Related nodes' },
   alone: { es: 'Nodo autónomo dentro de', en: 'Standalone node inside' },
   group: { es: 'Grupo activo:', en: 'Active group:' },
   tech: { es: 'tecnologías', en: 'technologies' },
   index: { es: 'Índice de', en: 'Index of' },
   az: { es: '(A–Z)', en: '(A–Z)' },
   nodes: { es: 'nodos', en: 'nodes' },
+}
+
+const CATEGORY_LABELS = {
+  all: { es: 'Todos', en: 'All' },
+  languages: { es: 'Lenguajes', en: 'Languages' },
+  tools: { es: 'Herramientas', en: 'Tools' },
+  ai: { es: 'IA', en: 'AI' },
+  craft: { es: 'Oficio', en: 'Craft' },
 }
 
 function clamp(value, min, max) {
@@ -30,12 +37,50 @@ function neighborsOf(edges, id) {
   return list
 }
 
+function mergeCategory(groups, id, label) {
+  const selected = id === 'all' ? groups : groups.filter((group) => group.category === id)
+  const nodes = []
+  const edges = []
+  const seenNodes = new Set()
+  const seenEdges = new Set()
+  for (const group of selected) {
+    for (const node of group.nodes) {
+      if (seenNodes.has(node.id)) continue
+      seenNodes.add(node.id)
+      nodes.push(node)
+    }
+    for (const edge of group.edges) {
+      const key = `${edge.from}-${edge.to}`
+      if (seenEdges.has(key)) continue
+      seenEdges.add(key)
+      edges.push(edge)
+    }
+  }
+  const columns = id === 'all' ? 6 : nodes.length > 12 ? 5 : nodes.length > 6 ? 4 : 3
+  const rows = Math.max(1, Math.ceil(nodes.length / columns))
+  const positioned = nodes.map((node, index) => {
+    const column = index % columns
+    const row = Math.floor(index / columns)
+    return {
+      ...node,
+      x: columns === 1 ? 50 : 10 + (column / (columns - 1)) * 80,
+      y: rows === 1 ? 50 : 10 + (row / (rows - 1)) * 80,
+    }
+  })
+  return { id, label, nodes: positioned, edges }
+}
+
 export function SkillConstellation() {
   const reduced = useReducedMotion()
   const lang = useLang()
-  const groups = useLocalized(skillConstellations)
+  const sourceGroups = useLocalized(skillConstellations)
+  const categoryLabels = useLocalized(CATEGORY_LABELS)
+  const groups = useMemo(() => [
+    mergeCategory(sourceGroups, 'all', categoryLabels.all),
+    ...['languages', 'tools', 'ai', 'craft'].map((id) => mergeCategory(sourceGroups, id, categoryLabels[id])),
+  ], [categoryLabels, sourceGroups])
   const ui = useLocalized(UI)
-  const [tab, setTab] = useState(groups[0].id)
+  const [tab, setTab] = useState('all')
   const constellation = groups.find((item) => item.id === tab) ?? groups[0]
   const anchors = useMemo(() => Object.fromEntries(constellation.nodes.map((node) => [node.id, { x: node.x, y: node.y }])), [constellation])
   const [positions, setPositions] = useState(anchors)
@@ -60,6 +105,7 @@ export function SkillConstellation() {
   }, [constellation.edges, focusId])
 
   const focused = constellation.nodes.find((node) => node.id === focusId) ?? constellation.nodes[0]
+  const compact = tab === 'all'
   const connectedNodes = useMemo(() => {
     if (!focused) return []
     const neighborIds = new Set(neighborsOf(constellation.edges, focused.id))
@@ -95,7 +141,7 @@ export function SkillConstellation() {
     drag.y = event.clientY
     if (Math.abs(dx) < 0.05 && Math.abs(dy) < 0.05) return
     drag.moved = true
-    const chain = reduced ? 0 : 0.34
+    const attraction = reduced ? 0 : 0.16
     setPositions((prev) => {
       const next = { ...prev }
       const current = prev[id] ?? anchors[id]
@@ -103,7 +149,10 @@ export function SkillConstellation() {
       for (const neighborId of neighborsOf(constellation.edges, id)) {
         const neighbor = prev[neighborId]
         if (!neighbor) continue
-        next[neighborId] = { x: clamp(neighbor.x + dx * chain, 8, 92), y: clamp(neighbor.y + dy * chain, 12, 88) }
+        next[neighborId] = {
+          x: clamp(neighbor.x + (next[id].x - neighbor.x) * attraction, 8, 92),
+          y: clamp(neighbor.y + (next[id].y - neighbor.y) * attraction, 12, 88),
+        }
       }
       return next
     })
@@ -112,7 +161,8 @@ export function SkillConstellation() {
   const onPointerUp = (id) => {
     const drag = dragRef.current
     dragRef.current = null
-    if (drag?.id === id) setPositions(anchors)
+    if (drag?.id !== id) return
+    setPositions(anchors)
     setDragging(false)
   }
 
@@ -151,18 +201,14 @@ export function SkillConstellation() {
       <div className="grid gap-5 lg:grid-cols-[1fr_21rem] lg:items-stretch">
         <div
           ref={mapRef}
-          className="relative h-[min(58dvh,30rem)] overflow-hidden rounded-[12px] border border-ink-700 bg-ink-900"
+          className={`relative overflow-hidden rounded-[12px] border border-ink-700 bg-ink-900 ${compact ? 'h-[min(72dvh,42rem)]' : 'h-[min(58dvh,30rem)]'}`}
           style={{
             backgroundImage:
               'radial-gradient(circle at 50% 50%, rgba(255, 91, 20, 0.08), transparent 65%), linear-gradient(to right, rgba(42, 40, 38, 0.45) 1px, transparent 1px), linear-gradient(to bottom, rgba(42, 40, 38, 0.45) 1px, transparent 1px)',
             backgroundSize: '100% 100%, 36px 36px, 36px 36px',
           }}
         >
-          <div className="pointer-events-none absolute top-3 left-4 z-10 flex items-center gap-2 font-mono text-[11px] text-fog-dim">
-            <span className="h-2 w-2 rounded-full bg-ember-500" aria-hidden="true" />
-            <span>{ui.mark} · {constellation.label.toUpperCase()}</span>
-          </div>
-
+          <div className="absolute inset-0 z-0"></div>
           <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             {constellation.edges.map((edge) => {
               const from = positions[edge.from]
@@ -196,13 +242,13 @@ export function SkillConstellation() {
                 onPointerMove={(event) => onPointerMove(node.id, event)}
                 onPointerUp={() => onPointerUp(node.id)}
                 onPointerCancel={() => onPointerUp(node.id)}
-                className={`group absolute flex w-20 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 ${
+                className={`group absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center ${compact ? 'w-16 gap-0.5' : 'w-20 gap-1.5'} ${
                   reduced || dragging ? '' : 'transition-[left,top] duration-300'
                 }`}
                 style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
               >
                 <span
-                  className={`grid h-12 w-12 place-items-center rounded-[12px] bg-paper transition-transform group-hover:scale-105 ${
+                  className={`grid place-items-center rounded-[12px] bg-paper transition-transform group-hover:scale-105 ${compact ? 'h-9 w-9' : 'h-12 w-12'} ${
                     isSelected
                       ? 'outline outline-2 outline-ember-500 shadow-[0_0_24px_rgba(255,91,20,0.45)]'
                       : lit
@@ -213,7 +259,7 @@ export function SkillConstellation() {
                   <SkillMark icon={node.icon} />
                 </span>
                 <span
-                  className={`max-w-20 truncate rounded-[6px] bg-ink-950/90 px-1.5 py-0.5 text-center font-mono text-[10px] leading-tight ${
+                  className={`truncate rounded-[6px] bg-ink-950/90 px-1.5 py-0.5 text-center font-mono leading-tight ${compact ? 'max-w-16 text-[9px]' : 'max-w-20 text-[10px]'} ${
                     isSelected ? 'font-bold text-ember-300' : lit ? 'text-fog' : 'text-fog-dim'
                   }`}
                 >

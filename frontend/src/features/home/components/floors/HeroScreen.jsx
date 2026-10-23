@@ -94,7 +94,7 @@ export const HeroScreen = forwardRef(function HeroScreen({ placement = 'fixed' }
   return (
     <div ref={ref} className={plate ? 'journey-hero-plate' : 'journey-hero-flow'}>
       <video
-        className="absolute inset-0 h-full w-full object-cover opacity-40 grayscale"
+        className="absolute inset-0 h-full w-full object-cover opacity-80 grayscale-60"
         autoPlay
         muted
         loop
@@ -143,7 +143,7 @@ export const HeroScreen = forwardRef(function HeroScreen({ placement = 'fixed' }
           <img
             src={photo}
             alt={hero.photoAlt}
-            className="absolute inset-0 h-full w-full object-cover grayscale-50 contrast-125"
+            className="absolute inset-0 h-full w-full object-cover grayscale-50 contrast-115"
             style={hole ? { WebkitMaskImage: `radial-gradient(circle at ${hole.x}% ${hole.y}%, transparent 16%, #000 46%)`, maskImage: `radial-gradient(circle at ${hole.x}% ${hole.y}%, transparent 16%, #000 46%)` } : undefined}
           />
           {hole ? (

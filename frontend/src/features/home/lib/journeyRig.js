@@ -405,7 +405,7 @@ function journeyLimit(scroller) {
 
 export function scrollToProgress(progress, behavior = 'smooth') {
   const scroller = document.getElementById('journey-scroll')
-  const track = scroller?.firstElementChild
+  const track = scroller?.querySelector('[data-journey-track]')
   const range = track
     ? Math.max(track.offsetHeight - scroller.clientHeight, 0)
     : Math.max(document.documentElement.scrollHeight - window.innerHeight, 0)

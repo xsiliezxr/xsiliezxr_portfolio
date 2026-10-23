@@ -7,7 +7,7 @@ export const galleryFrames = [
     caption: { es: 'Hacklatam 2026 · UFM 2026', en: 'Hacklatam 2026 · UFM 2026' },
     title: { es: 'Hacklatam en UFM 2026', en: 'Hacklatam at UFM 2026' },
     description: {
-      es: 'Hackaton internacional simulatenea en diferentes países a la vez, como: Colombia, Chile, SV, y otros. Un evento increíble donde aprendí mucho y conocí a gente increíble.',
+      es: 'Participé en un hackatón internacional que sucedió al mismo tiempo en Colombia, Chile, El Salvador y otros países. Aprendí mucho y conocí a gente increíble.',
       en: 'An international hackathon running in several countries at once, including Colombia, Chile, El Salvador, and others. An incredible event where I learned a lot and met incredible people.',
     },
   },
@@ -29,7 +29,7 @@ export const galleryFrames = [
     caption: { es: 'Funcionamiento de ARJava · Fundación Kinal', en: 'How ARJava works · Fundación Kinal' },
     title: { es: 'Funcionamiento de ARJava', en: 'How ARJava works' },
     description: {
-      es: 'Funcionamiento de ARJava. Una aplicación full desarrollada en Java para ExpoKinal 2025 de Realidad Aumentada.',
+      es: 'Aquí muestro ARJava, una aplicación que desarrollé en Java para ExpoKinal 2025 sobre realidad aumentada.',
       en: 'How ARJava works. A full application built in Java for ExpoKinal 2025, using augmented reality.',
     },
   },
@@ -40,7 +40,7 @@ export const galleryFrames = [
     caption: { es: 'Top 6 practicantes · CombexIM', en: 'Top 6 interns · CombexIM' },
     title: { es: 'Top 6 practicantes', en: 'Top 6 interns' },
     description: {
-      es: 'Nos dieron la oportunidad de tener un desayuno junto al Director Ejecutivo, donde nos compartió su experiencia, llena de consejos. En lo personal, fue muy enriquecedor.',
+      es: 'Tuve la oportunidad de desayunar con el Director Ejecutivo. Compartió su experiencia y consejos; para mí fue una conversación muy enriquecedora.',
       en: 'They gave us the chance to have breakfast with the Executive Director, who shared his experience, full of advice. Personally, it was very enriching.',
     },
   },
@@ -51,7 +51,7 @@ export const galleryFrames = [
     caption: { es: 'Finalización de prácticas · Fundación Kinal', en: 'End of the internship · Fundación Kinal' },
     title: { es: 'Finalización de prácticas', en: 'End of the internship' },
     description: {
-      es: 'Finalización de prácticas en CombexIM. Luego de +400hrs en el departamento de IT, lleno de esfuerzo, y aprendizaje.',
+      es: 'Cerré mis prácticas en CombexIM después de más de 400 horas en el departamento de IT, llenas de esfuerzo y aprendizaje.',
       en: 'End of the internship at CombexIM. After 400+ hours in the IT department, full of effort and learning.',
     },
   },
@@ -65,8 +65,8 @@ export const galleryFrames = [
     caption: { es: 'Beca simbólica Fundación BI 2025 · Fundación Kinal', en: 'Symbolic scholarship Fundación BI 2025 · Fundación Kinal' },
     title: { es: 'Beca simbólica Fundación BI 2025', en: 'Symbolic scholarship Fundación BI 2025' },
     description: {
-      es: 'Angel David Siliezar López con la beca simbólica Fundación BI 2025. Un reconocimiento académico y personal que me motiva a seguir estudiando y mejorando mis habilidades.',
-      en: 'Angel David Siliezar López with the Fundación BI 2025 symbolic scholarship. An academic and personal recognition that motivates me to keep studying and improving my skills.',
+      es: 'Recibí la beca simbólica Fundación BI 2025. Este reconocimiento académico y personal me motiva a seguir estudiando y mejorando mis habilidades.',
+      en: 'I received the Fundación BI 2025 symbolic scholarship. This academic and personal recognition motivates me to keep studying and improving my skills.',
     },
   },
   {
@@ -79,8 +79,8 @@ export const galleryFrames = [
     caption: { es: 'Beca simbólica Fundación BI 2026 · Fundación Kinal', en: 'Symbolic scholarship Fundación BI 2026 · Fundación Kinal' },
     title: { es: 'Beca simbólica Fundación BI 2026', en: 'Symbolic scholarship Fundación BI 2026' },
     description: {
-      es: 'Angel David Siliezar López con la beca simbólica Fundación BI 2026. Un reconocimiento académico y personal que me motiva a seguir estudiando y mejorando mis habilidades.',
-      en: 'Angel David Siliezar López with the Fundación BI 2026 symbolic scholarship. An academic and personal recognition that motivates me to keep studying and improving my skills.',
+      es: 'Recibí la beca simbólica Fundación BI 2026. Este reconocimiento académico y personal me motiva a seguir estudiando y mejorando mis habilidades.',
+      en: 'I received the Fundación BI 2026 symbolic scholarship. This academic and personal recognition motivates me to keep studying and improving my skills.',
     },
   },
   {
